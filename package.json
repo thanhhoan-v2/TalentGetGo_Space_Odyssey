@@ -1,0 +1,70 @@
+{
+  "name": "talentgetgo_star_wars_marketing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.13.8",
+    "@chakra-ui/react": "^3.22.0",
+    "@clerk/nextjs": "^6.25.3",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@neondatabase/serverless": "^1.0.1",
+    "framer-motion": "^12.23.6",
+    "graphql": "^16.11.0",
+    "graphql-ws": "^6.0.6",
+    "lucide-react": "^0.525.0",
+    "motion": "^12.23.6",
+    "next": "15.4.1",
+    "next-themes": "^0.4.6",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^4.0.1",
+    "@eslint/eslintrc": "^3",
+    "@storybook/addon-a11y": "^9.0.17",
+    "@storybook/addon-docs": "^9.0.17",
+    "@storybook/addon-onboarding": "^9.0.17",
+    "@storybook/addon-vitest": "^9.0.17",
+    "@storybook/nextjs": "^9.0.17",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/browser": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "cypress": "^14.5.2",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.1",
+    "eslint-plugin-storybook": "^9.0.17",
+    "husky": "^9.1.7",
+    "jest": "^30.0.4",
+    "jest-environment-jsdom": "^30.0.4",
+    "lint-staged": "^16.1.2",
+    "playwright": "^1.54.1",
+    "prettier": "^3.6.2",
+    "storybook": "^9.0.17",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
+    ]
+  }
+}

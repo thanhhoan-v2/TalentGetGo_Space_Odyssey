@@ -1,0 +1,302 @@
+@layer theme, base, clerk, components, utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Basic utility classes to replace common TailwindCSS classes */
+.antialiased {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-items-center {
+  justify-items: center;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.grid {
+  display: grid;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+.rounded {
+  border-radius: 0.25rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.font-mono {
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo,
+    monospace;
+}
+
+.font-sans {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    sans-serif;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.list-inside {
+  list-style-position: inside;
+}
+
+.list-decimal {
+  list-style-type: decimal;
+}
+
+.border {
+  border-width: 1px;
+}
+
+.border-solid {
+  border-style: solid;
+}
+
+.border-transparent {
+  border-color: transparent;
+}
+
+.transition-colors {
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+/* Custom classes for the home page layout */
+.home-container {
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  align-items: center;
+  justify-items: center;
+  min-height: 100vh;
+  padding: 2rem 0.5rem 1.25rem;
+  gap: 4rem;
+}
+
+.home-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  grid-row-start: 2;
+  align-items: center;
+}
+
+.home-list {
+  font-family: ui-monospace, monospace;
+  list-style-position: inside;
+  list-style-type: decimal;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.home-list-item {
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.home-code {
+  background-color: rgba(0, 0, 0, 0.05);
+  font-family: monospace;
+  font-weight: 600;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.home-button-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-direction: column;
+}
+
+.home-button {
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  height: 2.5rem;
+  padding: 0 1rem;
+  text-decoration: none;
+  width: 100%;
+}
+
+.home-button-primary {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.home-button-primary:hover {
+  background-color: #383838;
+}
+
+.home-button-secondary {
+  border-color: rgba(0, 0, 0, 0.08);
+  color: inherit;
+}
+
+.home-button-secondary:hover {
+  background-color: #f2f2f2;
+  border-color: transparent;
+}
+
+.home-footer {
+  grid-row-start: 3;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-footer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.home-footer-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .home-code {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .home-button-primary:hover {
+    background-color: #ccc;
+  }
+
+  .home-button-secondary {
+    border-color: rgba(255, 255, 255, 0.145);
+  }
+
+  .home-button-secondary:hover {
+    background-color: #1a1a1a;
+  }
+}
+
+/* Responsive styles */
+@media (min-width: 640px) {
+  .home-container {
+    padding: 5rem;
+  }
+
+  .home-main {
+    align-items: flex-start;
+  }
+
+  .home-list {
+    text-align: left;
+  }
+
+  .home-button-group {
+    flex-direction: row;
+  }
+
+  .home-button {
+    font-size: 1rem;
+    height: 3rem;
+    padding: 0 1.25rem;
+    width: auto;
+  }
+}
+
+/* Image invert for dark mode */
+.dark-invert {
+  filter: invert(0);
+}
+
+@media (prefers-color-scheme: dark) {
+  .dark-invert {
+    filter: invert(1);
+  }
+}

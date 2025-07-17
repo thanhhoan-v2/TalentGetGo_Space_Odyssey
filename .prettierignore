@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Storybook
+storybook-static/
+
+# Testing
+coverage/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Other
+.env*
+*.min.js
+*.min.css 
