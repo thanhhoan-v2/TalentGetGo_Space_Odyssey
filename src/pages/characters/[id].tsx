@@ -9,6 +9,7 @@ import {
   Starship,
   Vehicle,
 } from '@/types/swapi';
+import { getCharacterImage } from '@/utils/assets';
 import {
   batchFetchResources,
   extractIdFromUrl,
@@ -17,26 +18,25 @@ import {
 } from '@/utils/swapi';
 import {
   Box,
-  Button,
   Card,
+  Image as ChakraImage,
   Container,
-  Flex,
   Grid,
   Heading,
   HStack,
-  Spacer,
-  Stack,
   Text,
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Eye, Globe, Ruler, User, Weight } from 'lucide-react';
+import { Eye, Globe, Ruler, User, Weight } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
+import Image, { StaticImageData } from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface CharacterDetailPageProps {
+  paramsId: string;
   character: Person;
   homeworld: Planet | null;
   films: Film[];
@@ -46,6 +46,7 @@ interface CharacterDetailPageProps {
 }
 
 export default function CharacterDetailPage({
+  paramsId,
   character,
   homeworld,
   films,
@@ -54,6 +55,18 @@ export default function CharacterDetailPage({
   vehicles,
 }: CharacterDetailPageProps) {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const [characterImage, setCharacterImage] = useState<StaticImageData | null>(
+    null
+  );
+
+  // Load character image on component mount
+  useEffect(() => {
+    const loadImage = async () => {
+      const image = await getCharacterImage(paramsId);
+      setCharacterImage(image);
+    };
+    loadImage();
+  }, [paramsId]);
 
   return (
     <>
@@ -74,54 +87,6 @@ export default function CharacterDetailPage({
       </Head>
 
       <Box minH="100vh" bg="black" color="white">
-        {/* Header */}
-        <Box
-          as="header"
-          bg="gray.900"
-          borderBottom="1px"
-          borderColor="gray.700"
-        >
-          <Container maxW="7xl" py={6}>
-            <Flex align="center">
-              <Link href="/">
-                <Heading
-                  size="lg"
-                  color="yellow.400"
-                  _hover={{ color: 'yellow.300' }}
-                  transition="colors 0.2s"
-                  cursor="pointer"
-                >
-                  Star Wars Explorer
-                </Heading>
-              </Link>
-              <Spacer />
-              <Stack direction={{ base: 'column', md: 'row' }} gap={6}>
-                <Link href="/characters">
-                  <Button
-                    variant="ghost"
-                    color="gray.300"
-                    _hover={{ color: 'white', bg: 'gray.800' }}
-                    size={isMobile ? 'sm' : 'md'}
-                  >
-                    <ArrowLeft size={16} />
-                    Back to Characters
-                  </Button>
-                </Link>
-                <Link href="/films">
-                  <Button
-                    variant="ghost"
-                    color="gray.300"
-                    _hover={{ color: 'white', bg: 'gray.800' }}
-                    size={isMobile ? 'sm' : 'md'}
-                  >
-                    Films
-                  </Button>
-                </Link>
-              </Stack>
-            </Flex>
-          </Container>
-        </Box>
-
         {/* Main Content */}
         <Container maxW="7xl" py={12}>
           {/* Character Header */}
@@ -161,6 +126,20 @@ export default function CharacterDetailPage({
                   borderColor="gray.700"
                 >
                   <Card.Body p={6}>
+                    {characterImage && (
+                      <ChakraImage asChild>
+                        <Image
+                          src={characterImage}
+                          alt={character.name}
+                          width={100}
+                          height={100}
+                          style={{
+                            borderRadius: '8px',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      </ChakraImage>
+                    )}
                     <HStack mb={4}>
                       <User size={20} color="rgb(96, 165, 250)" />
                       <Heading size="md" color="white">
@@ -453,6 +432,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     return {
       props: {
+        paramsId: id,
         character,
         homeworld,
         films,
