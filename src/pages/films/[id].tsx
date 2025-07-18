@@ -24,24 +24,20 @@ import {
 import {
   Badge,
   Box,
-  Button,
   Card,
   Container,
   Flex,
   Grid,
   Heading,
   HStack,
-  Spacer,
-  Stack,
   Text,
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, User, Users } from 'lucide-react';
+import { Calendar, User, Users } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
 
 interface FilmDetailPageProps {
   film: Film;
@@ -81,56 +77,6 @@ export default function FilmDetailPage({
       </Head>
 
       <Box minH="100vh" bg="black" color="white">
-        {/* Header */}
-        <Box
-          as="header"
-          bg="gray.900"
-          borderBottom="1px"
-          borderColor="gray.700"
-        >
-          <Container maxW="7xl" py={6}>
-            <Flex align="center">
-              <Link href="/" passHref>
-                <Heading
-                  as="a"
-                  size="lg"
-                  color="yellow.400"
-                  _hover={{ color: 'yellow.300' }}
-                  transition="colors 0.2s"
-                >
-                  Star Wars Explorer
-                </Heading>
-              </Link>
-              <Spacer />
-              <Stack direction={{ base: 'column', md: 'row' }} gap={6}>
-                <Link href="/films" passHref>
-                  <Button
-                    as="a"
-                    variant="ghost"
-                    color="gray.300"
-                    _hover={{ color: 'white', bg: 'gray.800' }}
-                    size={isMobile ? 'sm' : 'md'}
-                  >
-                    <ArrowLeft size={16} />
-                    Back to Films
-                  </Button>
-                </Link>
-                <Link href="/characters" passHref>
-                  <Button
-                    as="a"
-                    variant="ghost"
-                    color="gray.300"
-                    _hover={{ color: 'white', bg: 'gray.800' }}
-                    size={isMobile ? 'sm' : 'md'}
-                  >
-                    Characters
-                  </Button>
-                </Link>
-              </Stack>
-            </Flex>
-          </Container>
-        </Box>
-
         {/* Main Content */}
         <Container maxW="7xl" py={12}>
           {/* Film Header */}
