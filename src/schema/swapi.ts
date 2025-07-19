@@ -1,4 +1,4 @@
-// Base response structure for paginated endpoints
+// SWAPI Response interfaces
 export interface SWAPIResponse<T> {
   count: number;
   next: string | null;
@@ -6,7 +6,7 @@ export interface SWAPIResponse<T> {
   results: T[];
 }
 
-// Film data structure
+// Core SWAPI Types
 export interface Film {
   title: string;
   episode_id: number;
@@ -24,7 +24,6 @@ export interface Film {
   url: string;
 }
 
-// Person/Character data structure
 export interface Person {
   name: string;
   height: string;
@@ -44,7 +43,6 @@ export interface Person {
   url: string;
 }
 
-// Planet data structure
 export interface Planet {
   name: string;
   rotation_period: string;
@@ -62,7 +60,6 @@ export interface Planet {
   url: string;
 }
 
-// Starship data structure
 export interface Starship {
   name: string;
   model: string;
@@ -84,7 +81,6 @@ export interface Starship {
   url: string;
 }
 
-// Vehicle data structure
 export interface Vehicle {
   name: string;
   model: string;
@@ -104,7 +100,6 @@ export interface Vehicle {
   url: string;
 }
 
-// Species data structure
 export interface Species {
   name: string;
   classification: string;
@@ -114,7 +109,7 @@ export interface Species {
   hair_colors: string;
   eye_colors: string;
   average_lifespan: string;
-  homeworld: string;
+  homeworld: string | null;
   language: string;
   people: string[];
   films: string[];
@@ -122,15 +117,3 @@ export interface Species {
   edited: string;
   url: string;
 }
-
-// Helper type for extracting ID from URL
-export type ResourceId = string;
-
-// Generic SWAPI resource type
-export type SWAPIResource =
-  | Film
-  | Person
-  | Planet
-  | Starship
-  | Vehicle
-  | Species;

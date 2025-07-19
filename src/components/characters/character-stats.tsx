@@ -1,4 +1,4 @@
-import { Person } from '@/types/swapi';
+import { Person } from '@/schema/swapi';
 import { Box, Card, Grid, Heading, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 

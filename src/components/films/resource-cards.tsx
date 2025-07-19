@@ -1,4 +1,4 @@
-import { Person, Planet, Species, Starship, Vehicle } from '@/types/swapi';
+import { Person, Planet, Species, Starship, Vehicle } from '@/schema/swapi';
 import { extractIdFromUrl } from '@/utils/swapi';
 import { Card, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';

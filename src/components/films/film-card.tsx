@@ -1,4 +1,4 @@
-import { Film } from '@/types/swapi';
+import { Film } from '@/schema/swapi';
 import { extractIdFromUrl } from '@/utils/swapi';
 import {
   Badge,
@@ -77,12 +77,6 @@ export function FilmCard({ film }: FilmCardProps) {
             </Text>
             <Text color="gray.300">
               <Text as="span" color="blue.400" fontWeight="semibold">
-                Producer:
-              </Text>{' '}
-              {film.producer}
-            </Text>
-            <Text color="gray.300">
-              <Text as="span" color="blue.400" fontWeight="semibold">
                 Release Date:
               </Text>{' '}
               {new Date(film.release_date).toLocaleDateString('en-US', {
@@ -106,20 +100,20 @@ export function FilmCard({ film }: FilmCardProps) {
               borderColor="gray.600"
             >
               <Text color="gray.300" fontSize="sm" lineHeight="relaxed">
-                {film.opening_crawl.length > 200
-                  ? `${film.opening_crawl.substring(0, 200)}...`
+                {film.opening_crawl.length > 500
+                  ? `${film.opening_crawl.substring(0, 500)}...`
                   : film.opening_crawl}
               </Text>
             </Box>
           </Box>
 
           {/* Action Button */}
-          <Link href={`/films/${extractIdFromUrl(film.url)}`}>
+          <Link href={`${extractIdFromUrl(film.url)}`}>
             <Button
               size="lg"
               width="full"
               bgGradient="linear(to-r, blue.600, blue.700)"
-              color="white"
+              color="black"
               fontWeight="semibold"
               _hover={{
                 bgGradient: 'linear(to-r, blue.700, blue.800)',

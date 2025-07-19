@@ -1,4 +1,4 @@
-import { Film } from '@/types/swapi';
+import { Film } from '@/schema/swapi';
 import { Box, Card, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 

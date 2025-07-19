@@ -1,221 +1,160 @@
-import {
+import type { Character, Film, Planet, Starship } from '@/schema';
+
+// Re-export GraphQL-based functions for backward compatibility
+export {
+  batchFetchResources,
+  convertCharacterToLegacyFormat,
+  convertFilmToLegacyFormat,
+  getAllFilms,
+  getAllPeople,
+  getFilmById,
+  getPersonById,
+  useGetAllFilms,
+  useGetAllPeople,
+  useGetFilmById,
+  useGetPersonById,
+  useLazyGetAllFilms,
+  useLazyGetAllPeople,
+  useLazyGetFilmById,
+  useLazyGetPersonById,
+  useSearchPeople,
+} from './swapi-graphql';
+
+// Re-export with alias for backward compatibility
+export { extractIdFromGraphQLId as extractIdFromUrl } from './swapi-graphql';
+
+// Legacy type exports for backward compatibility
+export type {
   Film,
-  Person,
+  GetAllFilmsResponse,
+  GetAllPeopleResponse,
+  GetAllPeopleVariables,
+  GetFilmByIdResponse,
+  GetFilmByIdVariables,
+  GetPersonByIdResponse,
+  GetPersonByIdVariables,
+  PageInfo,
+  Character as Person,
   Planet,
-  Species,
   Starship,
-  SWAPIResponse,
-  Vehicle,
-} from '@/types/swapi';
+} from '@/schema';
 
-const SWAPI_BASE_URL = 'https://swapi.info/api';
+// Legacy types for backward compatibility
+export type Vehicle = Record<string, unknown>;
+export type Species = Record<string, unknown>;
 
-// Check if we're in a server-side context during build
-const isServerSide = typeof window === 'undefined';
-const isBuildTime =
-  isServerSide &&
-  !process.env.NEXT_PUBLIC_VERCEL_URL &&
-  !process.env.NEXT_PUBLIC_SITE_URL;
-
-// Generic fetch function with error handling
-async function fetchFromSWAPI<T>(endpoint: string): Promise<T> {
-  try {
-    const response = await fetch(`${SWAPI_BASE_URL}${endpoint}`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(`Error fetching from SWAPI: ${endpoint}`, error);
-    throw error;
-  }
+// Legacy SWAPI response type for backward compatibility
+export interface SWAPIResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
 }
 
-// Generic function to fetch from local API or external API based on context
-async function fetchFromAPI<T>(
-  endpoint: string,
-  localPath: string
-): Promise<T> {
-  try {
-    let url: string;
+// Helper type for extracting ID from URL
+export type ResourceId = string;
 
-    if (isBuildTime) {
-      // During build time, use external API directly
-      url = `${SWAPI_BASE_URL}${endpoint}`;
-    } else if (isServerSide) {
-      // During server-side rendering, use full URL to local API
-      const baseUrl =
-        process.env.NEXT_PUBLIC_SITE_URL ||
-        process.env.NEXT_PUBLIC_VERCEL_URL ||
-        'http://localhost:3000';
-      url = `${baseUrl}${localPath}`;
-    } else {
-      // During client-side, use relative URL to local API
-      url = localPath;
-    }
+// Generic SWAPI resource type
+export type SWAPIResource =
+  | Film
+  | Character
+  | Planet
+  | Starship
+  | Vehicle
+  | Species;
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(`Error fetching from API: ${localPath}`, error);
-    throw error;
-  }
-}
-
-// Extract ID from SWAPI URL
-export function extractIdFromUrl(url: string): string {
-  const matches = url.match(/\/(\d+)\/?$/);
-  return matches ? matches[1] : '';
-}
-
-// Clean undefined values for Next.js serialization
-function cleanData<T>(data: T): T {
-  if (Array.isArray(data)) {
-    return data.map((item) => cleanData(item)) as T;
-  }
-
-  if (data && typeof data === 'object') {
-    const cleaned: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(data)) {
-      if (value === undefined) {
-        cleaned[key] = null;
-      } else if (Array.isArray(value)) {
-        cleaned[key] = value.map((item) => cleanData(item));
-      } else if (value && typeof value === 'object') {
-        cleaned[key] = cleanData(value);
-      } else {
-        cleaned[key] = value;
-      }
-    }
-    return cleaned as T;
-  }
-
-  return data === undefined ? (null as T) : data;
-}
-
-// Films API functions
-export async function getAllFilms(): Promise<Film[]> {
-  const response = await fetchFromSWAPI<Film[]>('/films/');
-  return cleanData(response);
-}
-
-export async function getFilmById(id: string): Promise<Film> {
-  const film = await fetchFromSWAPI<Film>(`/films/${id}/`);
-  return cleanData(film);
-}
-
-// People/Characters API functions - using context-aware fetching
-export async function getAllPeople(page = 1): Promise<SWAPIResponse<Person>> {
-  const data = await fetchFromAPI<SWAPIResponse<Person>>(
-    `/people/?page=${page}`,
-    `/api/people?page=${page}`
-  );
-  return cleanData(data);
-}
-
-export async function getPersonById(id: string): Promise<Person> {
-  const person = await fetchFromAPI<Person>(
-    `/people/${id}/`,
-    `/api/people/${id}`
-  );
-  return cleanData(person);
-}
-
+// Legacy functions that maintain the old API but use GraphQL under the hood
 export async function searchPeople(
-  query: string,
-  page = 1
-): Promise<SWAPIResponse<Person>> {
-  // For build time, return empty results since search is a runtime feature
-  if (isBuildTime) {
-    return {
-      count: 0,
-      next: null,
-      previous: null,
-      results: [],
-    };
-  }
-
-  const data = await fetchFromAPI<SWAPIResponse<Person>>(
-    `/people/?search=${encodeURIComponent(query)}&page=${page}`,
-    `/api/people/search?q=${encodeURIComponent(query)}&page=${page}`
-  );
-  return cleanData(data);
+  _query: string,
+  _page = 1
+): Promise<SWAPIResponse<Character>> {
+  // For now, return empty results since GraphQL doesn't have built-in search
+  // This could be enhanced with client-side filtering or a different search implementation
+  return {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  };
 }
 
-// Planets API functions
-export async function getAllPlanets(page = 1): Promise<SWAPIResponse<Planet>> {
-  const response = await fetchFromSWAPI<SWAPIResponse<Planet>>(
-    `/planets/?page=${page}`
-  );
-  return cleanData(response);
+// Legacy planets functions (not implemented in GraphQL yet)
+export async function getAllPlanets(_page = 1): Promise<SWAPIResponse<Planet>> {
+  // Placeholder for future implementation
+  return {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  };
 }
 
-export async function getPlanetById(id: string): Promise<Planet> {
-  const planet = await fetchFromSWAPI<Planet>(`/planets/${id}/`);
-  return cleanData(planet);
+export async function getPlanetById(_id: string): Promise<Planet | null> {
+  // Placeholder for future implementation
+  return null;
 }
 
-// Starships API functions
+// Legacy starships functions (not implemented in GraphQL yet)
 export async function getAllStarships(
-  page = 1
+  _page = 1
 ): Promise<SWAPIResponse<Starship>> {
-  const response = await fetchFromSWAPI<SWAPIResponse<Starship>>(
-    `/starships/?page=${page}`
-  );
-  return cleanData(response);
+  // Placeholder for future implementation
+  return {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  };
 }
 
-export async function getStarshipById(id: string): Promise<Starship> {
-  const starship = await fetchFromSWAPI<Starship>(`/starships/${id}/`);
-  return cleanData(starship);
+export async function getStarshipById(_id: string): Promise<Starship | null> {
+  // Placeholder for future implementation
+  return null;
 }
 
-// Vehicles API functions
+// Legacy vehicles functions (not implemented in GraphQL yet)
 export async function getAllVehicles(
-  page = 1
+  _page = 1
 ): Promise<SWAPIResponse<Vehicle>> {
-  const response = await fetchFromSWAPI<SWAPIResponse<Vehicle>>(
-    `/vehicles/?page=${page}`
-  );
-  return cleanData(response);
+  // Placeholder for future implementation
+  return {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  };
 }
 
-export async function getVehicleById(id: string): Promise<Vehicle> {
-  const vehicle = await fetchFromSWAPI<Vehicle>(`/vehicles/${id}/`);
-  return cleanData(vehicle);
+export async function getVehicleById(_id: string): Promise<Vehicle | null> {
+  // Placeholder for future implementation
+  return null;
 }
 
-// Species API functions
-export async function getAllSpecies(page = 1): Promise<SWAPIResponse<Species>> {
-  const response = await fetchFromSWAPI<SWAPIResponse<Species>>(
-    `/species/?page=${page}`
-  );
-  return cleanData(response);
+// Legacy species functions (not implemented in GraphQL yet)
+export async function getAllSpecies(
+  _page = 1
+): Promise<SWAPIResponse<Species>> {
+  // Placeholder for future implementation
+  return {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  };
 }
 
-export async function getSpeciesById(id: string): Promise<Species> {
-  const species = await fetchFromSWAPI<Species>(`/species/${id}/`);
-  return cleanData(species);
+export async function getSpeciesById(_id: string): Promise<Species | null> {
+  // Placeholder for future implementation
+  return null;
 }
 
-// Helper function to fetch resource by URL
-export async function fetchResourceByUrl<T>(url: string): Promise<T> {
-  const endpoint = url.replace(SWAPI_BASE_URL, '');
-  const resource = await fetchFromSWAPI<T>(endpoint);
-  return cleanData(resource);
-}
+// Legacy helper function to fetch resource by URL
+export async function fetchResourceByUrl<T>(url: string): Promise<T | null> {
+  // Extract ID from URL and try to determine resource type
+  const id = url.split('/').pop() || '';
+  if (!id) return null;
 
-// Batch fetch multiple resources
-export async function batchFetchResources<T>(urls: string[]): Promise<T[]> {
-  const promises = urls.map((url) => fetchResourceByUrl<T>(url));
-  return Promise.all(promises);
+  // This is a simplified implementation - in practice, you'd need to determine the resource type
+  // For now, we'll just return null
+  return null;
 }

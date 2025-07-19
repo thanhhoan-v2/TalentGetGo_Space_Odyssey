@@ -1,4 +1,4 @@
-import { Person } from '@/types/swapi';
+import { Person } from '@/schema/swapi';
 import { extractIdFromUrl } from '@/utils/swapi';
 import {
   Badge,
@@ -27,7 +27,7 @@ export function CharacterCard({ character, index }: CharacterCardProps) {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Link href={`/characters/${extractIdFromUrl(character.url)}`}>
+      <Link href={`${extractIdFromUrl(character.url)}`}>
         <Card.Root
           variant="elevated"
           bg="gray.900"

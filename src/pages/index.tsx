@@ -1,8 +1,9 @@
 'use client';
 
 import { PageHeader } from '@/components/common';
-import { Film } from '@/types/swapi';
-import { getAllFilms } from '@/utils/swapi';
+import client from '@/lib/apollo-client';
+import { GET_ALL_FILMS } from '@/lib/queries';
+import { Film } from '@/schema/graphql';
 import {
   Badge,
   Box,
@@ -33,8 +34,6 @@ import Link from 'next/link';
 interface HomeProps {
   featuredFilms: Film[];
 }
-
-const MotionBox = motion.create(Box);
 
 export default function Home({ featuredFilms }: HomeProps) {
   return (
@@ -220,7 +219,7 @@ export default function Home({ featuredFilms }: HomeProps) {
                 {featuredFilms && featuredFilms.length > 0 ? (
                   featuredFilms.map((film, index) => (
                     <motion.div
-                      key={film.url}
+                      key={film.id}
                       initial={{ opacity: 0, y: 50 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.2 }}
@@ -247,7 +246,7 @@ export default function Home({ featuredFilms }: HomeProps) {
                                 px={3}
                                 py={1}
                               >
-                                Episode {film.episode_id}
+                                Episode {film.id}
                               </Badge>
                               <FilmIcon size={20} color="#60a5fa" />
                             </HStack>
@@ -258,7 +257,7 @@ export default function Home({ featuredFilms }: HomeProps) {
 
                             <Text color="gray.400" fontSize="sm">
                               Directed by {film.director} •{' '}
-                              {new Date(film.release_date).getFullYear()}
+                              {new Date(film.releaseDate).getFullYear()}
                             </Text>
 
                             <Text
@@ -267,12 +266,10 @@ export default function Home({ featuredFilms }: HomeProps) {
                               lineHeight="relaxed"
                               flex="1"
                             >
-                              {film.opening_crawl.substring(0, 150)}...
+                              {film.openingCrawl.substring(0, 150)}...
                             </Text>
 
-                            <Link
-                              href={`/films/${film.url.match(/\/(\d+)\/$/)?.[1]}`}
-                            >
+                            <Link href={`/films/${film.id}`}>
                               <Button
                                 colorScheme="yellow"
                                 bg="yellow.400"
@@ -499,10 +496,34 @@ export default function Home({ featuredFilms }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const allFilms = await getAllFilms();
-    // Sort by episode_id and take first 3 for featured section
-    const featuredFilms = (allFilms || [])
-      .sort((a, b) => a.episode_id - b.episode_id)
+    // Use Apollo Client to fetch films using the GraphQL schema
+    const { data } = await client.query({
+      query: GET_ALL_FILMS,
+    });
+
+    // Define the type for GraphQL edge
+    interface FilmEdge {
+      node: {
+        title: string;
+        director: string;
+        releaseDate: string;
+        openingCrawl: string;
+      };
+    }
+
+    // Extract films from the GraphQL response and add generated IDs
+    const filmsFromEdges: FilmEdge[] = data?.allFilms?.edges || [];
+    const allFilms = filmsFromEdges.map((edge: FilmEdge, index: number) => ({
+      id: (index + 1).toString(), // Generate ID based on index
+      title: edge.node.title,
+      director: edge.node.director,
+      releaseDate: edge.node.releaseDate,
+      openingCrawl: edge.node.openingCrawl,
+    }));
+
+    // Sort by ID and take first 3 for featured section
+    const featuredFilms = allFilms
+      .sort((a: Film, b: Film) => parseInt(a.id) - parseInt(b.id))
       .slice(0, 3);
 
     return {
@@ -512,7 +533,7 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 86400, // Revalidate once per day
     };
   } catch (error) {
-    console.error('Error fetching films:', error);
+    console.error('Error fetching films with GraphQL:', error);
     return {
       props: {
         featuredFilms: [],
