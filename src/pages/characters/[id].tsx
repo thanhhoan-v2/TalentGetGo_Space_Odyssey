@@ -1,6 +1,13 @@
 'use client';
 
-import { FilmCard, StarshipCard, VehicleCard } from '@/components/characters';
+import { FilmCard } from '@/components/characters';
+import { PageLayout } from '@/components/common';
+import {
+  PlanetCard,
+  SpeciesCard,
+  StarshipCard,
+  VehicleCard,
+} from '@/components/films';
 import {
   Film,
   Person,
@@ -8,32 +15,85 @@ import {
   Species,
   Starship,
   Vehicle,
-} from '@/types/swapi';
+} from '@/schema/swapi';
 import { getCharacterImage } from '@/utils/assets';
 import {
-  batchFetchResources,
-  extractIdFromUrl,
-  getAllPeople,
-  getPersonById,
-} from '@/utils/swapi';
-import {
+  Badge,
   Box,
   Card,
   Image as ChakraImage,
   Container,
+  Flex,
   Grid,
   Heading,
   HStack,
   Text,
-  useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { Eye, Globe, Ruler, User, Weight } from 'lucide-react';
+import { Calendar, Eye, Globe, Ruler, User, Weight } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image, { StaticImageData } from 'next/image';
 import { useEffect, useState } from 'react';
+
+// SWAPI.tech API Response Interfaces
+interface SwapiCharacterResponse {
+  message: string;
+  result: {
+    properties: {
+      name: string;
+      gender: string;
+      skin_color: string;
+      hair_color: string;
+      height: string;
+      eye_color: string;
+      mass: string;
+      homeworld: string;
+      birth_year: string;
+      url: string;
+      created: string;
+      edited: string;
+    };
+    description: string;
+    _id: string;
+    uid: string;
+    __v: number;
+  };
+}
+
+interface SwapiPlanetResponse {
+  message: string;
+  result: {
+    properties: {
+      name: string;
+      diameter: string;
+      rotation_period: string;
+      orbital_period: string;
+      gravity: string;
+      population: string;
+      climate: string;
+      terrain: string;
+      surface_water: string;
+      url: string;
+    };
+  };
+}
+
+interface SwapiFilmResponse {
+  message: string;
+  result: {
+    properties: {
+      title: string;
+      episode_id: number;
+      opening_crawl: string;
+      director: string;
+      producer: string;
+      release_date: string;
+      url: string;
+    };
+  };
+}
 
 interface CharacterDetailPageProps {
   paramsId: string;
@@ -45,6 +105,53 @@ interface CharacterDetailPageProps {
   vehicles: Vehicle[];
 }
 
+// Convert SWAPI.tech Character to SWAPI Person format
+function convertSwapiCharacterToSWAPI(
+  char: SwapiCharacterResponse['result']['properties'],
+  id: string
+): Person {
+  return {
+    name: char.name,
+    height: char.height || 'unknown',
+    mass: char.mass || 'unknown',
+    hair_color: char.hair_color || 'unknown',
+    skin_color: char.skin_color || 'unknown',
+    eye_color: char.eye_color || 'unknown',
+    birth_year: char.birth_year || 'unknown',
+    gender: char.gender || 'unknown',
+    homeworld: char.homeworld || 'unknown',
+    films: [], // Would need to fetch separately
+    species: [], // Not available in this context
+    vehicles: [], // Not available in this context
+    starships: [], // Not available in this context
+    created: char.created || '',
+    edited: char.edited || '',
+    url: `/characters/${id}`,
+  };
+}
+
+// Convert SWAPI.tech Planet to SWAPI Planet format
+function convertSwapiPlanetToSWAPI(
+  planet: SwapiPlanetResponse['result']['properties']
+): Planet {
+  return {
+    name: planet.name,
+    rotation_period: planet.rotation_period || 'unknown',
+    orbital_period: planet.orbital_period || 'unknown',
+    diameter: planet.diameter || 'unknown',
+    climate: planet.climate || 'unknown',
+    gravity: planet.gravity || 'unknown',
+    terrain: planet.terrain || 'unknown',
+    surface_water: planet.surface_water || 'unknown',
+    population: planet.population || 'unknown',
+    residents: [],
+    films: [],
+    created: '',
+    edited: '',
+    url: planet.url || '',
+  };
+}
+
 export default function CharacterDetailPage({
   paramsId,
   character,
@@ -54,7 +161,6 @@ export default function CharacterDetailPage({
   starships,
   vehicles,
 }: CharacterDetailPageProps) {
-  const isMobile = useBreakpointValue({ base: true, md: false });
   const [characterImage, setCharacterImage] = useState<StaticImageData | null>(
     null
   );
@@ -86,7 +192,7 @@ export default function CharacterDetailPage({
         />
       </Head>
 
-      <Box minH="100vh" bg="black" color="white">
+      <PageLayout currentPage="characters">
         {/* Main Content */}
         <Container maxW="7xl" py={12}>
           {/* Character Header */}
@@ -95,153 +201,234 @@ export default function CharacterDetailPage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <VStack gap={8} mb={12}>
-              <Box textAlign="center">
-                <Heading
-                  size={{ base: '2xl', md: '4xl' }}
-                  bgGradient="linear(to-r, yellow.400, orange.500)"
-                  bgClip="text"
-                  lineHeight="shorter"
-                  mb={6}
-                >
-                  {character.name}
-                </Heading>
-              </Box>
-
-              {/* Character Stats Cards */}
-              <Grid
-                templateColumns={{
-                  base: '1fr',
-                  md: 'repeat(2, 1fr)',
-                  lg: 'repeat(3, 1fr)',
-                }}
-                gap={6}
-                w="full"
-                maxW="4xl"
+            <VStack gap={6} mb={12} textAlign="center">
+              <Badge
+                colorScheme="yellow"
+                variant="solid"
+                px={4}
+                py={2}
+                borderRadius="full"
+                fontSize="lg"
+                fontWeight="bold"
               >
-                {/* Physical Attributes */}
-                <Card.Root
-                  variant="elevated"
-                  bg="gray.900"
-                  borderColor="gray.700"
-                >
-                  <Card.Body p={6}>
-                    {characterImage && (
-                      <ChakraImage asChild>
-                        <Image
-                          src={characterImage}
-                          alt={character.name}
-                          width={100}
-                          height={100}
-                          style={{
-                            borderRadius: '8px',
-                            objectFit: 'cover',
-                          }}
-                        />
-                      </ChakraImage>
-                    )}
-                    <HStack mb={4}>
-                      <User size={20} color="rgb(96, 165, 250)" />
-                      <Heading size="md" color="white">
-                        Physical
-                      </Heading>
-                    </HStack>
-                    <VStack align="start" gap={3}>
-                      <HStack>
-                        <Ruler size={16} color="rgb(96, 165, 250)" />
-                        <Text color="gray.300" fontSize="sm">
-                          <Text
-                            as="span"
-                            color="blue.400"
-                            fontWeight="semibold"
-                          >
-                            Height:
-                          </Text>{' '}
-                          {character.height}cm
-                        </Text>
+                Character Profile
+              </Badge>
+
+              <Heading
+                size={{ base: '2xl', md: '4xl' }}
+                bgGradient="linear(to-r, yellow.400, orange.500)"
+                bgClip="text"
+                lineHeight="shorter"
+              >
+                {character.name}
+              </Heading>
+
+              <Flex
+                direction={{ base: 'column', md: 'row' }}
+                gap={6}
+                wrap="wrap"
+                justify="center"
+                align="center"
+              >
+                <HStack>
+                  <User size={16} color="rgb(96, 165, 250)" />
+                  <Text color="gray.300">
+                    <Text as="span" color="blue.400" fontWeight="semibold">
+                      Gender:
+                    </Text>{' '}
+                    {character.gender}
+                  </Text>
+                </HStack>
+                <HStack>
+                  <Calendar size={16} color="rgb(96, 165, 250)" />
+                  <Text color="gray.300">
+                    <Text as="span" color="blue.400" fontWeight="semibold">
+                      Birth Year:
+                    </Text>{' '}
+                    {character.birth_year}
+                  </Text>
+                </HStack>
+                <HStack>
+                  <Globe size={16} color="rgb(96, 165, 250)" />
+                  <Text color="gray.300">
+                    <Text as="span" color="blue.400" fontWeight="semibold">
+                      Homeworld:
+                    </Text>{' '}
+                    {homeworld?.name || 'Unknown'}
+                  </Text>
+                </HStack>
+              </Flex>
+            </VStack>
+          </motion.div>
+
+          {/* Character Profile Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Box mb={16}>
+              <Card.Root
+                variant="elevated"
+                bg="gray.900"
+                borderColor="gray.700"
+                maxW="4xl"
+                mx="auto"
+              >
+                <Card.Body p={8}>
+                  <Heading
+                    size="xl"
+                    color="yellow.400"
+                    mb={6}
+                    textAlign="center"
+                  >
+                    Character Details
+                  </Heading>
+
+                  <Grid
+                    templateColumns={{
+                      base: '1fr',
+                      md: 'repeat(2, 1fr)',
+                      lg: 'repeat(3, 1fr)',
+                    }}
+                    gap={6}
+                  >
+                    {/* Physical Attributes */}
+                    <Box
+                      bg="blackAlpha.600"
+                      p={6}
+                      borderRadius="lg"
+                      border="1px solid"
+                      borderColor="gray.600"
+                    >
+                      <HStack mb={4}>
+                        <User size={20} color="rgb(96, 165, 250)" />
+                        <Heading size="md" color="white">
+                          Physical
+                        </Heading>
                       </HStack>
-                      {character.mass !== 'unknown' && (
+                      {characterImage && (
+                        <Box mb={4} textAlign="center">
+                          <ChakraImage asChild>
+                            <Image
+                              src={characterImage}
+                              alt={character.name}
+                              width={100}
+                              height={100}
+                              style={{
+                                borderRadius: '8px',
+                                objectFit: 'cover',
+                                margin: '0 auto',
+                              }}
+                            />
+                          </ChakraImage>
+                        </Box>
+                      )}
+                      <VStack align="start" gap={3}>
                         <HStack>
-                          <Weight size={16} color="rgb(96, 165, 250)" />
+                          <Ruler size={16} color="rgb(96, 165, 250)" />
                           <Text color="gray.300" fontSize="sm">
                             <Text
                               as="span"
                               color="blue.400"
                               fontWeight="semibold"
                             >
-                              Mass:
+                              Height:
                             </Text>{' '}
-                            {character.mass}kg
+                            {character.height}cm
                           </Text>
                         </HStack>
-                      )}
-                      <Text color="gray.300" fontSize="sm">
-                        <Text as="span" color="blue.400" fontWeight="semibold">
-                          Gender:
-                        </Text>{' '}
-                        {character.gender}
-                      </Text>
-                    </VStack>
-                  </Card.Body>
-                </Card.Root>
+                        {character.mass !== 'unknown' && (
+                          <HStack>
+                            <Weight size={16} color="rgb(96, 165, 250)" />
+                            <Text color="gray.300" fontSize="sm">
+                              <Text
+                                as="span"
+                                color="blue.400"
+                                fontWeight="semibold"
+                              >
+                                Mass:
+                              </Text>{' '}
+                              {character.mass}kg
+                            </Text>
+                          </HStack>
+                        )}
+                      </VStack>
+                    </Box>
 
-                {/* Appearance */}
-                <Card.Root
-                  variant="elevated"
-                  bg="gray.900"
-                  borderColor="gray.700"
-                >
-                  <Card.Body p={6}>
-                    <HStack mb={4}>
-                      <Eye size={20} color="rgb(96, 165, 250)" />
-                      <Heading size="md" color="white">
-                        Appearance
-                      </Heading>
-                    </HStack>
-                    <VStack align="start" gap={3}>
-                      <Text color="gray.300" fontSize="sm">
-                        <Text as="span" color="blue.400" fontWeight="semibold">
-                          Hair Color:
-                        </Text>{' '}
-                        {character.hair_color}
-                      </Text>
-                      <Text color="gray.300" fontSize="sm">
-                        <Text as="span" color="blue.400" fontWeight="semibold">
-                          Eye Color:
-                        </Text>{' '}
-                        {character.eye_color}
-                      </Text>
-                      <Text color="gray.300" fontSize="sm">
-                        <Text as="span" color="blue.400" fontWeight="semibold">
-                          Skin Color:
-                        </Text>{' '}
-                        {character.skin_color}
-                      </Text>
-                    </VStack>
-                  </Card.Body>
-                </Card.Root>
+                    {/* Appearance */}
+                    <Box
+                      bg="blackAlpha.600"
+                      p={6}
+                      borderRadius="lg"
+                      border="1px solid"
+                      borderColor="gray.600"
+                    >
+                      <HStack mb={4}>
+                        <Eye size={20} color="rgb(96, 165, 250)" />
+                        <Heading size="md" color="white">
+                          Appearance
+                        </Heading>
+                      </HStack>
+                      <VStack align="start" gap={3}>
+                        <Text color="gray.300" fontSize="sm">
+                          <Text
+                            as="span"
+                            color="blue.400"
+                            fontWeight="semibold"
+                          >
+                            Hair Color:
+                          </Text>{' '}
+                          {character.hair_color}
+                        </Text>
+                        <Text color="gray.300" fontSize="sm">
+                          <Text
+                            as="span"
+                            color="blue.400"
+                            fontWeight="semibold"
+                          >
+                            Eye Color:
+                          </Text>{' '}
+                          {character.eye_color}
+                        </Text>
+                        <Text color="gray.300" fontSize="sm">
+                          <Text
+                            as="span"
+                            color="blue.400"
+                            fontWeight="semibold"
+                          >
+                            Skin Color:
+                          </Text>{' '}
+                          {character.skin_color}
+                        </Text>
+                      </VStack>
+                    </Box>
 
-                {/* Origin */}
-                <Card.Root
-                  variant="elevated"
-                  bg="gray.900"
-                  borderColor="gray.700"
-                >
-                  <Card.Body p={6}>
-                    <HStack mb={4}>
-                      <Globe size={20} color="rgb(96, 165, 250)" />
-                      <Heading size="md" color="white">
-                        Origin
-                      </Heading>
-                    </HStack>
-                    <VStack align="start" gap={3}>
-                      <Text color="gray.300" fontSize="sm">
-                        <Text as="span" color="blue.400" fontWeight="semibold">
-                          Birth Year:
-                        </Text>{' '}
-                        {character.birth_year}
-                      </Text>
-                      {homeworld && (
+                    {/* Origin */}
+                    <Box
+                      bg="blackAlpha.600"
+                      p={6}
+                      borderRadius="lg"
+                      border="1px solid"
+                      borderColor="gray.600"
+                    >
+                      <HStack mb={4}>
+                        <Globe size={20} color="rgb(96, 165, 250)" />
+                        <Heading size="md" color="white">
+                          Origin
+                        </Heading>
+                      </HStack>
+                      <VStack align="start" gap={3}>
+                        <Text color="gray.300" fontSize="sm">
+                          <Text
+                            as="span"
+                            color="blue.400"
+                            fontWeight="semibold"
+                          >
+                            Birth Year:
+                          </Text>{' '}
+                          {character.birth_year}
+                        </Text>
                         <Text color="gray.300" fontSize="sm">
                           <Text
                             as="span"
@@ -250,26 +437,26 @@ export default function CharacterDetailPage({
                           >
                             Homeworld:
                           </Text>{' '}
-                          {homeworld.name}
+                          {homeworld?.name || 'Unknown'}
                         </Text>
-                      )}
-                      {species.length > 0 && (
-                        <Text color="gray.300" fontSize="sm">
-                          <Text
-                            as="span"
-                            color="blue.400"
-                            fontWeight="semibold"
-                          >
-                            Species:
-                          </Text>{' '}
-                          {species[0].name}
-                        </Text>
-                      )}
-                    </VStack>
-                  </Card.Body>
-                </Card.Root>
-              </Grid>
-            </VStack>
+                        {species.length > 0 && (
+                          <Text color="gray.300" fontSize="sm">
+                            <Text
+                              as="span"
+                              color="blue.400"
+                              fontWeight="semibold"
+                            >
+                              Species:
+                            </Text>{' '}
+                            {species[0].name}
+                          </Text>
+                        )}
+                      </VStack>
+                    </Box>
+                  </Grid>
+                </Card.Body>
+              </Card.Root>
+            </Box>
           </motion.div>
 
           {/* Content Sections */}
@@ -291,6 +478,7 @@ export default function CharacterDetailPage({
                       base: '1fr',
                       md: 'repeat(2, 1fr)',
                       lg: 'repeat(3, 1fr)',
+                      xl: 'repeat(4, 1fr)',
                     }}
                     gap={6}
                   >
@@ -309,12 +497,31 @@ export default function CharacterDetailPage({
               </motion.div>
             )}
 
+            {/* Homeworld */}
+            {homeworld && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                style={{ width: '100%' }}
+              >
+                <Box>
+                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                    Homeworld
+                  </Heading>
+                  <Box maxW="md" mx="auto">
+                    <PlanetCard planet={homeworld} />
+                  </Box>
+                </Box>
+              </motion.div>
+            )}
+
             {/* Starships */}
             {starships.length > 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
                 style={{ width: '100%' }}
               >
                 <Box>
@@ -349,7 +556,7 @@ export default function CharacterDetailPage({
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
                 style={{ width: '100%' }}
               >
                 <Box>
@@ -378,20 +585,67 @@ export default function CharacterDetailPage({
                 </Box>
               </motion.div>
             )}
+
+            {/* Species */}
+            {species.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.2 }}
+                style={{ width: '100%' }}
+              >
+                <Box>
+                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                    Species ({species.length})
+                  </Heading>
+                  <Grid
+                    templateColumns={{
+                      base: '1fr',
+                      md: 'repeat(2, 1fr)',
+                      lg: 'repeat(3, 1fr)',
+                    }}
+                    gap={6}
+                  >
+                    {species.map((specie, index) => (
+                      <motion.div
+                        key={specie.url}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                      >
+                        <SpeciesCard species={specie} />
+                      </motion.div>
+                    ))}
+                  </Grid>
+                </Box>
+              </motion.div>
+            )}
           </VStack>
         </Container>
-      </Box>
+      </PageLayout>
     </>
   );
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
-    // Get first page of people to generate some paths
-    const response = await getAllPeople(1);
-    const paths = response.results.map((person) => ({
-      params: { id: extractIdFromUrl(person.url) },
-    }));
+    // Fetch the first 10 characters from SWAPI.tech
+    const responses = await Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        fetch(`https://www.swapi.tech/api/people/${i + 1}`)
+          .then((res) => (res.ok ? res.json() : null))
+          .catch(() => null)
+      )
+    );
+
+    const paths = responses
+      .map((response, index) => {
+        if (response?.message === 'ok') {
+          return { params: { id: (index + 1).toString() } };
+        }
+        return null;
+      })
+      .filter((path): path is { params: { id: string } } => path !== null);
 
     return {
       paths,
@@ -409,26 +663,55 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const id = params?.id as string;
-    const character = await getPersonById(id);
+
+    // Fetch character details from SWAPI.tech
+    const characterResponse = await fetch(
+      `https://www.swapi.tech/api/people/${id}`
+    );
+    if (!characterResponse.ok) {
+      return { notFound: true };
+    }
+
+    const characterData: SwapiCharacterResponse =
+      await characterResponse.json();
+
+    if (characterData.message !== 'ok') {
+      return { notFound: true };
+    }
+
+    // Convert SWAPI.tech character to SWAPI format
+    const character = convertSwapiCharacterToSWAPI(
+      characterData.result.properties,
+      id
+    );
 
     // Fetch homeworld if available
-    let homeworld = null;
-    if (character.homeworld) {
+    let homeworld: Planet | null = null;
+    if (characterData.result.properties.homeworld) {
       try {
-        homeworld = await batchFetchResources<Planet>([character.homeworld]);
-        homeworld = homeworld[0] || null;
+        const homeworldResponse = await fetch(
+          characterData.result.properties.homeworld
+        );
+        if (homeworldResponse.ok) {
+          const homeworldData: SwapiPlanetResponse =
+            await homeworldResponse.json();
+          if (homeworldData.message === 'ok') {
+            homeworld = convertSwapiPlanetToSWAPI(
+              homeworldData.result.properties
+            );
+          }
+        }
       } catch (error) {
-        console.warn('Could not fetch homeworld:', error);
+        console.error('Error fetching homeworld:', error);
       }
     }
 
-    // Fetch all related resources in parallel
-    const [films, species, starships, vehicles] = await Promise.all([
-      batchFetchResources<Film>(character.films),
-      batchFetchResources<Species>(character.species),
-      batchFetchResources<Starship>(character.starships),
-      batchFetchResources<Vehicle>(character.vehicles),
-    ]);
+    // For now, return empty arrays for films, species, starships, and vehicles
+    // These could be fetched from additional API calls if needed
+    const films: Film[] = [];
+    const species: Species[] = [];
+    const starships: Starship[] = [];
+    const vehicles: Vehicle[] = [];
 
     return {
       props: {

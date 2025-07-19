@@ -1,4 +1,4 @@
-import { Film, Starship, Vehicle } from '@/types/swapi';
+import { Film, Starship, Vehicle } from '@/schema/swapi';
 import { extractIdFromUrl } from '@/utils/swapi';
 import { Badge, Card, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';

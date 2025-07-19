@@ -2,15 +2,40 @@
 
 import { PageLayout } from '@/components/common';
 import { FilmCard, FilmCardSkeleton, FilmsStats } from '@/components/films';
-import { Film } from '@/types/swapi';
-import { getAllFilms } from '@/utils/swapi';
+import client from '@/lib/apollo-client';
+import { GET_ALL_FILMS } from '@/lib/queries';
+import { Film as GraphQLFilm } from '@/schema/graphql';
+import { Film as SWAPIFilm } from '@/schema/swapi';
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
 
 interface FilmsPageProps {
-  films: Film[];
+  films: SWAPIFilm[];
+}
+
+// Convert GraphQL Film to SWAPI Film format
+function convertGraphQLFilmToSWAPI(
+  film: GraphQLFilm,
+  index: number
+): SWAPIFilm {
+  return {
+    title: film.title,
+    episode_id: parseInt(film.id) || index + 1,
+    opening_crawl: film.openingCrawl,
+    director: film.director,
+    producer: '', // Not available in GraphQL
+    release_date: film.releaseDate,
+    characters: [], // Would need to fetch separately
+    planets: [], // Would need to fetch separately
+    starships: [], // Would need to fetch separately
+    vehicles: [], // Not available in GraphQL
+    species: [], // Not available in GraphQL
+    created: '', // Not available in GraphQL
+    edited: '', // Not available in GraphQL
+    url: `/films/${film.id}`,
+  };
 }
 
 export default function FilmsPage({ films }: FilmsPageProps) {
@@ -84,7 +109,37 @@ export default function FilmsPage({ films }: FilmsPageProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const films = await getAllFilms();
+    // Use Apollo Client to fetch films using the GraphQL schema
+    const { data } = await client.query({
+      query: GET_ALL_FILMS,
+    });
+
+    // Define the type for GraphQL edge
+    interface FilmEdge {
+      node: {
+        title: string;
+        director: string;
+        releaseDate: string;
+        openingCrawl: string;
+      };
+    }
+
+    // Extract films from the GraphQL response and add generated IDs
+    const filmsFromEdges: FilmEdge[] = data?.allFilms?.edges || [];
+    const graphqlFilms = filmsFromEdges.map(
+      (edge: FilmEdge, index: number) => ({
+        id: (index + 1).toString(), // Generate ID based on index
+        title: edge.node.title,
+        director: edge.node.director,
+        releaseDate: edge.node.releaseDate,
+        openingCrawl: edge.node.openingCrawl,
+      })
+    );
+
+    console.log('Fetched GraphQL films:', graphqlFilms); // Debug log
+
+    // Convert GraphQL films to SWAPI format
+    const films = graphqlFilms.map(convertGraphQLFilmToSWAPI);
 
     return {
       props: {
@@ -93,7 +148,7 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 86400, // Revalidate once per day
     };
   } catch (error) {
-    console.error('Error fetching films:', error);
+    console.error('Error fetching films with GraphQL:', error);
     return {
       props: {
         films: [],

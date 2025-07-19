@@ -1,5 +1,6 @@
 'use client';
 
+import { PageLayout } from '@/components/common';
 import {
   CharacterCard,
   PlanetCard,
@@ -7,6 +8,9 @@ import {
   StarshipCard,
   VehicleCard,
 } from '@/components/films';
+import client from '@/lib/apollo-client';
+import { GET_ALL_FILMS, GET_FILM_BY_ID } from '@/lib/queries';
+import { Film as GraphQLFilm } from '@/schema/graphql';
 import {
   Film,
   Person,
@@ -14,13 +18,7 @@ import {
   Species,
   Starship,
   Vehicle,
-} from '@/types/swapi';
-import {
-  batchFetchResources,
-  extractIdFromUrl,
-  getAllFilms,
-  getFilmById,
-} from '@/utils/swapi';
+} from '@/schema/swapi';
 import {
   Badge,
   Box,
@@ -31,13 +29,44 @@ import {
   Heading,
   HStack,
   Text,
-  useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { Calendar, User, Users } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
+
+// Define the types for GraphQL edges
+interface CharacterEdge {
+  node: {
+    name: string;
+    height?: number;
+    mass?: number;
+    hairColor?: string;
+    skinColor?: string;
+    eyeColor?: string;
+    birthYear?: string;
+    gender?: string;
+  };
+}
+
+interface PlanetEdge {
+  node: {
+    name: string;
+    climates?: string[];
+    terrains?: string[];
+    population?: number;
+  };
+}
+
+interface StarshipEdge {
+  node: {
+    name: string;
+    model?: string;
+    manufacturers?: string[];
+    starshipClass?: string;
+  };
+}
 
 interface FilmDetailPageProps {
   film: Film;
@@ -48,6 +77,103 @@ interface FilmDetailPageProps {
   species: Species[];
 }
 
+// Convert GraphQL Film to SWAPI Film format
+function convertGraphQLFilmToSWAPI(film: GraphQLFilm, index: number): Film {
+  return {
+    title: film.title,
+    episode_id: parseInt(film.id) || index + 1,
+    opening_crawl: film.openingCrawl,
+    director: film.director,
+    producer: '', // Not available in GraphQL
+    release_date: film.releaseDate,
+    characters: [], // Would need to fetch separately
+    planets: [], // Would need to fetch separately
+    starships: [], // Would need to fetch separately
+    vehicles: [], // Not available in GraphQL
+    species: [], // Not available in GraphQL
+    created: '', // Not available in GraphQL
+    edited: '', // Not available in GraphQL
+    url: `/films/${film.id}`,
+  };
+}
+
+// Convert GraphQL Character to SWAPI Person format
+function convertGraphQLCharacterToSWAPI(
+  char: CharacterEdge['node'],
+  index: number
+): Person {
+  return {
+    name: char.name,
+    height: char.height?.toString() || 'unknown',
+    mass: char.mass?.toString() || 'unknown',
+    hair_color: char.hairColor || 'unknown',
+    skin_color: char.skinColor || 'unknown',
+    eye_color: char.eyeColor || 'unknown',
+    birth_year: char.birthYear || 'unknown',
+    gender: char.gender || 'unknown',
+    homeworld: '', // Not available in this context
+    films: [], // Would need to fetch separately
+    species: [], // Not available in GraphQL
+    vehicles: [], // Not available in GraphQL
+    starships: [], // Not available in GraphQL
+    created: '', // Not available in GraphQL
+    edited: '', // Not available in GraphQL
+    url: `/characters/${index + 1}`,
+  };
+}
+
+// Convert GraphQL Planet to SWAPI Planet format
+function convertGraphQLPlanetToSWAPI(
+  planet: PlanetEdge['node'],
+  index: number
+): Planet {
+  return {
+    name: planet.name,
+    rotation_period: 'unknown',
+    orbital_period: 'unknown',
+    diameter: 'unknown',
+    climate: planet.climates ? planet.climates.join(', ') : 'unknown',
+    gravity: 'unknown',
+    terrain: planet.terrains ? planet.terrains.join(', ') : 'unknown',
+    surface_water: 'unknown',
+    population: planet.population?.toString() || 'unknown',
+    residents: [],
+    films: [],
+    created: '',
+    edited: '',
+    url: `/planets/${index + 1}`,
+  };
+}
+
+// Convert GraphQL Starship to SWAPI Starship format
+function convertGraphQLStarshipToSWAPI(
+  starship: StarshipEdge['node'],
+  index: number
+): Starship {
+  return {
+    name: starship.name,
+    model: starship.model || 'unknown',
+    manufacturer: starship.manufacturers
+      ? starship.manufacturers.join(', ')
+      : 'unknown',
+    cost_in_credits: 'unknown',
+    length: 'unknown',
+    max_atmosphering_speed: 'unknown',
+    crew: 'unknown',
+    passengers: 'unknown',
+    cargo_capacity: 'unknown',
+    consumables: 'unknown',
+    hyperdrive_rating: 'unknown',
+    MGLT: 'unknown',
+    starship_class: starship.starshipClass || 'unknown',
+    pilots: [],
+    films: [],
+    created: '',
+    edited: '',
+    url: `/starships/${index + 1}`,
+  };
+}
+
 export default function FilmDetailPage({
   film,
   characters,
@@ -56,8 +182,6 @@ export default function FilmDetailPage({
   vehicles,
   species,
 }: FilmDetailPageProps) {
-  const isMobile = useBreakpointValue({ base: true, md: false });
-
   return (
     <>
       <Head>
@@ -76,7 +200,7 @@ export default function FilmDetailPage({
         />
       </Head>
 
-      <Box minH="100vh" bg="black" color="white">
+      <PageLayout currentPage="films">
         {/* Main Content */}
         <Container maxW="7xl" py={12}>
           {/* Film Header */}
@@ -123,15 +247,17 @@ export default function FilmDetailPage({
                     {film.director}
                   </Text>
                 </HStack>
-                <HStack>
-                  <Users size={16} color="rgb(96, 165, 250)" />
-                  <Text color="gray.300">
-                    <Text as="span" color="blue.400" fontWeight="semibold">
-                      Producer:
-                    </Text>{' '}
-                    {film.producer}
-                  </Text>
-                </HStack>
+                {film.producer && (
+                  <HStack>
+                    <Users size={16} color="rgb(96, 165, 250)" />
+                    <Text color="gray.300">
+                      <Text as="span" color="blue.400" fontWeight="semibold">
+                        Producer:
+                      </Text>{' '}
+                      {film.producer}
+                    </Text>
+                  </HStack>
+                )}
                 <HStack>
                   <Calendar size={16} color="rgb(96, 165, 250)" />
                   <Text color="gray.300">
@@ -373,16 +499,32 @@ export default function FilmDetailPage({
             )}
           </VStack>
         </Container>
-      </Box>
+      </PageLayout>
     </>
   );
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
-    const films = await getAllFilms();
-    const paths = films.map((film) => ({
-      params: { id: extractIdFromUrl(film.url) },
+    // Use Apollo Client to fetch films using the GraphQL schema
+    const { data } = await client.query({
+      query: GET_ALL_FILMS,
+    });
+
+    // Define the type for GraphQL edge
+    interface FilmEdge {
+      node: {
+        title: string;
+        director: string;
+        releaseDate: string;
+        openingCrawl: string;
+      };
+    }
+
+    // Extract films from the GraphQL response and add generated IDs
+    const filmsFromEdges: FilmEdge[] = data?.allFilms?.edges || [];
+    const paths = filmsFromEdges.map((edge: FilmEdge, index: number) => ({
+      params: { id: (index + 1).toString() }, // Generate ID based on index
     }));
 
     return {
@@ -401,17 +543,53 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const id = params?.id as string;
-    const film = await getFilmById(id);
 
-    // Fetch all related resources in parallel
-    const [characters, planets, starships, vehicles, species] =
-      await Promise.all([
-        batchFetchResources<Person>(film.characters),
-        batchFetchResources<Planet>(film.planets),
-        batchFetchResources<Starship>(film.starships),
-        batchFetchResources<Vehicle>(film.vehicles),
-        batchFetchResources<Species>(film.species),
-      ]);
+    // Use Apollo Client to fetch film details using the GraphQL schema
+    const { data } = await client.query({
+      query: GET_FILM_BY_ID,
+      variables: { filmID: id }, // Use filmID parameter as expected by the GraphQL schema
+    });
+
+    if (!data?.film) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const graphqlFilm = data.film;
+
+    // Convert GraphQL film to SWAPI format
+    const film = convertGraphQLFilmToSWAPI(
+      {
+        id,
+        title: graphqlFilm.title,
+        director: graphqlFilm.director,
+        releaseDate: graphqlFilm.releaseDate,
+        openingCrawl: graphqlFilm.openingCrawl,
+      },
+      parseInt(id) - 1
+    );
+
+    // Convert related data
+    const characters: Person[] = (
+      graphqlFilm.characterConnection?.edges || []
+    ).map((edge: CharacterEdge, index: number) =>
+      convertGraphQLCharacterToSWAPI(edge.node, index)
+    );
+
+    const planets: Planet[] = (graphqlFilm.planetConnection?.edges || []).map(
+      (edge: PlanetEdge, index: number) =>
+        convertGraphQLPlanetToSWAPI(edge.node, index)
+    );
+
+    const starships: Starship[] = (
+      graphqlFilm.starshipConnection?.edges || []
+    ).map((edge: StarshipEdge, index: number) =>
+      convertGraphQLStarshipToSWAPI(edge.node, index)
+    );
+
+    const vehicles: Vehicle[] = [];
+    const species: Species[] = [];
 
     return {
       props: {
