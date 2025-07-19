@@ -1,6 +1,14 @@
+import {
+  Badge,
+  Card,
+  CardContent,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from '@/components/ui';
 import { Film, Starship, Vehicle } from '@/schema/swapi';
 import { extractIdFromUrl } from '@/utils/swapi';
-import { Badge, Card, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -19,44 +27,27 @@ export function FilmCard({ film }: FilmCardProps) {
       transition={{ duration: 0.3 }}
     >
       <Link href={`/films/${extractIdFromUrl(film.url)}`}>
-        <Card.Root
-          variant="elevated"
-          bg="gray.900"
-          borderColor="gray.700"
-          _hover={{
-            borderColor: 'yellow.400',
-            shadow: 'lg',
-            transform: 'translateY(-2px)',
-          }}
-          transition="all 0.3s ease"
-          cursor="pointer"
-        >
-          <Card.Body p={6}>
-            <HStack justify="space-between" mb={3}>
-              <Badge
-                colorScheme="blue"
-                variant="solid"
-                px={2}
-                py={1}
-                borderRadius="md"
-              >
+        <Card className="bg-card hover:shadow-lg hover:border-primary border-border transition-all hover:-translate-y-0.5 duration-300 cursor-pointer">
+          <CardContent className="p-6">
+            <HStack justify="between" className="mb-3">
+              <Badge variant="secondary" className="px-2 py-1">
                 Episode {film.episode_id}
               </Badge>
-              <Text color="gray.400" fontSize="sm">
+              <Text variant="muted" size="sm">
                 {new Date(film.release_date).getFullYear()}
               </Text>
             </HStack>
-            <Heading size="md" color="white" mb={2}>
+            <Heading size="md" className="mb-2 text-foreground">
               {film.title}
             </Heading>
-            <Text color="gray.300" fontSize="sm">
-              <Text as="span" color="blue.400" fontWeight="semibold">
+            <Text variant="default" size="sm">
+              <Text as="span" variant="secondary" weight="semibold">
                 Director:
               </Text>{' '}
               {film.director}
             </Text>
-          </Card.Body>
-        </Card.Root>
+          </CardContent>
+        </Card>
       </Link>
     </motion.div>
   );
@@ -76,40 +67,30 @@ export function StarshipCard({ starship }: StarshipCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card.Root
-        variant="elevated"
-        bg="gray.900"
-        borderColor="gray.700"
-        _hover={{
-          borderColor: 'red.400',
-          shadow: 'lg',
-          transform: 'translateY(-2px)',
-        }}
-        transition="all 0.3s ease"
-      >
-        <Card.Body p={6}>
-          <Heading size="md" color="white" mb={2}>
+      <Card className="bg-card hover:shadow-lg hover:border-destructive border-border transition-all hover:-translate-y-0.5 duration-300">
+        <CardContent className="p-6">
+          <Heading size="md" className="mb-2 text-foreground">
             {starship.name}
           </Heading>
-          <Text color="gray.400" fontSize="sm" mb={3}>
+          <Text variant="muted" size="sm" className="mb-3">
             {starship.model}
           </Text>
-          <VStack align="start" gap={2}>
-            <Text color="gray.300" fontSize="sm">
-              <Text as="span" color="blue.400" fontWeight="semibold">
+          <VStack align="start" gap="sm">
+            <Text variant="default" size="sm">
+              <Text as="span" variant="secondary" weight="semibold">
                 Class:
               </Text>{' '}
               {starship.starship_class}
             </Text>
-            <Text color="gray.300" fontSize="sm">
-              <Text as="span" color="blue.400" fontWeight="semibold">
+            <Text variant="default" size="sm">
+              <Text as="span" variant="secondary" weight="semibold">
                 Manufacturer:
               </Text>{' '}
               {starship.manufacturer}
             </Text>
           </VStack>
-        </Card.Body>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }
@@ -128,40 +109,30 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card.Root
-        variant="elevated"
-        bg="gray.900"
-        borderColor="gray.700"
-        _hover={{
-          borderColor: 'purple.400',
-          shadow: 'lg',
-          transform: 'translateY(-2px)',
-        }}
-        transition="all 0.3s ease"
-      >
-        <Card.Body p={6}>
-          <Heading size="md" color="white" mb={2}>
+      <Card className="bg-card hover:shadow-lg hover:border-accent border-border transition-all hover:-translate-y-0.5 duration-300">
+        <CardContent className="p-6">
+          <Heading size="md" className="mb-2 text-foreground">
             {vehicle.name}
           </Heading>
-          <Text color="gray.400" fontSize="sm" mb={3}>
+          <Text variant="muted" size="sm" className="mb-3">
             {vehicle.model}
           </Text>
-          <VStack align="start" gap={2}>
-            <Text color="gray.300" fontSize="sm">
-              <Text as="span" color="blue.400" fontWeight="semibold">
+          <VStack align="start" gap="sm">
+            <Text variant="default" size="sm">
+              <Text as="span" variant="secondary" weight="semibold">
                 Class:
               </Text>{' '}
               {vehicle.vehicle_class}
             </Text>
-            <Text color="gray.300" fontSize="sm">
-              <Text as="span" color="blue.400" fontWeight="semibold">
+            <Text variant="default" size="sm">
+              <Text as="span" variant="secondary" weight="semibold">
                 Manufacturer:
               </Text>{' '}
               {vehicle.manufacturer}
             </Text>
           </VStack>
-        </Card.Body>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }

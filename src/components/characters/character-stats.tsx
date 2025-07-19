@@ -1,5 +1,5 @@
+import { Box, Card, CardContent, Heading, Text } from '@/components/ui';
 import { Person } from '@/schema/swapi';
-import { Box, Card, Grid, Heading, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
 interface CharacterStatsProps {
@@ -21,38 +21,33 @@ export function CharacterStats({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.8 }}
     >
-      <Card.Root
-        variant="elevated"
-        bg="gray.900"
-        borderColor="gray.700"
-        mt={16}
-      >
-        <Card.Body p={8} textAlign="center">
-          <Heading size="xl" color="white" mb={6}>
+      <Card className="bg-card mt-16 border-border">
+        <CardContent className="p-8 text-center">
+          <Heading size="xl" className="mb-6 text-foreground">
             Galaxy Statistics
           </Heading>
-          <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={6}>
+          <div className="gap-6 grid grid-cols-1 md:grid-cols-3">
             <Box>
-              <Text fontSize="3xl" color="yellow.400" fontWeight="bold">
+              <Text className="font-bold text-primary text-3xl">
                 {totalCount}
               </Text>
-              <Text color="gray.300">Total Characters</Text>
+              <Text variant="muted">Total Characters</Text>
             </Box>
             <Box>
-              <Text fontSize="3xl" color="blue.400" fontWeight="bold">
+              <Text className="font-bold text-secondary text-3xl">
                 {characters.filter((c) => c.starships.length > 0).length}
               </Text>
-              <Text color="gray.300">Starship Pilots</Text>
+              <Text variant="muted">Starship Pilots</Text>
             </Box>
             <Box>
-              <Text fontSize="3xl" color="purple.400" fontWeight="bold">
+              <Text className="font-bold text-accent text-3xl">
                 {characters.filter((c) => c.vehicles.length > 0).length}
               </Text>
-              <Text color="gray.300">Vehicle Operators</Text>
+              <Text variant="muted">Vehicle Operators</Text>
             </Box>
-          </Grid>
-        </Card.Body>
-      </Card.Root>
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }

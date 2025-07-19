@@ -1,5 +1,6 @@
+import { Box, Card, CardContent, Heading, Text } from '@/components/ui';
+import { cn } from '@/lib/utils';
 import { Film } from '@/schema/swapi';
-import { Box, Card, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
 interface FilmsStatsProps {
@@ -15,40 +16,55 @@ export function FilmsStats({ films }: FilmsStatsProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <Card.Root
-        size="lg"
-        variant="elevated"
-        bg="gray.900"
-        borderColor="gray.700"
+      <Card
+        className={cn(
+          'border-border bg-card/50 backdrop-blur-sm theme-transition',
+          'card-glow' // Apply theme-specific effects
+        )}
       >
-        <Card.Body p={8} textAlign="center">
-          <Heading size="xl" color="white" mb={4}>
+        <CardContent className="p-8 text-center">
+          <Heading size="xl" className="mb-4 text-foreground">
             Film Collection Stats
           </Heading>
-          <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
+          <div className="gap-6 grid grid-cols-1 md:grid-cols-3">
             <Box>
-              <Text fontSize="3xl" color="yellow.400" fontWeight="bold">
+              <Text
+                size="xl"
+                variant="primary"
+                weight="bold"
+                className="text-3xl"
+              >
                 {films.length}
               </Text>
-              <Text color="gray.300">Total Films</Text>
+              <Text variant="muted">Total Films</Text>
             </Box>
             <Box>
-              <Text fontSize="3xl" color="blue.400" fontWeight="bold">
+              <Text
+                size="xl"
+                variant="secondary"
+                weight="bold"
+                className="text-3xl"
+              >
                 {new Set(films.map((f) => f.director)).size}
               </Text>
-              <Text color="gray.300">Directors</Text>
+              <Text variant="muted">Directors</Text>
             </Box>
             <Box>
-              <Text fontSize="3xl" color="green.400" fontWeight="bold">
+              <Text
+                size="xl"
+                variant="accent"
+                weight="bold"
+                className="text-3xl"
+              >
                 {Math.max(...films.map((f) => f.episode_id)) -
                   Math.min(...films.map((f) => f.episode_id)) +
                   1}
               </Text>
-              <Text color="gray.300">Episode Range</Text>
+              <Text variant="muted">Episode Range</Text>
             </Box>
-          </SimpleGrid>
-        </Card.Body>
-      </Card.Root>
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }

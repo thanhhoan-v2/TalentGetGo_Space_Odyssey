@@ -60,13 +60,13 @@ export async function getObjectsByType(type: string): Promise<ObjectsByType> {
   let objects: Array<Record<string, any>> = [];
   let nextUrl: string | null = `${swapiPath}/${type}`;
   while (nextUrl) {
-     
     const pageData = await localUrlLoader.load(nextUrl);
     const results = pageData.result || pageData.results || [];
     objects = objects.concat(
-      results.map((item: unknown) =>
-        objectWithId((item as Record<string, unknown>).properties || item)
-      )
+      results.map((item: unknown) => {
+        const itemRecord = item as Record<string, any>;
+        return objectWithId(itemRecord.properties || itemRecord);
+      })
     );
     nextUrl = pageData.next ?? null;
   }

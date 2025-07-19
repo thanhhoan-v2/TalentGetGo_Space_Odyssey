@@ -237,7 +237,7 @@ export function useLazyGetPersonById() {
 }
 
 // Helper function to extract ID from GraphQL ID
-export function extractIdFromGraphQLId(graphqlId: string): string {
+export function extractIdFromURL(graphqlId: string): string {
   // GraphQL IDs are typically base64 encoded, but for SWAPI they're usually just the numeric ID
   return graphqlId;
 }

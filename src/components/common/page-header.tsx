@@ -2,23 +2,14 @@
 
 import StarWarsLogo from '@/assets/starwars-logo.png';
 import TalentGetGoLogo from '@/assets/talentgetgo.png';
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Heading,
-  HStack,
-  IconButton,
-  useBreakpointValue,
-  useDisclosure,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, ThemeToggle } from '@/components/ui';
+import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Film, Home, Menu, Users, X, XIcon } from 'lucide-react';
+import { Film, Home, Menu, Users, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 interface PageHeaderProps {
   currentPage?: 'films' | 'characters' | 'home';
@@ -29,74 +20,61 @@ export function PageHeader({
   currentPage,
   transparent = false,
 }: PageHeaderProps) {
-  const { open, onToggle, onClose } = useDisclosure();
-  const isMobile = useBreakpointValue({ base: true, lg: false });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
+
+  // Handle responsive breakpoint
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const isActive = (path: string) => router.pathname === path;
   const isHomePage = router.pathname === '/';
 
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
-    <Box
-      as="nav"
-      position="sticky"
-      top={0}
-      zIndex={50}
-      bg={transparent || isHomePage ? 'transparent' : 'rgba(0, 0, 0, 0.95)'}
-      backdropFilter={transparent || isHomePage ? 'blur(20px)' : 'blur(10px)'}
-      borderBottom={transparent || isHomePage ? 'none' : '1px'}
-      borderColor="gray.800"
-      boxShadow={
-        transparent || isHomePage ? 'none' : '0 4px 32px rgba(0, 0, 0, 0.5)'
-      }
-      transition="all 0.3s ease"
+    <nav
+      className={cn(
+        'sticky top-0 z-50 transition-all duration-300 border-b theme-transition',
+        transparent || isHomePage
+          ? 'bg-transparent border-transparent backdrop-blur-lg'
+          : 'bg-background/95 border-border backdrop-blur-md shadow-lg'
+      )}
     >
-      <Container maxW="7xl" py={4}>
-        <Flex align="center" justify="space-between">
+      <div className="mx-auto px-4 py-4 max-w-7xl">
+        <div className="flex justify-between items-center">
           {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Link href="/">
-              <Flex align="center" gap={3} cursor="pointer">
-                <Image
-                  src={TalentGetGoLogo}
-                  style={{ borderRadius: '1rem' }}
-                  alt="Star Wars Explorer"
-                  width={80}
-                  height={80}
-                />
-                <XIcon size={24} color="white" fill="white" />
-                <Image
-                  src={StarWarsLogo}
-                  alt="Star Wars Explorer"
-                  width={60}
-                  height={60}
-                />
-                <Heading
-                  size={{ base: 'md', md: 'lg' }}
-                  bgGradient="linear(to-r, yellow.400, orange.500)"
-                  bgClip="text"
-                  fontWeight="bold"
-                  _hover={{
-                    bgGradient: 'linear(to-r, yellow.300, orange.400)',
-                    transform: 'scale(1.05)',
-                  }}
-                  transition="all 0.2s"
-                  textShadow={
-                    isHomePage ? '0 0 10px rgba(0, 0, 0, 0.8)' : 'none'
-                  }
-                  filter={
-                    isHomePage
-                      ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8))'
-                      : 'none'
-                  }
-                >
-                  Star Wars Explorer
-                </Heading>
-              </Flex>
+            <Link href="/" className="flex items-center gap-3 cursor-pointer">
+              <Image
+                src={TalentGetGoLogo}
+                style={{ borderRadius: '1rem' }}
+                alt="TalentGetGo"
+                width={60}
+                height={60}
+                className="hover:scale-105 transition-transform"
+              />
+              <X size={20} className="text-foreground" />
+              <Image
+                src={StarWarsLogo}
+                alt="Star Wars"
+                width={50}
+                height={50}
+                className="hover:scale-105 transition-transform"
+              />
             </Link>
           </motion.div>
 
@@ -106,208 +84,184 @@ export function PageHeader({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex items-center gap-2"
             >
-              <HStack gap={2}>
-                <Link href="/">
-                  <Button
-                    variant="ghost"
-                    color={
-                      isActive('/')
-                        ? 'yellow.400'
-                        : isHomePage
-                          ? 'white'
-                          : 'gray.300'
-                    }
-                    _hover={{
-                      color: 'yellow.400',
-                      bg: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
-                    }}
-                    transition="all 0.2s"
-                    size={{ base: 'sm', md: 'md' }}
-                    fontWeight={isActive('/') ? 'bold' : 'medium'}
-                    textShadow={
-                      isHomePage ? '0 0 10px rgba(0, 0, 0, 0.8)' : 'none'
-                    }
-                    filter={
-                      isHomePage
-                        ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8))'
-                        : 'none'
-                    }
-                  >
-                    <HStack gap={2}>
-                      <Home size={18} />
-                      <span>Home</span>
-                    </HStack>
-                  </Button>
-                </Link>
-                <Link href="/films">
-                  <Button
-                    variant="ghost"
-                    color={
-                      isActive('/films')
-                        ? 'yellow.400'
-                        : isHomePage
-                          ? 'white'
-                          : 'gray.300'
-                    }
-                    _hover={{
-                      color: 'yellow.400',
-                      bg: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
-                    }}
-                    transition="all 0.2s"
-                    size={{ base: 'sm', md: 'md' }}
-                    fontWeight={isActive('/films') ? 'bold' : 'medium'}
-                    textShadow={
-                      isHomePage ? '0 0 10px rgba(0, 0, 0, 0.8)' : 'none'
-                    }
-                    filter={
-                      isHomePage
-                        ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8))'
-                        : 'none'
-                    }
-                  >
-                    <HStack gap={2}>
-                      <Film size={18} />
-                      <span>Films</span>
-                    </HStack>
-                  </Button>
-                </Link>
-                <Link href="/characters">
-                  <Button
-                    variant="ghost"
-                    color={
-                      isActive('/characters')
-                        ? 'yellow.400'
-                        : isHomePage
-                          ? 'white'
-                          : 'gray.300'
-                    }
-                    _hover={{
-                      color: 'yellow.400',
-                      bg: 'rgba(255, 255, 255, 0.1)',
-                      transform: 'translateY(-2px)',
-                    }}
-                    transition="all 0.2s"
-                    size={{ base: 'sm', md: 'md' }}
-                    fontWeight={isActive('/characters') ? 'bold' : 'medium'}
-                    textShadow={
-                      isHomePage ? '0 0 10px rgba(0, 0, 0, 0.8)' : 'none'
-                    }
-                    filter={
-                      isHomePage
-                        ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8))'
-                        : 'none'
-                    }
-                  >
-                    <HStack gap={2}>
-                      <Users size={18} />
-                      <span>Characters</span>
-                    </HStack>
-                  </Button>
-                </Link>
-              </HStack>
+              <Link href="/">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'transition-all duration-200 theme-transition',
+                    isActive('/')
+                      ? 'text-primary hover:text-primary/80'
+                      : isHomePage
+                        ? 'text-white hover:text-primary shadow-lg'
+                        : 'text-muted-foreground hover:text-primary',
+                    'hover:bg-accent/20 hover:-translate-y-1',
+                    isActive('/') && 'font-bold',
+                    isHomePage && 'drop-shadow-lg'
+                  )}
+                  size="sm"
+                >
+                  <Home size={18} className="mr-2" />
+                  Home
+                </Button>
+              </Link>
+
+              <Link href="/films">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'transition-all duration-200 theme-transition',
+                    isActive('/films')
+                      ? 'text-primary hover:text-primary/80'
+                      : isHomePage
+                        ? 'text-white hover:text-primary shadow-lg'
+                        : 'text-muted-foreground hover:text-primary',
+                    'hover:bg-accent/20 hover:-translate-y-1',
+                    isActive('/films') && 'font-bold',
+                    isHomePage && 'drop-shadow-lg'
+                  )}
+                  size="sm"
+                >
+                  <Film size={18} className="mr-2" />
+                  Films
+                </Button>
+              </Link>
+
+              <Link href="/characters">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'transition-all duration-200 theme-transition',
+                    isActive('/characters')
+                      ? 'text-primary hover:text-primary/80'
+                      : isHomePage
+                        ? 'text-white hover:text-primary shadow-lg'
+                        : 'text-muted-foreground hover:text-primary',
+                    'hover:bg-accent/20 hover:-translate-y-1',
+                    isActive('/characters') && 'font-bold',
+                    isHomePage && 'drop-shadow-lg'
+                  )}
+                  size="sm"
+                >
+                  <Users size={18} className="mr-2" />
+                  Characters
+                </Button>
+              </Link>
+
+              {/* Theme Toggle */}
+              <div className="ml-4">
+                <ThemeToggle
+                  className={cn(
+                    'transition-all duration-200',
+                    isHomePage && 'drop-shadow-lg'
+                  )}
+                />
+              </div>
             </motion.div>
           )}
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button & Theme Toggle */}
           {isMobile && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <IconButton
-                variant="ghost"
-                color={isHomePage ? 'white' : 'gray.300'}
-                _hover={{ color: 'yellow.400', bg: 'rgba(255, 255, 255, 0.1)' }}
-                onClick={onToggle}
-                aria-label="Toggle navigation"
-                size="lg"
-                textShadow={isHomePage ? '0 0 10px rgba(0, 0, 0, 0.8)' : 'none'}
-                filter={
-                  isHomePage
-                    ? 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8))'
-                    : 'none'
-                }
+            <div className="flex items-center gap-2">
+              <ThemeToggle
+                className={cn(
+                  'transition-all duration-200',
+                  isHomePage && 'drop-shadow-lg'
+                )}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
               >
-                <motion.div
-                  animate={{ rotate: open ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleMobileMenu}
+                  className={cn(
+                    'transition-all duration-200',
+                    isHomePage
+                      ? 'text-white hover:text-primary shadow-lg drop-shadow-lg'
+                      : 'text-muted-foreground hover:text-primary',
+                    'hover:bg-accent/20'
+                  )}
+                  aria-label="Toggle navigation"
                 >
-                  {open ? <X size={24} /> : <Menu size={24} />}
-                </motion.div>
-              </IconButton>
-            </motion.div>
+                  <motion.div
+                    animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                  </motion.div>
+                </Button>
+              </motion.div>
+            </div>
           )}
-        </Flex>
+        </div>
 
         {/* Mobile Navigation Menu */}
         <AnimatePresence>
-          {isMobile && open && (
+          {isMobile && mobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              style={{ overflow: 'hidden' }}
+              className="overflow-hidden"
             >
-              <Box
-                mt={6}
-                p={4}
-                bg="rgba(0, 0, 0, 0.8)"
-                borderRadius="xl"
-                border="1px"
-                borderColor="gray.800"
-                backdropFilter="blur(20px)"
-              >
-                <VStack gap={3}>
-                  <Link href="/" onClick={onClose}>
+              <div className="bg-background/80 backdrop-blur-lg mt-6 p-4 border border-border rounded-xl theme-transition">
+                <div className="flex flex-col gap-3">
+                  <Link href="/" onClick={closeMobileMenu}>
                     <Button
                       variant="ghost"
-                      color={isActive('/') ? 'yellow.400' : 'white'}
-                      _hover={{ color: 'yellow.400' }}
-                      w="full"
+                      className={cn(
+                        'w-full justify-start transition-all duration-200',
+                        isActive('/')
+                          ? 'text-primary bg-accent/20'
+                          : 'text-foreground hover:text-primary hover:bg-accent/20'
+                      )}
                     >
-                      <HStack gap={2}>
-                        <Home size={18} />
-                        <span>Home</span>
-                      </HStack>
+                      <Home size={18} className="mr-2" />
+                      Home
                     </Button>
                   </Link>
-                  <Link href="/films" onClick={onClose}>
+
+                  <Link href="/films" onClick={closeMobileMenu}>
                     <Button
                       variant="ghost"
-                      color={isActive('/films') ? 'yellow.400' : 'white'}
-                      _hover={{ color: 'yellow.400' }}
-                      w="full"
+                      className={cn(
+                        'w-full justify-start transition-all duration-200',
+                        isActive('/films')
+                          ? 'text-primary bg-accent/20'
+                          : 'text-foreground hover:text-primary hover:bg-accent/20'
+                      )}
                     >
-                      <HStack gap={2}>
-                        <Film size={18} />
-                        <span>Films</span>
-                      </HStack>
+                      <Film size={18} className="mr-2" />
+                      Films
                     </Button>
                   </Link>
-                  <Link href="/characters" onClick={onClose}>
+
+                  <Link href="/characters" onClick={closeMobileMenu}>
                     <Button
                       variant="ghost"
-                      color={isActive('/characters') ? 'yellow.400' : 'white'}
-                      _hover={{ color: 'yellow.400' }}
-                      w="full"
+                      className={cn(
+                        'w-full justify-start transition-all duration-200',
+                        isActive('/characters')
+                          ? 'text-primary bg-accent/20'
+                          : 'text-foreground hover:text-primary hover:bg-accent/20'
+                      )}
                     >
-                      <HStack gap={2}>
-                        <Users size={18} />
-                        <span>Characters</span>
-                      </HStack>
+                      <Users size={18} className="mr-2" />
+                      Characters
                     </Button>
                   </Link>
-                </VStack>
-              </Box>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </Container>
-    </Box>
+      </div>
+    </nav>
   );
 }

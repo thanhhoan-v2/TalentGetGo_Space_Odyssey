@@ -1,4 +1,4 @@
-import { Heading, Text, VStack } from '@chakra-ui/react';
+import { Heading, Text, VStack } from '@/components/ui';
 import { motion } from 'framer-motion';
 
 export function CharacterListHeader() {
@@ -8,21 +8,11 @@ export function CharacterListHeader() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <VStack gap={6} mb={12} textAlign="center">
-        <Heading
-          size={{ base: '2xl', md: '4xl' }}
-          bgGradient="linear(to-r, yellow.400, orange.500)"
-          bgClip="text"
-          lineHeight="shorter"
-        >
+      <VStack gap="lg" className="mb-12 text-center">
+        <Heading size="4xl" variant="gradient" className="leading-tight">
           Star Wars Characters
         </Heading>
-        <Text
-          fontSize={{ base: 'lg', md: 'xl' }}
-          color="gray.300"
-          maxW="3xl"
-          mx="auto"
-        >
+        <Text size="xl" variant="muted" className="mx-auto max-w-3xl">
           Discover heroes, villains, and everyone in between from across the
           galaxy.
         </Text>

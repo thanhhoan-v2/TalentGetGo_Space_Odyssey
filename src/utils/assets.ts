@@ -6,13 +6,15 @@ export const getCharacterImage = async (
   id: string
 ): Promise<StaticImageData | null> => {
   try {
+    // If id contains slashes, extract the number, otherwise use it directly
+    const characterId = id.includes('/') ? extractNumber(id) : id;
     // Dynamic import for the character image
-    const image = await import(`@/assets/characters/${extractNumber(id)}.jpg`);
+    const image = await import(`@/assets/characters/${characterId}.jpg`);
     return image.default;
   } catch (error) {
     // Fallback to a default character image if specific one doesn't exist
     try {
-      const fallbackImage = await import('@/assets/1.jpg');
+      const fallbackImage = await import('@/assets/characters/1.jpg');
       return fallbackImage.default;
     } catch {
       // Return null if no fallback available
@@ -30,7 +32,7 @@ export const preloadCharacterImages = async () => {
 
   for (const id of imageIds) {
     try {
-      const image = await import(`@/assets/${id}.jpg`);
+      const image = await import(`@/assets/characters/${id}.jpg`);
       characterImages[id] = image.default;
     } catch (error) {
       // Skip missing images

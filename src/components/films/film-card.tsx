@@ -1,15 +1,17 @@
-import { Film } from '@/schema/swapi';
-import { extractIdFromUrl } from '@/utils/swapi';
 import {
   Badge,
   Box,
   Button,
   Card,
+  CardContent,
   Heading,
   HStack,
-  Stack,
   Text,
-} from '@chakra-ui/react';
+  VStack,
+} from '@/components/ui';
+import { cn } from '@/lib/utils';
+import { Film } from '@/schema/swapi';
+import { extractIdFromUrl } from '@/utils/swapi';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -20,6 +22,7 @@ interface FilmCardProps {
 export function FilmCard({ film }: FilmCardProps) {
   return (
     <motion.div
+      className="w-full max-w-[500px] h-[500px]"
       whileHover={{
         scale: 1.02,
         transition: { duration: 0.2 },
@@ -29,54 +32,46 @@ export function FilmCard({ film }: FilmCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card.Root
-        size="lg"
-        variant="elevated"
-        bg="gray.900"
-        borderColor="gray.700"
-        borderWidth="1px"
-        _hover={{
-          borderColor: 'blue.400',
-          shadow: 'xl',
-          transform: 'translateY(-2px)',
-        }}
-        transition="all 0.3s ease"
-        cursor="pointer"
+      <Card
+        className={cn(
+          'h-full border-border bg-card/50 backdrop-blur-sm transition-all duration-300 cursor-pointer theme-transition',
+          'hover:border-secondary hover:shadow-lg hover:-translate-y-1',
+          'card-glow' // Apply theme-specific glow/shadow effects
+        )}
       >
-        <Card.Body p={8}>
+        <CardContent className="flex flex-col p-8 h-full">
           {/* Episode Badge and Year */}
-          <HStack justify="space-between" mb={4}>
+          <HStack justify="between" className="mb-4">
             <Badge
-              colorScheme="blue"
-              variant="solid"
-              px={3}
-              py={1}
-              borderRadius="full"
-              fontSize="sm"
-              fontWeight="bold"
+              variant="secondary"
+              className="bg-secondary px-3 py-1 font-bold text-secondary-foreground text-sm"
             >
               Episode {film.episode_id}
             </Badge>
-            <Text color="gray.400" fontSize="sm">
+            <Text variant="muted" size="sm">
               {new Date(film.release_date).getFullYear()}
             </Text>
           </HStack>
 
           {/* Film Title */}
-          <Heading as="h2" size="xl" color="white" mb={4} lineHeight="tight">
+          <Heading
+            as="h2"
+            size="xl"
+            className="mb-4 text-foreground leading-tight"
+          >
             {film.title}
           </Heading>
 
           {/* Film Details */}
-          <Stack gap={2} mb={6}>
-            <Text color="gray.300">
-              <Text as="span" color="blue.400" fontWeight="semibold">
+          <VStack gap="sm" className="flex-1 mb-6">
+            <Text variant="default" className="w-full text-left">
+              <Text as="span" variant="secondary" weight="semibold">
                 Director:
               </Text>{' '}
               {film.director}
             </Text>
-            <Text color="gray.300">
-              <Text as="span" color="blue.400" fontWeight="semibold">
+            <Text variant="default" className="w-full text-left">
+              <Text as="span" variant="secondary" weight="semibold">
                 Release Date:
               </Text>{' '}
               {new Date(film.release_date).toLocaleDateString('en-US', {
@@ -85,47 +80,44 @@ export function FilmCard({ film }: FilmCardProps) {
                 day: 'numeric',
               })}
             </Text>
-          </Stack>
+          </VStack>
 
           {/* Opening Crawl Preview */}
-          <Box mb={6}>
-            <Heading as="h3" size="md" color="yellow.400" mb={3}>
+          <Box className="mb-6">
+            <Heading as="h3" size="md" variant="primary" className="mb-3">
               Opening Crawl
             </Heading>
             <Box
-              bg="blackAlpha.600"
-              p={4}
-              borderRadius="lg"
-              border="1px solid"
-              borderColor="gray.600"
+              className={cn(
+                'bg-muted/20 p-4 rounded-lg border border-border/50',
+                'backdrop-blur-sm'
+              )}
             >
-              <Text color="gray.300" fontSize="sm" lineHeight="relaxed">
-                {film.opening_crawl.length > 500
-                  ? `${film.opening_crawl.substring(0, 500)}...`
+              <Text variant="muted" size="sm" className="leading-relaxed">
+                {film.opening_crawl.length > 400
+                  ? `${film.opening_crawl.substring(0, 400)}...`
                   : film.opening_crawl}
               </Text>
             </Box>
           </Box>
 
           {/* Action Button */}
-          <Link href={`${extractIdFromUrl(film.url)}`}>
+          <Link
+            href={`/films/${extractIdFromUrl(film.url)}`}
+            className="mt-auto"
+          >
             <Button
               size="lg"
-              width="full"
-              bgGradient="linear(to-r, blue.600, blue.700)"
-              color="black"
-              fontWeight="semibold"
-              _hover={{
-                bgGradient: 'linear(to-r, blue.700, blue.800)',
-                transform: 'translateY(-1px)',
-              }}
-              transition="all 0.2s ease"
+              className={cn(
+                'w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold',
+                'transition-all duration-200 hover:-translate-y-1'
+              )}
             >
               View Full Details
             </Button>
           </Link>
-        </Card.Body>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }

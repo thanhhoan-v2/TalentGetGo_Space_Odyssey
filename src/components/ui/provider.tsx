@@ -1,15 +1,23 @@
 'use client';
 
-import {
-  ColorModeProvider,
-  type ColorModeProviderProps,
-} from '@/components/ui/color-mode';
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
+import { ThemeProvider } from 'next-themes';
+import { type ReactNode } from 'react';
 
-export function Provider(props: ColorModeProviderProps) {
+interface ProviderProps {
+  children: ReactNode;
+}
+
+export function Provider({ children }: ProviderProps) {
   return (
-    <ChakraProvider value={defaultSystem}>
-      <ColorModeProvider {...props} />
-    </ChakraProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="empire"
+      themes={['empire', 'rebel-base']}
+      enableSystem={false}
+      disableTransitionOnChange={false}
+      storageKey="star-wars-theme"
+    >
+      {children}
+    </ThemeProvider>
   );
 }

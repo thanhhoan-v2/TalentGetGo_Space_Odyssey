@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Text } from '@/components/ui';
 import { motion } from 'framer-motion';
 
 interface CharacterListInfoProps {
@@ -20,7 +20,7 @@ export function CharacterListInfo({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.4 }}
     >
-      <Text textAlign="center" color="gray.400" mb={8}>
+      <Text className="mb-8 text-center" variant="muted">
         {isSearching ? (
           <>
             Showing results for &ldquo;{searchQuery}&rdquo; ({totalCount}{' '}

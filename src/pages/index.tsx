@@ -1,22 +1,23 @@
 'use client';
 
 import { PageHeader } from '@/components/common';
-import client from '@/lib/apollo-client';
-import { GET_ALL_FILMS } from '@/lib/queries';
-import { Film } from '@/schema/graphql';
+import { MaskedDiv } from '@/components/ui';
 import {
   Badge,
   Box,
   Button,
   Card,
-  Center,
+  CardContent,
   Container,
-  Grid,
   Heading,
   HStack,
   Text,
   VStack,
-} from '@chakra-ui/react';
+} from '@/components/ui';
+import { cn } from '@/lib/utils';
+import client from '@/lib/apollo-client';
+import { GET_ALL_FILMS } from '@/lib/queries';
+import { Film } from '@/schema/graphql';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -51,25 +52,17 @@ export default function Home({ featuredFilms }: HomeProps) {
         />
       </Head>
 
-      <Box bg="black" color="white" overflow="hidden">
+      <Box className="bg-background overflow-hidden text-foreground theme-transition">
         {/* Hero Section with Full-Screen Video Background */}
-        <Box position="relative" minH="100vh" display="flex" overflow="hidden">
+        <Box className="relative flex min-h-screen overflow-hidden">
           {/* Transparent Navbar Overlay */}
-          <Box position="absolute" top={0} left={0} right={0} zIndex={1000}>
+          <Box className="top-0 right-0 left-0 z-50 absolute">
             <PageHeader transparent />
           </Box>
 
           {/* Full-Screen Video Background */}
           <video
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100vh',
-              objectFit: 'cover',
-              zIndex: 1,
-            }}
+            className="top-0 left-0 z-10 absolute w-screen h-screen object-cover"
             src="/landing-video.mp4"
             autoPlay
             muted
@@ -78,43 +71,23 @@ export default function Home({ featuredFilms }: HomeProps) {
           />
 
           {/* Dark Overlay for better readability */}
-          <Box position="absolute" inset="0" bg="blackAlpha.400" zIndex={2} />
+          <Box className="z-20 absolute inset-0 bg-black/40" />
 
           {/* Content Overlay */}
           <Container
-            maxW="7xl"
-            flex="1"
-            display="flex"
-            alignItems="center"
-            py={20}
-            position="relative"
-            zIndex={3}
+            size="7xl"
+            className="z-30 relative flex flex-1 items-center py-20"
           >
-            <VStack gap={12} textAlign="center" w="full">
+            <VStack gap="xl" className="w-full text-center">
               {/* Description */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 1.4 }}
               >
-                <Text
-                  fontSize={{ base: 'lg', md: 'xl', lg: '2xl' }}
-                  color="white"
-                  maxW="4xl"
-                  lineHeight="tall"
-                  textAlign="center"
-                  textShadow="0 0 15px rgba(0, 0, 0, 1)"
-                  bg="blackAlpha.400"
-                  p={8}
-                  borderRadius="xl"
-                  backdropFilter="blur(20px)"
-                  border="1px solid"
-                  borderColor="whiteAlpha.200"
-                >
-                  Journey through the vast Star Wars universe. Explore epic
-                  films, legendary characters, mysterious planets, and
-                  incredible starships from a galaxy far, far away.
-                </Text>
+                <Heading size="4xl" className="drop-shadow-lg text-white">
+                  The Force Lives in All of Us
+                </Heading>
               </motion.div>
 
               {/* CTA Buttons */}
@@ -123,24 +96,18 @@ export default function Home({ featuredFilms }: HomeProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 1.8 }}
               >
-                <HStack gap={6} wrap="wrap" justify="center">
+                <HStack gap="lg" className="flex-wrap justify-center">
                   <Link href="/films">
                     <Button
-                      size={{ base: 'lg', md: 'xl' }}
-                      colorScheme="blue"
-                      bg="blue.600"
-                      _hover={{
-                        bg: 'blue.500',
-                        transform: 'translateY(-3px)',
-                        boxShadow: '0 25px 50px rgba(59, 130, 246, 0.8)',
-                      }}
-                      transition="all 0.3s"
-                      px={10}
-                      py={8}
-                      boxShadow="0 15px 35px rgba(0, 0, 0, 0.7)"
-                      filter="drop-shadow(0 0 10px rgba(59, 130, 246, 0.5))"
+                      size="lg"
+                      className={cn(
+                        'bg-white text-black hover:bg-white/90',
+                        'px-10 py-8 text-lg font-semibold',
+                        'hover:-translate-y-1 transition-all duration-300',
+                        'shadow-xl'
+                      )}
                     >
-                      <HStack gap={3}>
+                      <HStack gap="sm">
                         <Play size={24} />
                         <span>Explore Films</span>
                       </HStack>
@@ -149,26 +116,18 @@ export default function Home({ featuredFilms }: HomeProps) {
 
                   <Link href="/characters">
                     <Button
-                      size={{ base: 'lg', md: 'xl' }}
                       variant="outline"
-                      borderColor="yellow.400"
-                      borderWidth="2px"
-                      color="yellow.400"
-                      bg="blackAlpha.400"
-                      backdropFilter="blur(20px)"
-                      _hover={{
-                        bg: 'yellow.400',
-                        color: 'black',
-                        transform: 'translateY(-3px)',
-                        boxShadow: '0 25px 50px rgba(251, 191, 36, 0.8)',
-                      }}
-                      transition="all 0.3s"
-                      px={10}
-                      py={8}
-                      boxShadow="0 15px 35px rgba(0, 0, 0, 0.7)"
-                      filter="drop-shadow(0 0 10px rgba(251, 191, 36, 0.5))"
+                      size="lg"
+                      className={cn(
+                        'border-2 border-primary text-primary bg-black/40 backdrop-blur-lg',
+                        'px-10 py-8 text-lg font-semibold',
+                        'hover:bg-primary hover:text-primary-foreground',
+                        'hover:-translate-y-1 transition-all duration-300',
+                        'shadow-xl hover:shadow-primary/50',
+                        'drop-shadow-[0_0_10px_rgba(213,0,0,0.5)]'
+                      )}
                     >
-                      <HStack gap={3}>
+                      <HStack gap="sm">
                         <Users size={24} />
                         <span>Meet Characters</span>
                       </HStack>
@@ -181,40 +140,34 @@ export default function Home({ featuredFilms }: HomeProps) {
         </Box>
 
         {/* Featured Films Section */}
-        <Container maxW="7xl" py={20}>
+        <Container size="7xl" className="py-20">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <VStack gap={16}>
-              <VStack gap={4} textAlign="center">
+            <VStack gap="xl">
+              <VStack gap="md" className="text-center">
                 <Heading
-                  size={{ base: 'xl', md: '2xl', lg: '3xl' }}
-                  bgGradient="linear(to-r, yellow.400, orange.400)"
-                  bgClip="text"
-                  display="flex"
-                  alignItems="center"
-                  gap={3}
+                  size="3xl"
+                  variant="gradient"
+                  className="flex items-center gap-3"
                 >
                   <Sparkles size={32} />
                   Featured Films
                   <Sparkles size={32} />
                 </Heading>
-                <Text color="gray.400" fontSize="lg" maxW="2xl">
+                <Text variant="muted" size="lg" className="max-w-2xl">
                   Discover the epic saga that changed cinema forever
                 </Text>
               </VStack>
 
-              <Grid
-                templateColumns={{
-                  base: '1fr',
-                  md: 'repeat(2, 1fr)',
-                  lg: 'repeat(3, 1fr)',
-                }}
-                gap={8}
-                w="full"
+              <div
+                className={cn(
+                  'grid gap-8 w-full',
+                  'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                )}
               >
                 {featuredFilms && featuredFilms.length > 0 ? (
                   featuredFilms.map((film, index) => (
@@ -226,267 +179,178 @@ export default function Home({ featuredFilms }: HomeProps) {
                       viewport={{ once: true }}
                       whileHover={{ y: -10 }}
                     >
-                      <Card.Root
-                        variant="elevated"
-                        bg="gray.900"
-                        borderColor="gray.700"
-                        _hover={{
-                          borderColor: 'blue.500',
-                          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
-                        }}
-                        transition="all 0.3s"
-                        h="full"
+                      <Card
+                        className={cn(
+                          'h-full bg-card/50 backdrop-blur-sm border-border transition-all duration-300',
+                          'hover:border-secondary hover:shadow-xl theme-transition card-glow'
+                        )}
                       >
-                        <Card.Body p={6}>
-                          <VStack align="start" gap={4} h="full">
-                            <HStack justify="space-between" w="full">
+                        <CardContent className="p-6">
+                          <VStack align="start" gap="md" className="h-full">
+                            <HStack justify="between" className="w-full">
                               <Badge
-                                colorScheme="blue"
-                                fontSize="sm"
-                                px={3}
-                                py={1}
+                                variant="secondary"
+                                className="px-3 py-1 text-sm"
                               >
                                 Episode {film.id}
                               </Badge>
-                              <FilmIcon size={20} color="#60a5fa" />
+                              <FilmIcon size={20} className="text-secondary" />
                             </HStack>
 
-                            <Heading size="lg" color="white" lineHeight="short">
+                            <Heading size="lg" className="leading-tight">
                               {film.title}
                             </Heading>
 
-                            <Text color="gray.400" fontSize="sm">
+                            <Text variant="muted" size="sm">
                               Directed by {film.director} •{' '}
                               {new Date(film.releaseDate).getFullYear()}
                             </Text>
 
                             <Text
-                              color="gray.300"
-                              fontSize="sm"
-                              lineHeight="relaxed"
-                              flex="1"
+                              variant="default"
+                              size="sm"
+                              className="flex-1 leading-relaxed"
                             >
-                              {film.openingCrawl.substring(0, 150)}...
+                              {film.openingCrawl?.length > 120
+                                ? `${film.openingCrawl.substring(0, 120)}...`
+                                : film.openingCrawl}
                             </Text>
 
-                            <Link href={`/films/${film.id}`}>
+                            <Link href={`/films/${film.id}`} className="w-full">
                               <Button
-                                colorScheme="yellow"
-                                bg="yellow.400"
-                                color="black"
-                                _hover={{
-                                  bg: 'yellow.300',
-                                  transform: 'translateX(5px)',
-                                }}
-                                transition="all 0.2s"
-                                w="full"
+                                variant="outline"
+                                className="group hover:bg-secondary w-full hover:text-secondary-foreground"
                               >
-                                <HStack gap={2}>
-                                  <span>Learn More</span>
+                                <HStack
+                                  gap="sm"
+                                  className="transition-transform group-hover:translate-x-1"
+                                >
+                                  <span>Watch Now</span>
                                   <ArrowRight size={16} />
                                 </HStack>
                               </Button>
                             </Link>
                           </VStack>
-                        </Card.Body>
-                      </Card.Root>
+                        </CardContent>
+                      </Card>
                     </motion.div>
                   ))
                 ) : (
-                  <Box gridColumn="1 / -1" textAlign="center" py={12}>
-                    <Text color="gray.400" fontSize="lg">
+                  <div className="col-span-full py-12 text-center">
+                    <Text variant="muted" size="lg">
                       No featured films available at the moment.
                     </Text>
-                  </Box>
+                  </div>
                 )}
-              </Grid>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <Link href="/films">
-                  <Button
-                    variant="outline"
-                    borderColor="blue.400"
-                    color="blue.400"
-                    _hover={{
-                      bg: 'blue.400',
-                      color: 'white',
-                      transform: 'scale(1.05)',
-                    }}
-                    size="lg"
-                    px={8}
-                  >
-                    <HStack gap={2}>
-                      <span>View All Films</span>
-                      <ArrowRight size={20} />
-                    </HStack>
-                  </Button>
-                </Link>
-              </motion.div>
+              </div>
             </VStack>
           </motion.div>
         </Container>
 
         {/* Features Section */}
-        <Box bg="gray.900" py={20}>
-          <Container maxW="7xl">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <VStack gap={16}>
-                <VStack gap={4} textAlign="center">
-                  <Heading
-                    size={{ base: 'xl', md: '2xl', lg: '3xl' }}
-                    color="white"
-                  >
-                    Explore the Galaxy
-                  </Heading>
-                  <Text color="gray.400" fontSize="lg" maxW="2xl">
-                    Dive deep into every corner of the Star Wars universe
-                  </Text>
-                </VStack>
-
-                <Grid
-                  templateColumns={{
-                    base: '1fr',
-                    md: 'repeat(2, 1fr)',
-                    lg: 'repeat(4, 1fr)',
-                  }}
-                  gap={8}
-                  w="full"
-                >
-                  {[
-                    {
-                      icon: FilmIcon,
-                      title: 'Films',
-                      description: 'Epic stories that changed cinema forever',
-                      color: 'blue.500',
-                      href: '/films',
-                    },
-                    {
-                      icon: Users,
-                      title: 'Characters',
-                      description:
-                        'Heroes, villains, and legends of the galaxy',
-                      color: 'yellow.500',
-                      href: '/characters',
-                    },
-                    {
-                      icon: Globe,
-                      title: 'Planets',
-                      description: 'Explore worlds across the galaxy',
-                      color: 'green.500',
-                      href: '#',
-                    },
-                    {
-                      icon: Rocket,
-                      title: 'Starships',
-                      description: 'Vessels that travel among the stars',
-                      color: 'red.500',
-                      href: '#',
-                    },
-                  ].map((feature, index) => (
-                    <motion.div
-                      key={feature.title}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -5 }}
-                    >
-                      <Link href={feature.href}>
-                        <Card.Root
-                          variant="elevated"
-                          bg="gray.800"
-                          borderColor="gray.600"
-                          _hover={{
-                            borderColor: feature.color,
-                            bg: 'gray.700',
-                          }}
-                          transition="all 0.3s"
-                          cursor="pointer"
-                          h="full"
-                        >
-                          <Card.Body p={6} textAlign="center">
-                            <VStack gap={4}>
-                              <Center
-                                w={16}
-                                h={16}
-                                bg={feature.color}
-                                borderRadius="full"
-                                boxShadow={`0 0 20px ${feature.color}30`}
-                              >
-                                <feature.icon size={32} color="white" />
-                              </Center>
-                              <Heading size="lg" color="white">
-                                {feature.title}
-                              </Heading>
-                              <Text color="gray.400" textAlign="center">
-                                {feature.description}
-                              </Text>
-                            </VStack>
-                          </Card.Body>
-                        </Card.Root>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </Grid>
-              </VStack>
-            </motion.div>
-          </Container>
-        </Box>
-
-        {/* Footer CTA */}
-        <Container maxW="7xl" py={20}>
+        <Container size="7xl" className="py-20">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <Card.Root
-              variant="elevated"
-              bg="gray.900"
-              borderColor="yellow.400"
-              borderWidth="2px"
-            >
-              <Card.Body p={12} textAlign="center">
-                <VStack gap={6}>
-                  <Heading
-                    size={{ base: 'lg', md: 'xl', lg: '2xl' }}
-                    bgGradient="linear(to-r, yellow.400, orange.400)"
-                    bgClip="text"
+            <VStack gap="xl">
+              <VStack gap="md" className="text-center">
+                <Heading size="3xl" variant="gradient">
+                  Explore the Galaxy
+                </Heading>
+                <Text variant="muted" size="lg" className="max-w-3xl">
+                  Journey through the vast Star Wars universe with our
+                  comprehensive database
+                </Text>
+              </VStack>
+
+              <div
+                className={cn(
+                  'grid gap-8 w-full',
+                  'grid-cols-1 md:grid-cols-3'
+                )}
+              >
+                {[
+                  {
+                    icon: FilmIcon,
+                    title: 'Epic Films',
+                    description:
+                      'Explore the complete Star Wars saga from the original trilogy to the latest releases',
+                    href: '/films',
+                  },
+                  {
+                    icon: Users,
+                    title: 'Legendary Characters',
+                    description:
+                      'Meet heroes, villains, and everyone in between from across the galaxy',
+                    href: '/characters',
+                  },
+                  {
+                    icon: Globe,
+                    title: 'Diverse Worlds',
+                    description:
+                      'Discover planets, starships, and the rich lore of the Star Wars universe',
+                    href: '/films',
+                  },
+                ].map((feature, index) => (
+                  <motion.div
+                    key={feature.title}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 }}
+                    viewport={{ once: true }}
+                    whileHover={{ y: -5 }}
                   >
-                    May the Force Be With You
-                  </Heading>
-                  <Text color="gray.300" fontSize="lg" maxW="2xl">
-                    Begin your journey through the Star Wars galaxy today.
-                    Discover the stories, characters, and worlds that have
-                    inspired generations.
-                  </Text>
-                  <HStack gap={4}>
-                    <Link href="/films">
-                      <Button
-                        colorScheme="yellow"
-                        bg="yellow.400"
-                        color="black"
-                        size="lg"
-                        _hover={{ bg: 'yellow.300' }}
+                    <Link href={feature.href}>
+                      <Card
+                        className={cn(
+                          'h-full bg-card/30 backdrop-blur-sm border-border transition-all duration-300 cursor-pointer',
+                          'hover:border-primary hover:bg-card/50 theme-transition card-glow group'
+                        )}
                       >
-                        Start Exploring
-                      </Button>
+                        <CardContent className="p-8 text-center">
+                          <VStack gap="lg">
+                            <div
+                              className={cn(
+                                'mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center',
+                                'group-hover:bg-primary/20 transition-colors'
+                              )}
+                            >
+                              <feature.icon className="w-8 h-8 text-primary" />
+                            </div>
+                            <VStack gap="sm">
+                              <Heading
+                                size="lg"
+                                className="group-hover:text-primary transition-colors"
+                              >
+                                {feature.title}
+                              </Heading>
+                              <Text variant="muted" className="leading-relaxed">
+                                {feature.description}
+                              </Text>
+                            </VStack>
+                            <Button
+                              variant="ghost"
+                              className="group-hover:bg-primary/10 group-hover:text-primary"
+                            >
+                              <HStack gap="sm">
+                                <span>Learn More</span>
+                                <ArrowRight
+                                  size={16}
+                                  className="transition-transform group-hover:translate-x-1"
+                                />
+                              </HStack>
+                            </Button>
+                          </VStack>
+                        </CardContent>
+                      </Card>
                     </Link>
-                  </HStack>
-                </VStack>
-              </Card.Body>
-            </Card.Root>
+                  </motion.div>
+                ))}
+              </div>
+            </VStack>
           </motion.div>
         </Container>
       </Box>
@@ -496,49 +360,25 @@ export default function Home({ featuredFilms }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    // Use Apollo Client to fetch films using the GraphQL schema
     const { data } = await client.query({
       query: GET_ALL_FILMS,
     });
 
-    // Define the type for GraphQL edge
-    interface FilmEdge {
-      node: {
-        title: string;
-        director: string;
-        releaseDate: string;
-        openingCrawl: string;
-      };
-    }
-
-    // Extract films from the GraphQL response and add generated IDs
-    const filmsFromEdges: FilmEdge[] = data?.allFilms?.edges || [];
-    const allFilms = filmsFromEdges.map((edge: FilmEdge, index: number) => ({
-      id: (index + 1).toString(), // Generate ID based on index
-      title: edge.node.title,
-      director: edge.node.director,
-      releaseDate: edge.node.releaseDate,
-      openingCrawl: edge.node.openingCrawl,
-    }));
-
-    // Sort by ID and take first 3 for featured section
-    const featuredFilms = allFilms
-      .sort((a: Film, b: Film) => parseInt(a.id) - parseInt(b.id))
-      .slice(0, 3);
+    const films = data?.allFilms?.edges?.map((edge: any) => edge.node) || [];
 
     return {
       props: {
-        featuredFilms,
+        featuredFilms: films.slice(0, 3), // Show first 3 films as featured
       },
       revalidate: 86400, // Revalidate once per day
     };
   } catch (error) {
-    console.error('Error fetching films with GraphQL:', error);
+    console.error('Error fetching films:', error);
     return {
       props: {
         featuredFilms: [],
       },
-      revalidate: 3600, // Try again in 1 hour if there was an error
+      revalidate: 3600,
     };
   }
 };

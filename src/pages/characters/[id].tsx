@@ -2,7 +2,18 @@
 
 import { FilmCard } from '@/components/characters';
 import { PageLayout } from '@/components/common';
-import { PlanetCard, StarshipCard } from '@/components/films';
+import { PlanetCard, StarshipCard } from '@/components/films/resource-cards';
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from '@/components/ui';
 import {
   Film,
   Person,
@@ -13,18 +24,6 @@ import {
 } from '@/schema/swapi';
 import { getCharacterImage } from '@/utils/assets';
 import { extractIdFromUrl } from '@/utils/swapi';
-import {
-  Box,
-  Card,
-  Image as ChakraImage,
-  Container,
-  Flex,
-  Grid,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { Calendar, Eye, Globe, Ruler, User, Weight } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -194,63 +193,59 @@ export default function CharacterDetailPage({
 
       <PageLayout currentPage="characters">
         {/* Main Content */}
-        <Container maxW="7xl" py={12}>
+        <Container size="7xl" className="py-12">
           {/* Character Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <VStack gap={6} mb={12} textAlign="center">
+            <VStack gap="lg" className="mb-12 text-center">
               {characterImage && (
-                <ChakraImage asChild>
+                <div className="relative rounded-full w-24 h-24 overflow-hidden">
                   <Image
                     src={characterImage}
                     alt={character.name}
                     width={100}
                     height={100}
+                    className="object-cover"
                   />
-                </ChakraImage>
+                </div>
               )}
 
-              <Heading
-                size={{ base: '2xl', md: '4xl' }}
-                bgGradient="linear(to-r, yellow.400, orange.500)"
-                bgClip="text"
-                lineHeight="shorter"
-              >
+              <Heading size="4xl" variant="gradient" className="leading-tight">
                 {character.name}
               </Heading>
 
               <Flex
-                direction={{ base: 'column', md: 'row' }}
-                gap={6}
+                className="md:flex-row flex-col"
+                gap="lg"
                 wrap="wrap"
                 justify="center"
                 align="center"
               >
                 <HStack>
-                  <User size={16} color="rgb(96, 165, 250)" />
-                  <Text color="gray.300">
-                    <Text as="span" color="blue.400" fontWeight="semibold">
+                  <User size={16} className="text-secondary" />
+                  <Text variant="muted">
+                    <Text as="span" variant="secondary" weight="semibold">
                       Gender:
                     </Text>{' '}
                     {character.gender}
                   </Text>
                 </HStack>
                 <HStack>
-                  <Calendar size={16} color="rgb(96, 165, 250)" />
-                  <Text color="gray.300">
-                    <Text as="span" color="blue.400" fontWeight="semibold">
+                  <Calendar size={16} className="text-secondary" />
+                  <Text variant="muted">
+                    <Text as="span" variant="secondary" weight="semibold">
                       Birth Year:
                     </Text>{' '}
                     {character.birth_year}
                   </Text>
                 </HStack>
                 <HStack>
-                  <Globe size={16} color="rgb(96, 165, 250)" />
-                  <Text color="gray.300">
-                    <Text as="span" color="blue.400" fontWeight="semibold">
+                  <Globe size={16} className="text-secondary" />
+                  <Text variant="muted">
+                    <Text as="span" variant="secondary" weight="semibold">
                       Homeworld:
                     </Text>{' '}
                     {homeworld?.name || 'Unknown'}
@@ -266,54 +261,34 @@ export default function CharacterDetailPage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Box mb={16}>
-              <Card.Root
-                variant="elevated"
-                bg="gray.900"
-                borderColor="gray.700"
-                maxW="4xl"
-                mx="auto"
-              >
-                <Card.Body p={8}>
+            <Box className="mb-16">
+              <Card className="bg-card mx-auto border-border max-w-4xl">
+                <CardContent className="p-8">
                   <Heading
                     size="xl"
-                    color="yellow.400"
-                    mb={6}
-                    textAlign="center"
+                    variant="primary"
+                    className="mb-6 text-center"
                   >
                     Character Details
                   </Heading>
 
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {/* Physical Attributes */}
-                    <Box
-                      bg="blackAlpha.600"
-                      p={6}
-                      borderRadius="lg"
-                      border="1px solid"
-                      borderColor="gray.600"
-                    >
-                      <HStack mb={4}>
-                        <User size={20} color="rgb(96, 165, 250)" />
-                        <Heading size="md" color="white">
+                    <Box className="bg-background/60 p-6 border border-border rounded-lg">
+                      <HStack className="mb-4">
+                        <User size={20} className="text-secondary" />
+                        <Heading size="md" className="text-foreground">
                           Physical
                         </Heading>
                       </HStack>
-                      <VStack align="start" gap={3}>
+                      <VStack align="start" gap="sm">
                         <HStack>
-                          <Ruler size={16} color="rgb(96, 165, 250)" />
-                          <Text color="gray.300" fontSize="sm">
+                          <Ruler size={16} className="text-secondary" />
+                          <Text variant="muted" size="sm">
                             <Text
                               as="span"
-                              color="blue.400"
-                              fontWeight="semibold"
+                              variant="secondary"
+                              weight="semibold"
                             >
                               Height:
                             </Text>{' '}
@@ -322,12 +297,12 @@ export default function CharacterDetailPage({
                         </HStack>
                         {character.mass !== 'unknown' && (
                           <HStack>
-                            <Weight size={16} color="rgb(96, 165, 250)" />
-                            <Text color="gray.300" fontSize="sm">
+                            <Weight size={16} className="text-secondary" />
+                            <Text variant="muted" size="sm">
                               <Text
                                 as="span"
-                                color="blue.400"
-                                fontWeight="semibold"
+                                variant="secondary"
+                                weight="semibold"
                               >
                                 Mass:
                               </Text>{' '}
@@ -339,46 +314,28 @@ export default function CharacterDetailPage({
                     </Box>
 
                     {/* Appearance */}
-                    <Box
-                      bg="blackAlpha.600"
-                      p={6}
-                      borderRadius="lg"
-                      border="1px solid"
-                      borderColor="gray.600"
-                    >
-                      <HStack mb={4}>
-                        <Eye size={20} color="rgb(96, 165, 250)" />
-                        <Heading size="md" color="white">
+                    <Box className="bg-background/60 p-6 border border-border rounded-lg">
+                      <HStack className="mb-4">
+                        <Eye size={20} className="text-secondary" />
+                        <Heading size="md" className="text-foreground">
                           Appearance
                         </Heading>
                       </HStack>
-                      <VStack align="start" gap={3}>
-                        <Text color="gray.300" fontSize="sm">
-                          <Text
-                            as="span"
-                            color="blue.400"
-                            fontWeight="semibold"
-                          >
+                      <VStack align="start" gap="sm">
+                        <Text variant="muted" size="sm">
+                          <Text as="span" variant="secondary" weight="semibold">
                             Hair Color:
                           </Text>{' '}
                           {character.hair_color}
                         </Text>
-                        <Text color="gray.300" fontSize="sm">
-                          <Text
-                            as="span"
-                            color="blue.400"
-                            fontWeight="semibold"
-                          >
+                        <Text variant="muted" size="sm">
+                          <Text as="span" variant="secondary" weight="semibold">
                             Eye Color:
                           </Text>{' '}
                           {character.eye_color}
                         </Text>
-                        <Text color="gray.300" fontSize="sm">
-                          <Text
-                            as="span"
-                            color="blue.400"
-                            fontWeight="semibold"
-                          >
+                        <Text variant="muted" size="sm">
+                          <Text as="span" variant="secondary" weight="semibold">
                             Skin Color:
                           </Text>{' '}
                           {character.skin_color}
@@ -387,46 +344,32 @@ export default function CharacterDetailPage({
                     </Box>
 
                     {/* Origin */}
-                    <Box
-                      bg="blackAlpha.600"
-                      p={6}
-                      borderRadius="lg"
-                      border="1px solid"
-                      borderColor="gray.600"
-                    >
-                      <HStack mb={4}>
-                        <Globe size={20} color="rgb(96, 165, 250)" />
-                        <Heading size="md" color="white">
+                    <Box className="bg-background/60 p-6 border border-border rounded-lg">
+                      <HStack className="mb-4">
+                        <Globe size={20} className="text-secondary" />
+                        <Heading size="md" className="text-foreground">
                           Origin
                         </Heading>
                       </HStack>
-                      <VStack align="start" gap={3}>
-                        <Text color="gray.300" fontSize="sm">
-                          <Text
-                            as="span"
-                            color="blue.400"
-                            fontWeight="semibold"
-                          >
+                      <VStack align="start" gap="sm">
+                        <Text variant="muted" size="sm">
+                          <Text as="span" variant="secondary" weight="semibold">
                             Birth Year:
                           </Text>{' '}
                           {character.birth_year}
                         </Text>
-                        <Text color="gray.300" fontSize="sm">
-                          <Text
-                            as="span"
-                            color="blue.400"
-                            fontWeight="semibold"
-                          >
+                        <Text variant="muted" size="sm">
+                          <Text as="span" variant="secondary" weight="semibold">
                             Homeworld:
                           </Text>{' '}
                           {homeworld?.name || 'Unknown'}
                         </Text>
                         {species.length > 0 && (
-                          <Text color="gray.300" fontSize="sm">
+                          <Text variant="muted" size="sm">
                             <Text
                               as="span"
-                              color="blue.400"
-                              fontWeight="semibold"
+                              variant="secondary"
+                              weight="semibold"
                             >
                               Species:
                             </Text>{' '}
@@ -435,14 +378,14 @@ export default function CharacterDetailPage({
                         )}
                       </VStack>
                     </Box>
-                  </Grid>
-                </Card.Body>
-              </Card.Root>
+                  </div>
+                </CardContent>
+              </Card>
             </Box>
           </motion.div>
 
           {/* Content Sections */}
-          <VStack gap={16}>
+          <VStack gap="xl">
             {/* Films */}
             {films.length > 0 && (
               <motion.div
@@ -452,18 +395,13 @@ export default function CharacterDetailPage({
                 style={{ width: '100%' }}
               >
                 <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                  <Heading
+                    size="xl"
+                    className="mb-8 text-foreground text-center"
+                  >
                     Films ({films.length})
                   </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                      xl: 'repeat(4, 1fr)',
-                    }}
-                    gap={6}
-                  >
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {films.map((film, index) => (
                       <motion.div
                         key={film.url}
@@ -474,7 +412,7 @@ export default function CharacterDetailPage({
                         <FilmCard film={film} />
                       </motion.div>
                     ))}
-                  </Grid>
+                  </div>
                 </Box>
               </motion.div>
             )}
@@ -488,10 +426,13 @@ export default function CharacterDetailPage({
                 style={{ width: '100%' }}
               >
                 <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                  <Heading
+                    size="xl"
+                    className="mb-8 text-foreground text-center"
+                  >
                     Homeworld
                   </Heading>
-                  <Box maxW="md" mx="auto">
+                  <Box className="mx-auto max-w-md">
                     <PlanetCard planet={homeworld} />
                   </Box>
                 </Box>
@@ -507,17 +448,13 @@ export default function CharacterDetailPage({
                 style={{ width: '100%' }}
               >
                 <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                  <Heading
+                    size="xl"
+                    className="mb-8 text-foreground text-center"
+                  >
                     Starships ({starships.length})
                   </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {starships.map((starship, index) => (
                       <motion.div
                         key={starship.url}
@@ -528,7 +465,7 @@ export default function CharacterDetailPage({
                         <StarshipCard starship={starship} />
                       </motion.div>
                     ))}
-                  </Grid>
+                  </div>
                 </Box>
               </motion.div>
             )}

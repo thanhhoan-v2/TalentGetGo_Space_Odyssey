@@ -1,4 +1,5 @@
-import { Box, Input } from '@chakra-ui/react';
+import { Box, Input } from '@/components/ui';
+import { cn } from '@/lib/utils';
 import { Search } from 'lucide-react';
 
 interface CharacterSearchProps {
@@ -11,32 +12,19 @@ export function CharacterSearch({
   onSearchChange,
 }: CharacterSearchProps) {
   return (
-    <Box maxW="2xl" mx="auto" mb={8} position="relative">
-      <Box
-        position="absolute"
-        left="12px"
-        top="50%"
-        transform="translateY(-50%)"
-        zIndex={2}
-        pointerEvents="none"
-      >
-        <Search size={20} color="rgb(156, 163, 175)" />
+    <Box className="relative mx-auto mb-8 max-w-2xl">
+      <Box className="top-1/2 left-3 z-10 absolute -translate-y-1/2 pointer-events-none">
+        <Search size={20} className="text-muted-foreground" />
       </Box>
       <Input
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search characters (e.g., Luke, Vader, Leia)..."
-        bg="gray.900"
-        borderColor="gray.700"
-        _hover={{ borderColor: 'gray.600' }}
-        _focus={{
-          borderColor: 'blue.500',
-          boxShadow: '0 0 0 1px rgb(59, 130, 246)',
-        }}
-        color="white"
-        _placeholder={{ color: 'gray.400' }}
-        pl="44px"
-        size="lg"
+        className={cn(
+          'pl-10 h-12 bg-input border-border text-foreground placeholder:text-muted-foreground',
+          'focus:border-ring focus:ring-1 focus:ring-ring theme-transition',
+          'hover:border-border/80'
+        )}
       />
     </Box>
   );

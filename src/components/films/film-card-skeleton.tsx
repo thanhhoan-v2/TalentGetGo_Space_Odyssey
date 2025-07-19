@@ -1,30 +1,54 @@
 import {
   Box,
   Card,
+  CardContent,
   HStack,
   Skeleton,
-  SkeletonText,
-  Stack,
-} from '@chakra-ui/react';
+  VStack,
+} from '@/components/ui';
+import { cn } from '@/lib/utils';
 
 export function FilmCardSkeleton() {
   return (
-    <Card.Root size="lg" variant="elevated" bg="gray.900">
-      <Card.Body p={8}>
-        <HStack justify="space-between" mb={4}>
-          <Skeleton height="24px" width="100px" />
-          <Skeleton height="20px" width="60px" />
-        </HStack>
-        <Skeleton height="32px" width="100%" mb={4} />
-        <Stack gap={2} mb={6}>
-          <SkeletonText noOfLines={3} />
-        </Stack>
-        <Box mb={6}>
-          <Skeleton height="20px" width="120px" mb={3} />
-          <SkeletonText noOfLines={3} />
-        </Box>
-        <Skeleton height="48px" width="100%" />
-      </Card.Body>
-    </Card.Root>
+    <div className="w-full max-w-[500px] h-[500px]">
+      <Card
+        className={cn(
+          'h-full border-border bg-card/50 backdrop-blur-sm theme-transition',
+          'card-glow' // Apply theme-specific effects
+        )}
+      >
+        <CardContent className="flex flex-col p-8 h-full">
+          <HStack justify="between" className="mb-4">
+            <Skeleton className="rounded-full w-24 h-6" />
+            <Skeleton className="w-16 h-5" />
+          </HStack>
+
+          <Skeleton className="mb-4 w-full h-8" />
+
+          <VStack gap="sm" className="flex-1 mb-6">
+            <Skeleton className="w-full h-4" />
+            <Skeleton className="w-3/4 h-4" />
+          </VStack>
+
+          <Box className="mb-6">
+            <Skeleton className="mb-3 w-32 h-5" />
+            <Box
+              className={cn(
+                'bg-muted/20 p-4 rounded-lg border border-border/50',
+                'backdrop-blur-sm'
+              )}
+            >
+              <div className="space-y-2">
+                <Skeleton className="w-full h-3" />
+                <Skeleton className="w-5/6 h-3" />
+                <Skeleton className="w-4/5 h-3" />
+              </div>
+            </Box>
+          </Box>
+
+          <Skeleton className="mt-auto w-full h-12" />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

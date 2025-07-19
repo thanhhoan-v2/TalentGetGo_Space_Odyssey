@@ -5,6 +5,7 @@ export {
   batchFetchResources,
   convertCharacterToLegacyFormat,
   convertFilmToLegacyFormat,
+  extractIdFromURL,
   getAllFilms,
   getAllPeople,
   getFilmById,
@@ -19,7 +20,18 @@ export {
   useLazyGetPersonById,
   useSearchPeople,
 } from '@/utils/swapi-graphql';
-export { extractIdFromGraphQLId as extractIdFromUrl } from '@/utils/swapi-graphql';
+
+// Helper function that handles both URL extraction and direct IDs
+export function extractIdFromUrl(urlOrId: string): string {
+  // If it's already just an ID (from GraphQL), return it directly
+  if (!urlOrId.includes('/')) {
+    return urlOrId;
+  }
+
+  // Otherwise extract ID from URL (legacy SWAPI format)
+  const parts = urlOrId.split('/').filter(Boolean);
+  return parts[parts.length - 1] || '';
+}
 
 // Legacy type exports for backward compatibility
 export type {

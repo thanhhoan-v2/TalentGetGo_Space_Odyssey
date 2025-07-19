@@ -1,5 +1,5 @@
+import { Card, CardContent, Heading } from '@/components/ui';
 import { Planet, Starship } from '@/schema/swapi';
-import { Card, Heading } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
 // Planet Card Component
@@ -16,23 +16,13 @@ export function PlanetCard({ planet }: PlanetCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card.Root
-        variant="elevated"
-        bg="gray.900"
-        borderColor="gray.700"
-        _hover={{
-          borderColor: 'green.400',
-          shadow: 'lg',
-          transform: 'translateY(-2px)',
-        }}
-        transition="all 0.3s ease"
-      >
-        <Card.Body p={6}>
-          <Heading size="md" color="white" mb={3}>
+      <Card className="bg-card hover:shadow-lg hover:border-accent border-border transition-all hover:-translate-y-0.5 duration-300">
+        <CardContent className="p-6">
+          <Heading size="md" className="mb-3 text-foreground">
             {planet.name}
           </Heading>
-        </Card.Body>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }
@@ -51,23 +41,13 @@ export function StarshipCard({ starship }: StarshipCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card.Root
-        variant="elevated"
-        bg="gray.900"
-        borderColor="gray.700"
-        _hover={{
-          borderColor: 'red.400',
-          shadow: 'lg',
-          transform: 'translateY(-2px)',
-        }}
-        transition="all 0.3s ease"
-      >
-        <Card.Body p={6}>
-          <Heading size="md" color="white" mb={2}>
+      <Card className="bg-card hover:shadow-lg hover:border-destructive border-border transition-all hover:-translate-y-0.5 duration-300">
+        <CardContent className="p-6">
+          <Heading size="md" className="mb-2 text-foreground">
             {starship.name}
           </Heading>
-        </Card.Body>
-      </Card.Root>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }

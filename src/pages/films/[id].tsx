@@ -3,6 +3,18 @@
 import { CharacterCard } from '@/components/characters/character-card';
 import { PageLayout } from '@/components/common';
 import { PlanetCard, StarshipCard } from '@/components/films/resource-cards';
+import {
+  Badge,
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from '@/components/ui';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS, GET_FILM_BY_ID } from '@/lib/queries';
 import { Film as GraphQLFilm } from '@/schema/graphql';
@@ -14,18 +26,6 @@ import {
   Starship,
   Vehicle,
 } from '@/schema/swapi';
-import {
-  Badge,
-  Box,
-  Card,
-  Container,
-  Flex,
-  Grid,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { Calendar, User, Users } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -197,46 +197,36 @@ export default function FilmDetailPage({
 
       <PageLayout currentPage="films">
         {/* Main Content */}
-        <Container maxW="7xl" py={12}>
+        <Container size="7xl" className="py-12">
           {/* Film Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <VStack gap={6} mb={12} textAlign="center">
+            <VStack gap="lg" className="mb-12 text-center">
               <Badge
-                colorScheme="blue"
-                variant="solid"
-                px={4}
-                py={2}
-                borderRadius="full"
-                fontSize="lg"
-                fontWeight="bold"
+                variant="secondary"
+                className="px-4 py-2 font-bold text-lg"
               >
                 Episode {film.episode_id}
               </Badge>
 
-              <Heading
-                size={{ base: '2xl', md: '4xl' }}
-                bgGradient="linear(to-r, yellow.400, orange.500)"
-                bgClip="text"
-                lineHeight="shorter"
-              >
+              <Heading size="4xl" variant="gradient" className="leading-tight">
                 {film.title}
               </Heading>
 
               <Flex
-                direction={{ base: 'column', md: 'row' }}
-                gap={6}
+                className="md:flex-row flex-col"
+                gap="lg"
                 wrap="wrap"
                 justify="center"
                 align="center"
               >
                 <HStack>
-                  <User size={16} color="rgb(96, 165, 250)" />
-                  <Text color="gray.300">
-                    <Text as="span" color="blue.400" fontWeight="semibold">
+                  <User size={16} className="text-secondary" />
+                  <Text variant="muted">
+                    <Text as="span" variant="secondary" weight="semibold">
                       Director:
                     </Text>{' '}
                     {film.director}
@@ -244,9 +234,9 @@ export default function FilmDetailPage({
                 </HStack>
                 {film.producer && (
                   <HStack>
-                    <Users size={16} color="rgb(96, 165, 250)" />
-                    <Text color="gray.300">
-                      <Text as="span" color="blue.400" fontWeight="semibold">
+                    <Users size={16} className="text-secondary" />
+                    <Text variant="muted">
+                      <Text as="span" variant="secondary" weight="semibold">
                         Producer:
                       </Text>{' '}
                       {film.producer}
@@ -254,9 +244,9 @@ export default function FilmDetailPage({
                   </HStack>
                 )}
                 <HStack>
-                  <Calendar size={16} color="rgb(96, 165, 250)" />
-                  <Text color="gray.300">
-                    <Text as="span" color="blue.400" fontWeight="semibold">
+                  <Calendar size={16} className="text-secondary" />
+                  <Text variant="muted">
+                    <Text as="span" variant="secondary" weight="semibold">
                       Released:
                     </Text>{' '}
                     {new Date(film.release_date).toLocaleDateString('en-US', {
@@ -276,47 +266,31 @@ export default function FilmDetailPage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Box mb={16}>
-              <Card.Root
-                variant="elevated"
-                bg="gray.900"
-                borderColor="gray.700"
-                maxW="4xl"
-                mx="auto"
-              >
-                <Card.Body p={8}>
+            <Box className="mb-16">
+              <Card className="bg-card mx-auto border-border max-w-4xl">
+                <CardContent className="p-8">
                   <Heading
                     size="xl"
-                    color="yellow.400"
-                    mb={6}
-                    textAlign="center"
+                    variant="primary"
+                    className="mb-6 text-center"
                   >
                     Opening Crawl
                   </Heading>
-                  <Box
-                    bg="blackAlpha.600"
-                    p={6}
-                    borderRadius="lg"
-                    border="1px solid"
-                    borderColor="gray.600"
-                  >
+                  <Box className="bg-background/60 p-6 border border-border rounded-lg">
                     <Text
-                      color="gray.300"
-                      lineHeight="relaxed"
-                      whiteSpace="pre-wrap"
-                      textAlign="center"
-                      fontSize={{ base: 'sm', md: 'md' }}
+                      variant="muted"
+                      className="text-sm md:text-base text-center leading-relaxed whitespace-pre-wrap"
                     >
                       {film.opening_crawl}
                     </Text>
                   </Box>
-                </Card.Body>
-              </Card.Root>
+                </CardContent>
+              </Card>
             </Box>
           </motion.div>
 
           {/* Content Sections */}
-          <VStack gap={16}>
+          <VStack gap="xl">
             {/* Characters */}
             {characters.length > 0 && (
               <motion.div
@@ -326,18 +300,13 @@ export default function FilmDetailPage({
                 style={{ width: '100%' }}
               >
                 <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                  <Heading
+                    size="xl"
+                    className="mb-8 text-foreground text-center"
+                  >
                     Characters ({characters.length})
                   </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                      xl: 'repeat(4, 1fr)',
-                    }}
-                    gap={6}
-                  >
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {characters.map((character, index) => (
                       <motion.div
                         key={character.url}
@@ -348,7 +317,7 @@ export default function FilmDetailPage({
                         <CharacterCard character={character} />
                       </motion.div>
                     ))}
-                  </Grid>
+                  </div>
                 </Box>
               </motion.div>
             )}
@@ -362,17 +331,13 @@ export default function FilmDetailPage({
                 style={{ width: '100%' }}
               >
                 <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                  <Heading
+                    size="xl"
+                    className="mb-8 text-foreground text-center"
+                  >
                     Planets ({planets.length})
                   </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {planets.map((planet, index) => (
                       <motion.div
                         key={planet.url}
@@ -383,7 +348,7 @@ export default function FilmDetailPage({
                         <PlanetCard planet={planet} />
                       </motion.div>
                     ))}
-                  </Grid>
+                  </div>
                 </Box>
               </motion.div>
             )}
@@ -397,17 +362,13 @@ export default function FilmDetailPage({
                 style={{ width: '100%' }}
               >
                 <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
+                  <Heading
+                    size="xl"
+                    className="mb-8 text-foreground text-center"
+                  >
                     Starships ({starships.length})
                   </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {starships.map((starship, index) => (
                       <motion.div
                         key={starship.url}
@@ -418,7 +379,7 @@ export default function FilmDetailPage({
                         <StarshipCard starship={starship} />
                       </motion.div>
                     ))}
-                  </Grid>
+                  </div>
                 </Box>
               </motion.div>
             )}

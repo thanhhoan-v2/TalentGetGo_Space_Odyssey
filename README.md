@@ -22,7 +22,6 @@ This project is built using modern web technologies:
 
 **Styling & UI**
 
-- Chakra UI 3.x for component library
 - Emotion for CSS-in-JS styling
 - Framer Motion for animations
 - next-themes for theme switching
@@ -59,5 +58,4 @@ This project is built using modern web technologies:
 
 - Clean component architecture
 - TypeScript strict mode with proper type definitions
-- Reusable UI components with Chakra UI
 - Responsive design with mobile-first approach

@@ -1,7 +1,7 @@
+import { Card, CardContent, Heading, VStack } from '@/components/ui';
 import { Person } from '@/schema/swapi';
 import { getCharacterImage } from '@/utils/assets';
 import { extractIdFromUrl } from '@/utils/swapi';
-import { Card, Image as ChakraImage, Heading, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -41,39 +41,25 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <Link href={character.url}>
-            <Card.Root
-              variant="elevated"
-              bg="gray.900"
-              borderColor="gray.700"
-              _hover={{
-                borderColor: 'yellow.400',
-                shadow: 'xl',
-                transform: 'translateY(-4px)',
-              }}
-              transition="all 0.3s ease"
-              cursor="pointer"
-              h="full"
-            >
-              <Card.Body p={6}>
+          <Link href={`/characters/${characterId}`}>
+            <Card className="bg-card hover:shadow-xl rebel-base:card-shadow hover:border-primary border-border h-full transition-all hover:-translate-y-1 duration-300 cursor-pointer empire:card-glow">
+              <CardContent className="p-6">
                 <VStack align="center">
-                  <ChakraImage asChild>
+                  <div className="relative rounded w-full aspect-square overflow-hidden">
                     <Image
                       src={characterImage}
                       alt={character.name}
                       width={500}
                       height={500}
-                      layout="responsive"
-                      objectFit="cover"
-                      style={{ borderRadius: '4px' }}
+                      className="object-cover"
                     />
-                  </ChakraImage>
-                  <Heading size="md" color="white" lineClamp={1}>
+                  </div>
+                  <Heading size="md" className="text-foreground line-clamp-1">
                     {character.name}
                   </Heading>
                 </VStack>
-              </Card.Body>
-            </Card.Root>
+              </CardContent>
+            </Card>
           </Link>
         </motion.div>
       )}

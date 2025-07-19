@@ -2,11 +2,12 @@
 
 import { PageLayout } from '@/components/common';
 import { FilmCard, FilmCardSkeleton, FilmsStats } from '@/components/films';
+import { Box, Heading, Text } from '@/components/ui';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
+import { cn } from '@/lib/utils';
 import { Film as GraphQLFilm } from '@/schema/graphql';
 import { Film as SWAPIFilm } from '@/schema/swapi';
-import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
@@ -47,19 +48,20 @@ export default function FilmsPage({ films }: FilmsPageProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  const images = [
+    { src: '/1.jpg', alt: 'Image 1' },
+    { src: '/1.jpg', alt: 'Image 2' },
+    { src: '/1.jpg', alt: 'Image 3' },
+  ];
+
   return (
     <PageLayout currentPage="films">
       {/* Page Header */}
-      <Box textAlign="center" mb={12}>
-        <Heading
-          size="3xl"
-          bgGradient="linear(to-r, yellow.400, orange.500)"
-          bgClip="text"
-          mb={4}
-        >
+      <Box className="mb-12 text-center">
+        <Heading size="3xl" variant="gradient" className="mb-4">
           Star Wars Films
         </Heading>
-        <Text fontSize="xl" color="gray.300" maxW="3xl" mx="auto">
+        <Text size="xl" variant="muted" className="mx-auto max-w-3xl">
           Explore the complete Star Wars saga. From the original trilogy to the
           prequels and beyond.
         </Text>
@@ -67,18 +69,27 @@ export default function FilmsPage({ films }: FilmsPageProps) {
 
       {/* Films Grid */}
       {isLoading ? (
-        <SimpleGrid columns={{ base: 1, lg: 2 }} gap={8} mb={16}>
+        <div className={cn('grid gap-8 mb-16', 'grid-cols-1 lg:grid-cols-2')}>
           {Array.from({ length: 4 }).map((_, index) => (
             <FilmCardSkeleton key={index} />
           ))}
-        </SimpleGrid>
+        </div>
       ) : films && films.length > 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <SimpleGrid columns={{ base: 1, lg: 2 }} gap={8} mb={16}>
+          {/* <div className="pt-40">
+            <CardCarousel
+              images={images}
+              films={films}
+              autoplayDelay={2000}
+              showPagination={true}
+              showNavigation={true}
+            />
+          </div> */}
+          <div className={cn('grid gap-8 mb-16', 'grid-cols-1 lg:grid-cols-2')}>
             {films
               .sort((a, b) => a.episode_id - b.episode_id)
               .map((film, index) => (
@@ -91,11 +102,11 @@ export default function FilmsPage({ films }: FilmsPageProps) {
                   <FilmCard film={film} />
                 </motion.div>
               ))}
-          </SimpleGrid>
+          </div>
         </motion.div>
       ) : (
-        <Box textAlign="center" py={12}>
-          <Text color="gray.400" fontSize="lg">
+        <Box className="py-12 text-center">
+          <Text variant="muted" size="lg">
             No films available at the moment.
           </Text>
         </Box>

@@ -1,19 +1,27 @@
-import { Box, Container } from '@chakra-ui/react';
+import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { PageHeader } from './page-header';
 
 interface PageLayoutProps {
   children: ReactNode;
   currentPage: 'films' | 'characters' | 'home';
+  className?: string;
 }
 
-export function PageLayout({ children, currentPage }: PageLayoutProps) {
+export function PageLayout({
+  children,
+  currentPage,
+  className,
+}: PageLayoutProps) {
   return (
-    <Box minH="100vh" bg="black" color="white">
+    <div
+      className={cn(
+        'min-h-screen bg-background text-foreground theme-transition',
+        className
+      )}
+    >
       <PageHeader currentPage={currentPage} />
-      <Container maxW="7xl" py={12}>
-        {children}
-      </Container>
-    </Box>
+      <div className="mx-auto px-4 py-12 max-w-7xl">{children}</div>
+    </div>
   );
 }

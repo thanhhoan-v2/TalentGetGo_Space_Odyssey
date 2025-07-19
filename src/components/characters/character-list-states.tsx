@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Heading, Text, VStack } from '@/components/ui';
 import { motion } from 'framer-motion';
 
 interface CharacterListStatesProps {
@@ -24,33 +24,19 @@ export function CharacterListStates({
     <>
       {/* Loading State */}
       {loading && charactersLength > 0 && (
-        <VStack py={8}>
-          <Box
-            w={8}
-            h={8}
-            border="2px solid"
-            borderColor="gray.600"
-            borderTopColor="yellow.400"
-            borderRadius="full"
-            animation="spin 1s linear infinite"
-          />
-          <Text color="gray.400">Loading more characters...</Text>
+        <VStack gap="md" className="py-8">
+          <Box className="border-2 border-muted border-t-secondary rounded-full w-8 h-8 animate-spin" />
+          <Text variant="muted">Loading more characters...</Text>
         </VStack>
       )}
 
       {/* Load More Button */}
       {!loading && hasMore && charactersLength > 0 && (
-        <Box textAlign="center">
+        <Box className="text-center">
           <Button
             onClick={onLoadMore}
             size="lg"
-            bgGradient="linear(to-r, blue.600, blue.700)"
-            color="black"
-            _hover={{
-              bgGradient: 'linear(to-r, blue.700, blue.800)',
-              transform: 'translateY(-2px)',
-            }}
-            transition="all 0.2s ease"
+            className="bg-gradient-to-r from-secondary hover:from-secondary/80 to-secondary/80 hover:to-secondary/60 text-white transition-all hover:-translate-y-0.5 duration-200"
           >
             Load More Characters
           </Button>
@@ -59,8 +45,8 @@ export function CharacterListStates({
 
       {/* No More Results */}
       {!loading && !hasMore && charactersLength > 0 && (
-        <Box textAlign="center" py={8}>
-          <Text color="gray.400">
+        <Box className="py-8 text-center">
+          <Text variant="muted">
             {isSearching
               ? 'No more search results'
               : "You've seen all characters in the galaxy!"}
@@ -75,22 +61,20 @@ export function CharacterListStates({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <VStack py={16} textAlign="center">
-            <Text fontSize="6xl" mb={4}>
-              🔍
-            </Text>
-            <Heading size="xl" color="white" mb={2}>
+          <VStack gap="md" className="py-16 text-center">
+            <Text className="mb-4 text-6xl">🔍</Text>
+            <Heading size="xl" className="mb-2 text-foreground">
               No Characters Found
             </Heading>
-            <Text color="gray.400" mb={6}>
+            <Text variant="muted" className="mb-6">
               No characters match your search for &ldquo;{searchQuery}
               &rdquo;
             </Text>
             <Button
               onClick={onClearSearch}
-              colorScheme="yellow"
-              variant="solid"
+              variant="default"
               size="lg"
+              className="bg-primary hover:bg-primary/90"
             >
               Clear Search
             </Button>
