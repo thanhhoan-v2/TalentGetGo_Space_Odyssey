@@ -2,12 +2,7 @@
 
 import { FilmCard } from '@/components/characters';
 import { PageLayout } from '@/components/common';
-import {
-  PlanetCard,
-  SpeciesCard,
-  StarshipCard,
-  VehicleCard,
-} from '@/components/films';
+import { PlanetCard, StarshipCard } from '@/components/films';
 import {
   Film,
   Person,
@@ -17,8 +12,8 @@ import {
   Vehicle,
 } from '@/schema/swapi';
 import { getCharacterImage } from '@/utils/assets';
+import { extractIdFromUrl } from '@/utils/swapi';
 import {
-  Badge,
   Box,
   Card,
   Image as ChakraImage,
@@ -34,7 +29,7 @@ import { motion } from 'framer-motion';
 import { Calendar, Eye, Globe, Ruler, User, Weight } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 // SWAPI.tech API Response Interfaces
@@ -161,18 +156,23 @@ export default function CharacterDetailPage({
   starships,
   vehicles,
 }: CharacterDetailPageProps) {
-  const [characterImage, setCharacterImage] = useState<StaticImageData | null>(
-    null
-  );
+  const [characterImage, setCharacterImage] = useState<string | null>(null);
+  const characterId = extractIdFromUrl(character.url);
 
-  // Load character image on component mount
   useEffect(() => {
     const loadImage = async () => {
-      const image = await getCharacterImage(paramsId);
-      setCharacterImage(image);
+      try {
+        const image = await getCharacterImage(characterId);
+        if (image) setCharacterImage(image.src);
+      } catch (error) {
+        console.warn(
+          `Failed to load character image for ${characterId}:`,
+          error
+        );
+      }
     };
     loadImage();
-  }, [paramsId]);
+  }, [characterId]);
 
   return (
     <>
@@ -202,17 +202,16 @@ export default function CharacterDetailPage({
             transition={{ duration: 0.6 }}
           >
             <VStack gap={6} mb={12} textAlign="center">
-              <Badge
-                colorScheme="yellow"
-                variant="solid"
-                px={4}
-                py={2}
-                borderRadius="full"
-                fontSize="lg"
-                fontWeight="bold"
-              >
-                Character Profile
-              </Badge>
+              {characterImage && (
+                <ChakraImage asChild>
+                  <Image
+                    src={characterImage}
+                    alt={character.name}
+                    width={100}
+                    height={100}
+                  />
+                </ChakraImage>
+              )}
 
               <Heading
                 size={{ base: '2xl', md: '4xl' }}
@@ -307,23 +306,6 @@ export default function CharacterDetailPage({
                           Physical
                         </Heading>
                       </HStack>
-                      {characterImage && (
-                        <Box mb={4} textAlign="center">
-                          <ChakraImage asChild>
-                            <Image
-                              src={characterImage}
-                              alt={character.name}
-                              width={100}
-                              height={100}
-                              style={{
-                                borderRadius: '8px',
-                                objectFit: 'cover',
-                                margin: '0 auto',
-                              }}
-                            />
-                          </ChakraImage>
-                        </Box>
-                      )}
                       <VStack align="start" gap={3}>
                         <HStack>
                           <Ruler size={16} color="rgb(96, 165, 250)" />
@@ -544,76 +526,6 @@ export default function CharacterDetailPage({
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
                         <StarshipCard starship={starship} />
-                      </motion.div>
-                    ))}
-                  </Grid>
-                </Box>
-              </motion.div>
-            )}
-
-            {/* Vehicles */}
-            {vehicles.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
-                style={{ width: '100%' }}
-              >
-                <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
-                    Vehicles ({vehicles.length})
-                  </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
-                    {vehicles.map((vehicle, index) => (
-                      <motion.div
-                        key={vehicle.url}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <VehicleCard vehicle={vehicle} />
-                      </motion.div>
-                    ))}
-                  </Grid>
-                </Box>
-              </motion.div>
-            )}
-
-            {/* Species */}
-            {species.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.2 }}
-                style={{ width: '100%' }}
-              >
-                <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
-                    Species ({species.length})
-                  </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
-                    {species.map((specie, index) => (
-                      <motion.div
-                        key={specie.url}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <SpeciesCard species={specie} />
                       </motion.div>
                     ))}
                   </Grid>

@@ -1,10 +1,3 @@
-export { FilmCard } from './film-card';
-export { FilmCardSkeleton } from './film-card-skeleton';
-export { FilmsStats } from './films-stats';
-export {
-  CharacterCard,
-  PlanetCard,
-  SpeciesCard,
-  StarshipCard,
-  VehicleCard,
-} from './resource-cards';
+export { FilmCard } from '@/components/films/film-card';
+export { FilmCardSkeleton } from '@/components/films/film-card-skeleton';
+export { FilmsStats } from '@/components/films/films-stats';
