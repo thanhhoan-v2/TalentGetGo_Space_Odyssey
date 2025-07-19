@@ -1,13 +1,8 @@
 'use client';
 
+import { CharacterCard } from '@/components/characters/character-card';
 import { PageLayout } from '@/components/common';
-import {
-  CharacterCard,
-  PlanetCard,
-  SpeciesCard,
-  StarshipCard,
-  VehicleCard,
-} from '@/components/films';
+import { PlanetCard, StarshipCard } from '@/components/films/resource-cards';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS, GET_FILM_BY_ID } from '@/lib/queries';
 import { Film as GraphQLFilm } from '@/schema/graphql';
@@ -421,76 +416,6 @@ export default function FilmDetailPage({
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
                         <StarshipCard starship={starship} />
-                      </motion.div>
-                    ))}
-                  </Grid>
-                </Box>
-              </motion.div>
-            )}
-
-            {/* Vehicles */}
-            {vehicles.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
-                style={{ width: '100%' }}
-              >
-                <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
-                    Vehicles ({vehicles.length})
-                  </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
-                    {vehicles.map((vehicle, index) => (
-                      <motion.div
-                        key={vehicle.url}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <VehicleCard vehicle={vehicle} />
-                      </motion.div>
-                    ))}
-                  </Grid>
-                </Box>
-              </motion.div>
-            )}
-
-            {/* Species */}
-            {species.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.2 }}
-                style={{ width: '100%' }}
-              >
-                <Box>
-                  <Heading size="xl" color="white" mb={8} textAlign="center">
-                    Species ({species.length})
-                  </Heading>
-                  <Grid
-                    templateColumns={{
-                      base: '1fr',
-                      md: 'repeat(2, 1fr)',
-                      lg: 'repeat(3, 1fr)',
-                    }}
-                    gap={6}
-                  >
-                    {species.map((specie, index) => (
-                      <motion.div
-                        key={specie.url}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <SpeciesCard species={specie} />
                       </motion.div>
                     ))}
                   </Grid>

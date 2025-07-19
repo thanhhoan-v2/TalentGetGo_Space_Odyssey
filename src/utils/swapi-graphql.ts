@@ -242,6 +242,11 @@ export function extractIdFromGraphQLId(graphqlId: string): string {
   return graphqlId;
 }
 
+export function extractNumber(url: string): number | null {
+  const match = url.match(/\/characters\/(\d+)/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
 // Helper function to convert GraphQL data to legacy SWAPI format for compatibility
 export function convertFilmToLegacyFormat(
   film: FilmWithDetails

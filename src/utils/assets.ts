@@ -1,3 +1,4 @@
+import { extractNumber } from '@/utils/swapi-graphql';
 import { StaticImageData } from 'next/image';
 
 // Utility function to get character image
@@ -6,7 +7,7 @@ export const getCharacterImage = async (
 ): Promise<StaticImageData | null> => {
   try {
     // Dynamic import for the character image
-    const image = await import(`@/assets/${id}.jpg`);
+    const image = await import(`@/assets/characters/${extractNumber(id)}.jpg`);
     return image.default;
   } catch (error) {
     // Fallback to a default character image if specific one doesn't exist

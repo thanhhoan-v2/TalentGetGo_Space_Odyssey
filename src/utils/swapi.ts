@@ -18,10 +18,8 @@ export {
   useLazyGetFilmById,
   useLazyGetPersonById,
   useSearchPeople,
-} from './swapi-graphql';
-
-// Re-export with alias for backward compatibility
-export { extractIdFromGraphQLId as extractIdFromUrl } from './swapi-graphql';
+} from '@/utils/swapi-graphql';
+export { extractIdFromGraphQLId as extractIdFromUrl } from '@/utils/swapi-graphql';
 
 // Legacy type exports for backward compatibility
 export type {
@@ -77,7 +75,6 @@ export async function searchPeople(
     results: [],
   };
 }
-
 // Legacy planets functions (not implemented in GraphQL yet)
 export async function getAllPlanets(_page = 1): Promise<SWAPIResponse<Planet>> {
   // Placeholder for future implementation
