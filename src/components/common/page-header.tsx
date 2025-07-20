@@ -1,28 +1,25 @@
 'use client';
 
-import StarWarsLogo from '@/assets/starwars-logo.png';
-import TalentGetGoLogo from '@/assets/talentgetgo.png';
-import { Button, ThemeToggle } from '@/components/ui';
+import { Badge, Button } from '@/components/ui';
+import ThemeToggleButton from '@/components/ui/theme-toggle/theme-toggle-button';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/utils/routes';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Film, Home, Menu, Users, X } from 'lucide-react';
-import Image from 'next/image';
+import { Film, Menu, Users, X } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 interface PageHeaderProps {
-  currentPage?: 'films' | 'characters' | 'home';
   transparent?: boolean;
 }
 
-export function PageHeader({
-  currentPage,
-  transparent = false,
-}: PageHeaderProps) {
+export function PageHeader({ transparent = false }: PageHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
+  const { theme } = useTheme();
 
   // Handle responsive breakpoint
   useEffect(() => {
@@ -40,42 +37,38 @@ export function PageHeader({
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const closeMobileMenu = () => setMobileMenuOpen(false);
-  const isActiveClassName = 'border-2 border-primary';
+  const isActiveClassName = 'border-1 border-primary';
 
   return (
     <nav
       className={cn(
-        'sticky top-0 z-50 transition-all duration-300 border-b theme-transition',
+        'sticky top-0 z-50 transition-all duration-300 theme-transition',
         transparent || isHomePage
           ? 'bg-transparent border-transparent backdrop-blur-lg'
-          : 'bg-background/95 border-border backdrop-blur-md shadow-lg'
+          : 'bg-background/95 border-border backdrop-blur-sm '
       )}
     >
       <div className="mx-auto px-4 py-4 max-w-7xl">
         <div className="flex justify-between items-center">
-          {/* Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Link href="/" className="flex items-center gap-3 cursor-pointer">
-              <Image
-                src={TalentGetGoLogo}
-                style={{ borderRadius: '1rem' }}
-                alt="TalentGetGo"
-                width={60}
-                height={60}
-                className="hover:scale-105 transition-transform"
-              />
-              <X size={20} className="text-foreground" />
-              <Image
-                src={StarWarsLogo}
-                alt="Star Wars"
-                width={50}
-                height={50}
-                className="hover:scale-105 transition-transform"
-              />
+            <Link
+              href={ROUTES.HOME}
+              className={cn(
+                'flex items-center gap-2 font-bold text-2xl',
+                isHomePage && 'text-white'
+              )}
+            >
+              <span>Space</span>
+              <Badge
+                variant="outline"
+                className="hover:bg-white font-bold hover:text-black text-lg"
+              >
+                Odyssey
+              </Badge>
             </Link>
           </motion.div>
 
@@ -87,59 +80,39 @@ export function PageHeader({
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex items-center gap-2"
             >
-              <Button
-                asChild
-                variant="ghost"
-                className={cn(
-                  'transition-all duration-200 theme-transition',
-                  isActive('/') && isActiveClassName
-                )}
-                size="sm"
-              >
-                <Link href="/">
-                  <Home size={18} className="mr-2" />
-                  Home
-                </Link>
-              </Button>
-
-              <Button
-                asChild
-                variant="ghost"
-                className={cn(
-                  'transition-all duration-200 theme-transition',
-                  isActive('/films') && isActiveClassName
-                )}
-                size="sm"
-              >
-                <Link href="/films">
-                  <Film size={18} className="mr-2" />
+              <Button asChild className="focus:ring-0">
+                <Link
+                  href={ROUTES.FILMS}
+                  className={cn(
+                    'theme-transition hover:bg-black hover:text-white',
+                    theme === 'dark' && 'hover:bg-white hover:text-black',
+                    isHomePage && 'text-white hover:bg-white hover:text-black',
+                    isActive(ROUTES.FILMS) && isActiveClassName
+                  )}
+                >
+                  <Film size={18} className="mr-1" />
                   Films
                 </Link>
               </Button>
 
-              <Button
-                asChild
-                variant="ghost"
-                className={cn(
-                  'transition-all duration-200 theme-transition',
-                  isActive('/characters') && isActiveClassName
-                )}
-                size="sm"
-              >
-                <Link href="/characters">
-                  <Users size={18} className="mr-2" />
+              <Button asChild>
+                <Link
+                  href={ROUTES.CHARACTERS}
+                  className={cn(
+                    'transition-all duration-200 theme-transition hover:bg-black hover:text-white',
+                    theme === 'dark' && 'hover:bg-white hover:text-black',
+                    isHomePage && 'text-white hover:bg-white hover:text-black',
+                    isActive(ROUTES.CHARACTERS) && isActiveClassName
+                  )}
+                >
+                  <Users size={18} className="mr-1" />
                   Characters
                 </Link>
               </Button>
 
               {/* Theme Toggle */}
               <div className="ml-4">
-                <ThemeToggle
-                  className={cn(
-                    'transition-all duration-200',
-                    isHomePage && 'drop-shadow-lg'
-                  )}
-                />
+                <ThemeToggleButton variant="circle" start="center" />
               </div>
             </motion.div>
           )}
@@ -147,12 +120,7 @@ export function PageHeader({
           {/* Mobile Menu Button & Theme Toggle */}
           {isMobile && (
             <div className="flex items-center gap-2">
-              <ThemeToggle
-                className={cn(
-                  'transition-all duration-200',
-                  isHomePage && 'drop-shadow-lg'
-                )}
-              />
+              <ThemeToggleButton variant="circle" start="center" />
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -163,11 +131,10 @@ export function PageHeader({
                   size="icon"
                   onClick={toggleMobileMenu}
                   className={cn(
-                    'transition-all duration-200',
-                    isHomePage
-                      ? 'text-white hover:text-primary shadow-lg drop-shadow-lg'
-                      : 'text-muted-foreground hover:text-primary',
-                    'hover:bg-accent/20'
+                    'theme-transition hover:bg-black hover:text-white',
+                    theme === 'dark' && 'hover:bg-white hover:text-black',
+                    isHomePage && 'text-white hover:bg-white hover:text-black',
+                    isActive(ROUTES.FILMS) && isActiveClassName
                   )}
                   aria-label="Toggle navigation"
                 >
@@ -195,49 +162,35 @@ export function PageHeader({
             >
               <div className="bg-background/80 backdrop-blur-lg mt-6 p-4 border border-border rounded-xl theme-transition">
                 <div className="flex flex-col gap-3">
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className={cn(
-                      'w-full justify-start transition-all duration-200',
-                      isActive('/')
-                        ? 'text-primary bg-accent/20'
-                        : 'text-foreground hover:text-primary hover:bg-accent/20'
-                    )}
-                  >
-                    <Link href="/" onClick={closeMobileMenu}>
-                      <Home size={18} className="mr-2" />
-                      Home
-                    </Link>
-                  </Button>
-
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className={cn(
-                      'w-full justify-start transition-all duration-200',
-                      isActive('/films')
-                        ? 'text-primary bg-accent/20'
-                        : 'text-foreground hover:text-primary hover:bg-accent/20'
-                    )}
-                  >
-                    <Link href="/films" onClick={closeMobileMenu}>
+                  <Button asChild variant="ghost">
+                    <Link
+                      href={ROUTES.FILMS}
+                      onClick={closeMobileMenu}
+                      className={cn(
+                        'w-full justify-start transition-all duration-200 theme-transition hover:bg-black hover:text-white',
+                        theme === 'dark' && 'hover:bg-white hover:text-black',
+                        isHomePage &&
+                          'text-white hover:bg-white hover:text-black',
+                        isActive(ROUTES.FILMS) && isActiveClassName
+                      )}
+                    >
                       <Film size={18} className="mr-2" />
                       Films
                     </Link>
                   </Button>
 
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className={cn(
-                      'w-full justify-start transition-all duration-200',
-                      isActive('/characters')
-                        ? 'text-primary bg-accent/20'
-                        : 'text-foreground hover:text-primary hover:bg-accent/20'
-                    )}
-                  >
-                    <Link href="/characters" onClick={closeMobileMenu}>
+                  <Button asChild variant="ghost">
+                    <Link
+                      href={ROUTES.CHARACTERS}
+                      onClick={closeMobileMenu}
+                      className={cn(
+                        'transition-all duration-200 theme-transition hover:bg-black hover:text-white',
+                        theme === 'dark' && 'hover:bg-white hover:text-black',
+                        isHomePage &&
+                          'text-white hover:bg-white hover:text-black',
+                        isActive(ROUTES.CHARACTERS) && isActiveClassName
+                      )}
+                    >
                       <Users size={18} className="mr-2" />
                       Characters
                     </Link>

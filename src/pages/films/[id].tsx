@@ -11,7 +11,6 @@ import {
   Container,
   Flex,
   Heading,
-  HStack,
   Text,
   VStack,
 } from '@/components/ui';
@@ -223,7 +222,7 @@ export default function FilmDetailPage({
                 justify="center"
                 align="center"
               >
-                <HStack>
+                <div className="flex items-center gap-2">
                   <User size={16} className="text-secondary" />
                   <Text variant="muted">
                     <Text as="span" variant="secondary" weight="semibold">
@@ -231,9 +230,9 @@ export default function FilmDetailPage({
                     </Text>{' '}
                     {film.director}
                   </Text>
-                </HStack>
+                </div>
                 {film.producer && (
-                  <HStack>
+                  <div className="flex items-center gap-2">
                     <Users size={16} className="text-secondary" />
                     <Text variant="muted">
                       <Text as="span" variant="secondary" weight="semibold">
@@ -241,9 +240,9 @@ export default function FilmDetailPage({
                       </Text>{' '}
                       {film.producer}
                     </Text>
-                  </HStack>
+                  </div>
                 )}
-                <HStack>
+                <div className="flex items-center gap-2">
                   <Calendar size={16} className="text-secondary" />
                   <Text variant="muted">
                     <Text as="span" variant="secondary" weight="semibold">
@@ -255,7 +254,7 @@ export default function FilmDetailPage({
                       day: 'numeric',
                     })}
                   </Text>
-                </HStack>
+                </div>
               </Flex>
             </VStack>
           </motion.div>

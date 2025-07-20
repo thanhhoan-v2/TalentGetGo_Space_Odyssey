@@ -51,7 +51,7 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
                 'relative overflow-hidden rounded-2xl',
                 'bg-white/80 dark:bg-zinc-900/80',
                 'backdrop-blur-xl',
-                'border border-zinc-200/50 dark:border-zinc-800/50',
+                // 'border border-zinc-200/50 dark:border-zinc-800/50',
                 'shadow-xs',
                 'transition-all duration-300',
                 'hover:shadow-md',

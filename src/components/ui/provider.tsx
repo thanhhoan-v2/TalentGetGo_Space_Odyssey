@@ -1,6 +1,7 @@
 'use client';
 
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+
 import { type ReactNode } from 'react';
 
 interface ProviderProps {
@@ -9,15 +10,15 @@ interface ProviderProps {
 
 export function Provider({ children }: ProviderProps) {
   return (
-    <ThemeProvider
+    <NextThemesProvider
       attribute="class"
-      defaultTheme="empire"
-      themes={['empire', 'rebel-base']}
+      defaultTheme="dark"
+      themes={['light', 'dark']}
       enableSystem={false}
       disableTransitionOnChange={false}
-      storageKey="star-wars-theme"
+      storageKey="space-odyssey-theme"
     >
       {children}
-    </ThemeProvider>
+    </NextThemesProvider>
   );
 }
