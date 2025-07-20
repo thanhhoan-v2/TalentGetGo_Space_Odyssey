@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Heading,
-  HStack,
   Text,
   VStack,
 } from '@/components/ui';
@@ -29,14 +28,14 @@ export function FilmCard({ film }: FilmCardProps) {
       <Link href={`/films/${extractIdFromUrl(film.url)}`}>
         <Card className="bg-card hover:shadow-lg hover:border-primary border-border transition-all hover:-translate-y-0.5 duration-300 cursor-pointer">
           <CardContent className="p-6">
-            <HStack justify="between" className="mb-3">
+            <div className="flex justify-between items-center mb-3">
               <Badge variant="secondary" className="px-2 py-1">
                 Episode {film.episode_id}
               </Badge>
               <Text variant="muted" size="sm">
                 {new Date(film.release_date).getFullYear()}
               </Text>
-            </HStack>
+            </div>
             <Heading size="md" className="mb-2 text-foreground">
               {film.title}
             </Heading>

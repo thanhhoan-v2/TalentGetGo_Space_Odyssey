@@ -1,2 +1,2 @@
-export { PageHeader } from './page-header';
-export { PageLayout } from './page-layout';
+export { PageHeader } from '@/components/common/page-header';
+export { PageLayout } from '@/components/common/page-layout';

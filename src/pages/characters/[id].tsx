@@ -1,6 +1,6 @@
 'use client';
 
-import { FilmCard } from '@/components/characters';
+import { FilmCard } from '@/components/films';
 import { PageLayout } from '@/components/common';
 import { PlanetCard, StarshipCard } from '@/components/films/resource-cards';
 import {
@@ -10,7 +10,6 @@ import {
   Container,
   Flex,
   Heading,
-  HStack,
   Text,
   VStack,
 } from '@/components/ui';
@@ -224,7 +223,7 @@ export default function CharacterDetailPage({
                 justify="center"
                 align="center"
               >
-                <HStack>
+                <div className="flex items-center gap-2">
                   <User size={16} className="text-secondary" />
                   <Text variant="muted">
                     <Text as="span" variant="secondary" weight="semibold">
@@ -232,8 +231,8 @@ export default function CharacterDetailPage({
                     </Text>{' '}
                     {character.gender}
                   </Text>
-                </HStack>
-                <HStack>
+                </div>
+                <div className="flex items-center gap-2">
                   <Calendar size={16} className="text-secondary" />
                   <Text variant="muted">
                     <Text as="span" variant="secondary" weight="semibold">
@@ -241,8 +240,8 @@ export default function CharacterDetailPage({
                     </Text>{' '}
                     {character.birth_year}
                   </Text>
-                </HStack>
-                <HStack>
+                </div>
+                <div className="flex items-center gap-2">
                   <Globe size={16} className="text-secondary" />
                   <Text variant="muted">
                     <Text as="span" variant="secondary" weight="semibold">
@@ -250,7 +249,7 @@ export default function CharacterDetailPage({
                     </Text>{' '}
                     {homeworld?.name || 'Unknown'}
                   </Text>
-                </HStack>
+                </div>
               </Flex>
             </VStack>
           </motion.div>
@@ -275,14 +274,14 @@ export default function CharacterDetailPage({
                   <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {/* Physical Attributes */}
                     <Box className="bg-background/60 p-6 border border-border rounded-lg">
-                      <HStack className="mb-4">
+                      <div className="flex items-center gap-2 mb-4">
                         <User size={20} className="text-secondary" />
                         <Heading size="md" className="text-foreground">
                           Physical
                         </Heading>
-                      </HStack>
+                      </div>
                       <VStack align="start" gap="sm">
-                        <HStack>
+                        <div className="flex items-center gap-2">
                           <Ruler size={16} className="text-secondary" />
                           <Text variant="muted" size="sm">
                             <Text
@@ -294,9 +293,9 @@ export default function CharacterDetailPage({
                             </Text>{' '}
                             {character.height}cm
                           </Text>
-                        </HStack>
+                        </div>
                         {character.mass !== 'unknown' && (
-                          <HStack>
+                          <div className="flex items-center gap-2">
                             <Weight size={16} className="text-secondary" />
                             <Text variant="muted" size="sm">
                               <Text
@@ -308,19 +307,19 @@ export default function CharacterDetailPage({
                               </Text>{' '}
                               {character.mass}kg
                             </Text>
-                          </HStack>
+                          </div>
                         )}
                       </VStack>
                     </Box>
 
                     {/* Appearance */}
                     <Box className="bg-background/60 p-6 border border-border rounded-lg">
-                      <HStack className="mb-4">
+                      <div className="flex items-center gap-2 mb-4">
                         <Eye size={20} className="text-secondary" />
                         <Heading size="md" className="text-foreground">
                           Appearance
                         </Heading>
-                      </HStack>
+                      </div>
                       <VStack align="start" gap="sm">
                         <Text variant="muted" size="sm">
                           <Text as="span" variant="secondary" weight="semibold">
@@ -345,12 +344,12 @@ export default function CharacterDetailPage({
 
                     {/* Origin */}
                     <Box className="bg-background/60 p-6 border border-border rounded-lg">
-                      <HStack className="mb-4">
+                      <div className="flex items-center gap-2 mb-4">
                         <Globe size={20} className="text-secondary" />
                         <Heading size="md" className="text-foreground">
                           Origin
                         </Heading>
-                      </HStack>
+                      </div>
                       <VStack align="start" gap="sm">
                         <Text variant="muted" size="sm">
                           <Text as="span" variant="secondary" weight="semibold">

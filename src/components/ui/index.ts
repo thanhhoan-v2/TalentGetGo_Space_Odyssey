@@ -1,7 +1,7 @@
 // Export all shadcn/ui components
-export { Avatar, AvatarFallback, AvatarImage } from './avatar';
-export { Badge } from './badge';
-export { Button, buttonVariants } from './button';
+export { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+export { Badge } from '@/components/ui/badge';
+export { Button, buttonVariants } from '@/components/ui/button';
 export {
   Card,
   CardContent,
@@ -9,8 +9,8 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
-} from './card';
-export { StarWarsThemeToggle, ThemeToggle } from './color-mode';
+} from '@/components/ui/card';
+export { StarWarsThemeToggle, ThemeToggle } from '@/components/ui/color-mode';
 export {
   Dialog,
   DialogContent,
@@ -19,19 +19,23 @@ export {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './dialog';
-export { Input } from './input';
-export { Label } from './label';
-export { Popover, PopoverContent, PopoverTrigger } from './popover';
-export { Provider } from './provider';
+} from '@/components/ui/dialog';
+export { Input } from '@/components/ui/input';
+export { Label } from '@/components/ui/label';
+export {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+export { Provider } from '@/components/ui/provider';
 export {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './select';
-export { Separator } from './separator';
+} from '@/components/ui/select';
+export { Separator } from '@/components/ui/separator';
 export {
   Sheet,
   SheetContent,
@@ -40,15 +44,15 @@ export {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from './sheet';
-export { Skeleton } from './skeleton';
-export { Textarea } from './textarea';
+} from '@/components/ui/sheet';
+export { Skeleton } from '@/components/ui/skeleton';
+export { Textarea } from '@/components/ui/textarea';
 export {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './tooltip';
+} from '@/components/ui/tooltip';
 
 // Typography and Layout Components
 export {
@@ -56,7 +60,6 @@ export {
   Container,
   Flex,
   Heading,
-  HStack,
   StarWarsHeading,
   Text,
   VStack,
@@ -65,7 +68,7 @@ export {
   type HeadingProps,
   type StarWarsHeadingProps,
   type TextProps,
-} from './typography';
+} from '@/components/ui/typography';
 
 // Custom components
-export { default as MaskedDiv } from './masked-div';
+export { default as MaskedDiv } from '@/components/ui/masked-div';

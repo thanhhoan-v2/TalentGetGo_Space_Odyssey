@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   Heading,
-  HStack,
   Text,
   VStack,
 } from '@/components/ui';
@@ -41,7 +40,7 @@ export function FilmCard({ film }: FilmCardProps) {
       >
         <CardContent className="flex flex-col p-8 h-full">
           {/* Episode Badge and Year */}
-          <HStack justify="between" className="mb-4">
+          <div className="flex justify-between items-center mb-4">
             <Badge
               variant="secondary"
               className="bg-secondary px-3 py-1 font-bold text-secondary-foreground text-sm"
@@ -51,7 +50,7 @@ export function FilmCard({ film }: FilmCardProps) {
             <Text variant="muted" size="sm">
               {new Date(film.release_date).getFullYear()}
             </Text>
-          </HStack>
+          </div>
 
           {/* Film Title */}
           <Heading

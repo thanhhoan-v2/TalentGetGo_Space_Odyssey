@@ -40,6 +40,7 @@ export function PageHeader({
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const closeMobileMenu = () => setMobileMenuOpen(false);
+  const isActiveClassName = 'border-2 border-primary';
 
   return (
     <nav
@@ -86,68 +87,50 @@ export function PageHeader({
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex items-center gap-2"
             >
-              <Link href="/">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'transition-all duration-200 theme-transition',
-                    isActive('/')
-                      ? 'text-primary hover:text-primary/80'
-                      : isHomePage
-                        ? 'text-white hover:text-primary shadow-lg'
-                        : 'text-muted-foreground hover:text-primary',
-                    'hover:bg-accent/20 hover:-translate-y-1',
-                    isActive('/') && 'font-bold',
-                    isHomePage && 'drop-shadow-lg'
-                  )}
-                  size="sm"
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className={cn(
+                  'transition-all duration-200 theme-transition',
+                  isActive('/') && isActiveClassName
+                )}
+                size="sm"
+              >
+                <Link href="/">
                   <Home size={18} className="mr-2" />
                   Home
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
-              <Link href="/films">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'transition-all duration-200 theme-transition',
-                    isActive('/films')
-                      ? 'text-primary hover:text-primary/80'
-                      : isHomePage
-                        ? 'text-white hover:text-primary shadow-lg'
-                        : 'text-muted-foreground hover:text-primary',
-                    'hover:bg-accent/20 hover:-translate-y-1',
-                    isActive('/films') && 'font-bold',
-                    isHomePage && 'drop-shadow-lg'
-                  )}
-                  size="sm"
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className={cn(
+                  'transition-all duration-200 theme-transition',
+                  isActive('/films') && isActiveClassName
+                )}
+                size="sm"
+              >
+                <Link href="/films">
                   <Film size={18} className="mr-2" />
                   Films
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
-              <Link href="/characters">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'transition-all duration-200 theme-transition',
-                    isActive('/characters')
-                      ? 'text-primary hover:text-primary/80'
-                      : isHomePage
-                        ? 'text-white hover:text-primary shadow-lg'
-                        : 'text-muted-foreground hover:text-primary',
-                    'hover:bg-accent/20 hover:-translate-y-1',
-                    isActive('/characters') && 'font-bold',
-                    isHomePage && 'drop-shadow-lg'
-                  )}
-                  size="sm"
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className={cn(
+                  'transition-all duration-200 theme-transition',
+                  isActive('/characters') && isActiveClassName
+                )}
+                size="sm"
+              >
+                <Link href="/characters">
                   <Users size={18} className="mr-2" />
                   Characters
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               {/* Theme Toggle */}
               <div className="ml-4">
@@ -212,50 +195,53 @@ export function PageHeader({
             >
               <div className="bg-background/80 backdrop-blur-lg mt-6 p-4 border border-border rounded-xl theme-transition">
                 <div className="flex flex-col gap-3">
-                  <Link href="/" onClick={closeMobileMenu}>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        'w-full justify-start transition-all duration-200',
-                        isActive('/')
-                          ? 'text-primary bg-accent/20'
-                          : 'text-foreground hover:text-primary hover:bg-accent/20'
-                      )}
-                    >
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={cn(
+                      'w-full justify-start transition-all duration-200',
+                      isActive('/')
+                        ? 'text-primary bg-accent/20'
+                        : 'text-foreground hover:text-primary hover:bg-accent/20'
+                    )}
+                  >
+                    <Link href="/" onClick={closeMobileMenu}>
                       <Home size={18} className="mr-2" />
                       Home
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
 
-                  <Link href="/films" onClick={closeMobileMenu}>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        'w-full justify-start transition-all duration-200',
-                        isActive('/films')
-                          ? 'text-primary bg-accent/20'
-                          : 'text-foreground hover:text-primary hover:bg-accent/20'
-                      )}
-                    >
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={cn(
+                      'w-full justify-start transition-all duration-200',
+                      isActive('/films')
+                        ? 'text-primary bg-accent/20'
+                        : 'text-foreground hover:text-primary hover:bg-accent/20'
+                    )}
+                  >
+                    <Link href="/films" onClick={closeMobileMenu}>
                       <Film size={18} className="mr-2" />
                       Films
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
 
-                  <Link href="/characters" onClick={closeMobileMenu}>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        'w-full justify-start transition-all duration-200',
-                        isActive('/characters')
-                          ? 'text-primary bg-accent/20'
-                          : 'text-foreground hover:text-primary hover:bg-accent/20'
-                      )}
-                    >
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={cn(
+                      'w-full justify-start transition-all duration-200',
+                      isActive('/characters')
+                        ? 'text-primary bg-accent/20'
+                        : 'text-foreground hover:text-primary hover:bg-accent/20'
+                    )}
+                  >
+                    <Link href="/characters" onClick={closeMobileMenu}>
                       <Users size={18} className="mr-2" />
                       Characters
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </motion.div>

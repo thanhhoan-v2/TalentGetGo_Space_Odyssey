@@ -1,7 +1,6 @@
 'use client';
 
 import { PageHeader } from '@/components/common';
-import { MaskedDiv } from '@/components/ui';
 import {
   Badge,
   Box,
@@ -10,13 +9,12 @@ import {
   CardContent,
   Container,
   Heading,
-  HStack,
   Text,
   VStack,
 } from '@/components/ui';
-import { cn } from '@/lib/utils';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
+import { cn } from '@/lib/utils';
 import { Film } from '@/schema/graphql';
 import { motion } from 'framer-motion';
 import {
@@ -24,7 +22,6 @@ import {
   Film as FilmIcon,
   Globe,
   Play,
-  Rocket,
   Sparkles,
   Users,
 } from 'lucide-react';
@@ -96,44 +93,37 @@ export default function Home({ featuredFilms }: HomeProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 1.8 }}
               >
-                <HStack gap="lg" className="flex-wrap justify-center">
-                  <Link href="/films">
-                    <Button
-                      size="lg"
-                      className={cn(
-                        'bg-white text-black hover:bg-white/90',
-                        'px-10 py-8 text-lg font-semibold',
-                        'hover:-translate-y-1 transition-all duration-300',
-                        'shadow-xl'
-                      )}
-                    >
-                      <HStack gap="sm">
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Button
+                    asChild
+                    className={cn(
+                      'bg-white text-black hover:bg-white/90',
+                      'px-10 py-8 text-lg font-semibold',
+                      'hover:-translate-y-1 transition-all duration-300',
+                      'shadow-xl'
+                    )}
+                  >
+                    <Link href="/films">
+                      <div className="flex items-center gap-2">
                         <Play size={24} />
                         <span>Explore Films</span>
-                      </HStack>
-                    </Button>
-                  </Link>
+                      </div>
+                    </Link>
+                  </Button>
 
-                  <Link href="/characters">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className={cn(
-                        'border-2 border-primary text-primary bg-black/40 backdrop-blur-lg',
-                        'px-10 py-8 text-lg font-semibold',
-                        'hover:bg-primary hover:text-primary-foreground',
-                        'hover:-translate-y-1 transition-all duration-300',
-                        'shadow-xl hover:shadow-primary/50',
-                        'drop-shadow-[0_0_10px_rgba(213,0,0,0.5)]'
-                      )}
-                    >
-                      <HStack gap="sm">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="px-10 py-8 border-2 border-primary font-semibold text-primary text-lg"
+                  >
+                    <Link href="/characters">
+                      <div className="flex items-center gap-2">
                         <Users size={24} />
                         <span>Meet Characters</span>
-                      </HStack>
-                    </Button>
-                  </Link>
-                </HStack>
+                      </div>
+                    </Link>
+                  </Button>
+                </div>
               </motion.div>
             </VStack>
           </Container>
@@ -187,7 +177,7 @@ export default function Home({ featuredFilms }: HomeProps) {
                       >
                         <CardContent className="p-6">
                           <VStack align="start" gap="md" className="h-full">
-                            <HStack justify="between" className="w-full">
+                            <div className="flex justify-between w-full">
                               <Badge
                                 variant="secondary"
                                 className="px-3 py-1 text-sm"
@@ -195,7 +185,7 @@ export default function Home({ featuredFilms }: HomeProps) {
                                 Episode {film.id}
                               </Badge>
                               <FilmIcon size={20} className="text-secondary" />
-                            </HStack>
+                            </div>
 
                             <Heading size="lg" className="leading-tight">
                               {film.title}
@@ -221,13 +211,10 @@ export default function Home({ featuredFilms }: HomeProps) {
                                 variant="outline"
                                 className="group hover:bg-secondary w-full hover:text-secondary-foreground"
                               >
-                                <HStack
-                                  gap="sm"
-                                  className="transition-transform group-hover:translate-x-1"
-                                >
+                                <div className="flex items-center gap-2 transition-transform group-hover:translate-x-1">
                                   <span>Watch Now</span>
                                   <ArrowRight size={16} />
-                                </HStack>
+                                </div>
                               </Button>
                             </Link>
                           </VStack>
@@ -335,13 +322,13 @@ export default function Home({ featuredFilms }: HomeProps) {
                               variant="ghost"
                               className="group-hover:bg-primary/10 group-hover:text-primary"
                             >
-                              <HStack gap="sm">
+                              <div className="flex items-center gap-2">
                                 <span>Learn More</span>
                                 <ArrowRight
                                   size={16}
                                   className="transition-transform group-hover:translate-x-1"
                                 />
-                              </HStack>
+                              </div>
                             </Button>
                           </VStack>
                         </CardContent>

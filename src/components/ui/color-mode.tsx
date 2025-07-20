@@ -35,10 +35,10 @@ export function ThemeToggle({
     );
   }
 
-  const isEmpire = theme === 'empire';
+  const isLight = theme === 'light';
 
   const toggleTheme = () => {
-    setTheme(isEmpire ? 'rebel-base' : 'empire');
+    setTheme(isLight ? 'dark' : 'light');
   };
 
   return (
@@ -48,16 +48,12 @@ export function ThemeToggle({
       onClick={toggleTheme}
       className={cn(
         'relative overflow-hidden transition-all duration-300',
-        isEmpire
-          ? 'hover:bg-red-950/20 hover:text-red-400'
-          : 'hover:bg-blue-50 hover:text-blue-600',
+        isLight
+          ? 'hover:bg-blue-50 hover:text-blue-600'
+          : 'hover:bg-red-950/20 hover:text-red-400',
         className
       )}
-      title={
-        isEmpire
-          ? 'Switch to Rebel Base (Light Mode)'
-          : 'Switch to Empire (Dark Mode)'
-      }
+      title={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
     >
       <motion.div
         key={theme}
@@ -71,14 +67,14 @@ export function ThemeToggle({
         }}
         className="flex justify-center items-center"
       >
-        {isEmpire ? (
+        {isLight ? (
           <Moon className="w-4 h-4 text-red-400" />
         ) : (
           <Sun className="w-4 h-4 text-blue-600" />
         )}
       </motion.div>
       <span className="sr-only">
-        {isEmpire ? 'Switch to Rebel Base' : 'Switch to Empire'}
+        {isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
       </span>
     </Button>
   );

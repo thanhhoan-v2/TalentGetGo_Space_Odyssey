@@ -245,13 +245,6 @@ export const VStack = React.forwardRef<
 
 VStack.displayName = 'VStack';
 
-export const HStack = React.forwardRef<
-  HTMLDivElement,
-  Omit<FlexProps, 'direction'>
->((props, ref) => <Flex direction="row" ref={ref} {...props} />);
-
-HStack.displayName = 'HStack';
-
 export const Box = React.forwardRef<
   HTMLDivElement,
   React.ComponentPropsWithoutRef<'div'>

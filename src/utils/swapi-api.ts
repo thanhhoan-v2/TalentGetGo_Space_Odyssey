@@ -5,6 +5,7 @@ export interface SwapiTechCharacter {
   uid: string;
   name: string;
   url: string;
+  description: string;
 }
 
 export interface SwapiTechResponse {

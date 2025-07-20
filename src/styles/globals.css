@@ -3,86 +3,73 @@
 @import 'tw-animate-css';
 
 @layer base {
-  /* Empire Theme (Dark Mode - Default) */
-  .empire {
-    --background: 11 12 16; /* Deep Space Black #0B0C10 */
-    --foreground: 245 245 245; /* Stormtrooper White #F5F5F5 */
-    --card: 11 12 16; /* Deep Space Black #0B0C10 */
-    --card-foreground: 245 245 245; /* Stormtrooper White #F5F5F5 */
-    --popover: 11 12 16;
-    --popover-foreground: 245 245 245;
-    --primary: 213 0 0; /* Sith Crimson #D50000 */
-    --primary-foreground: 245 245 245; /* Stormtrooper White #F5F5F5 */
-    --secondary: 41 182 246; /* Hologram Blue #29B6F6 */
-    --secondary-foreground: 245 245 245;
-    --muted: 169 173 177; /* Imperial Grey #A9ADB1 */
-    --muted-foreground: 169 173 177; /* Imperial Grey #A9ADB1 */
-    --accent: 41 182 246; /* Hologram Blue #29B6F6 */
-    --accent-foreground: 245 245 245;
-    --destructive: 213 0 0; /* Sith Crimson #D50000 */
-    --destructive-foreground: 245 245 245;
-    --border: 169 173 177; /* Imperial Grey #A9ADB1 */
-    --input: 11 12 16;
-    --ring: 41 182 246; /* Hologram Blue #29B6F6 */
-    --radius: 0.625rem;
-    --chart-1: 213 0 0;
-    --chart-2: 41 182 246;
-    --chart-3: 169 173 177;
-    --chart-4: 245 245 245;
-    --chart-5: 11 12 16;
-  }
-
-  /* Rebel Base Theme (Light Mode) */
-  .rebel-base {
-    --background: 245 245 245; /* Stormtrooper White #F5F5F5 */
-    --foreground: 11 12 16; /* Deep Space Black #0B0C10 */
-    --card: 245 245 245; /* Stormtrooper White #F5F5F5 */
-    --card-foreground: 11 12 16; /* Deep Space Black #0B0C10 */
-    --popover: 245 245 245;
-    --popover-foreground: 11 12 16;
-    --primary: 213 0 0; /* Sith Crimson #D50000 */
-    --primary-foreground: 245 245 245; /* Stormtrooper White #F5F5F5 */
-    --secondary: 41 182 246; /* Hologram Blue #29B6F6 */
-    --secondary-foreground: 245 245 245;
-    --muted: 169 173 177; /* Imperial Grey #A9ADB1 */
-    --muted-foreground: 169 173 177; /* Imperial Grey #A9ADB1 */
-    --accent: 41 182 246; /* Hologram Blue #29B6F6 */
-    --accent-foreground: 245 245 245;
-    --destructive: 213 0 0; /* Sith Crimson #D50000 */
-    --destructive-foreground: 245 245 245;
-    --border: 169 173 177; /* Imperial Grey #A9ADB1 */
-    --input: 245 245 245;
-    --ring: 41 182 246; /* Hologram Blue #29B6F6 */
-    /* --radius: 0.625rem; */
-    --chart-1: 213 0 0;
-    --chart-2: 41 182 246;
-    --chart-3: 169 173 177;
-    --chart-4: 11 12 16;
-    --chart-5: 245 245 245;
-  }
-
-  /* Default to Empire theme */
   :root {
-    --background: 11 12 16;
-    --foreground: 245 245 245;
-    --card: 11 12 16;
-    --card-foreground: 245 245 245;
-    --popover: 11 12 16;
-    --popover-foreground: 245 245 245;
-    --primary: 213 0 0;
-    --primary-foreground: 245 245 245;
-    --secondary: 41 182 246;
-    --secondary-foreground: 245 245 245;
-    --muted: 169 173 177;
-    --muted-foreground: 169 173 177;
-    --accent: 41 182 246;
-    --accent-foreground: 245 245 245;
-    --destructive: 213 0 0;
-    --destructive-foreground: 245 245 245;
-    --border: 169 173 177;
-    --input: 11 12 16;
-    --ring: 41 182 246;
     --radius: 0.625rem;
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+  }
+
+  .dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.269 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.371 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.439 0 0);
   }
 }
 

@@ -1,11 +1,4 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  HStack,
-  Skeleton,
-  VStack,
-} from '@/components/ui';
+import { Box, Card, CardContent, Skeleton, VStack } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 export function FilmCardSkeleton() {
@@ -18,10 +11,10 @@ export function FilmCardSkeleton() {
         )}
       >
         <CardContent className="flex flex-col p-8 h-full">
-          <HStack justify="between" className="mb-4">
+          <div className="flex justify-between items-center mb-4">
             <Skeleton className="rounded-full w-24 h-6" />
             <Skeleton className="w-16 h-5" />
-          </HStack>
+          </div>
 
           <Skeleton className="mb-4 w-full h-8" />
 
