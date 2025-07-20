@@ -1,8 +1,8 @@
 'use client';
 
 import { PageHeader } from '@/components/common';
+import { FilmCard } from '@/components/films/film-card';
 import {
-  Badge,
   Box,
   Button,
   Card,
@@ -15,7 +15,7 @@ import {
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
 import { cn } from '@/lib/utils';
-import { Film } from '@/schema/graphql';
+import { Film } from '@/schema/swapi';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -28,12 +28,22 @@ import {
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { convertGraphQLFilmToSWAPI } from './films';
 
 interface HomeProps {
   featuredFilms: Film[];
 }
 
 export default function Home({ featuredFilms }: HomeProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading state for better UX
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <Head>
@@ -159,68 +169,15 @@ export default function Home({ featuredFilms }: HomeProps) {
                   'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                 )}
               >
-                {featuredFilms && featuredFilms.length > 0 ? (
+                {isLoading ? (
+                  <div className="col-span-full py-12 text-center">
+                    <Text variant="muted" size="lg">
+                      Loading...
+                    </Text>
+                  </div>
+                ) : featuredFilms ? (
                   featuredFilms.map((film, index) => (
-                    <motion.div
-                      key={film.id}
-                      initial={{ opacity: 0, y: 50 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.2 }}
-                      viewport={{ once: true }}
-                      whileHover={{ y: -10 }}
-                    >
-                      <Card
-                        className={cn(
-                          'h-full bg-card/50 backdrop-blur-sm border-border transition-all duration-300',
-                          'hover:border-secondary hover:shadow-xl theme-transition card-glow'
-                        )}
-                      >
-                        <CardContent className="p-6">
-                          <VStack align="start" gap="md" className="h-full">
-                            <div className="flex justify-between w-full">
-                              <Badge
-                                variant="secondary"
-                                className="px-3 py-1 text-sm"
-                              >
-                                Episode {film.id}
-                              </Badge>
-                              <FilmIcon size={20} className="text-secondary" />
-                            </div>
-
-                            <Heading size="lg" className="leading-tight">
-                              {film.title}
-                            </Heading>
-
-                            <Text variant="muted" size="sm">
-                              Directed by {film.director} •{' '}
-                              {new Date(film.releaseDate).getFullYear()}
-                            </Text>
-
-                            <Text
-                              variant="default"
-                              size="sm"
-                              className="flex-1 leading-relaxed"
-                            >
-                              {film.openingCrawl?.length > 120
-                                ? `${film.openingCrawl.substring(0, 120)}...`
-                                : film.openingCrawl}
-                            </Text>
-
-                            <Link href={`/films/${film.id}`} className="w-full">
-                              <Button
-                                variant="outline"
-                                className="group hover:bg-secondary w-full hover:text-secondary-foreground"
-                              >
-                                <div className="flex items-center gap-2 transition-transform group-hover:translate-x-1">
-                                  <span>Watch Now</span>
-                                  <ArrowRight size={16} />
-                                </div>
-                              </Button>
-                            </Link>
-                          </VStack>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
+                    <FilmCard key={index} film={film} />
                   ))
                 ) : (
                   <div className="col-span-full py-12 text-center">
@@ -347,25 +304,51 @@ export default function Home({ featuredFilms }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
+    // Use Apollo Client to fetch films using the GraphQL schema
     const { data } = await client.query({
       query: GET_ALL_FILMS,
     });
+    // Define the type for GraphQL edge
+    interface FilmEdge {
+      node: {
+        title: string;
+        director: string;
+        releaseDate: string;
+        openingCrawl: string;
+      };
+    }
+    // Extract films from the GraphQL response and add generated IDs
+    const filmsFromEdges: FilmEdge[] = data?.allFilms?.edges || [];
+    const graphqlFilms = filmsFromEdges.map(
+      (edge: FilmEdge, index: number) => ({
+        id: (index + 1).toString(), // Generate ID based on index
+        title: edge.node.title,
+        director: edge.node.director,
+        releaseDate: edge.node.releaseDate,
+        openingCrawl: edge.node.openingCrawl,
+      })
+    );
+    // Convert GraphQL films to SWAPI format
+    const allFilms = graphqlFilms.map(convertGraphQLFilmToSWAPI);
 
-    const films = data?.allFilms?.edges?.map((edge: any) => edge.node) || [];
+    // Shuffle array and select 3 random films
+    const shuffledFilms = [...allFilms].sort(() => 0.5 - Math.random());
+    const randomFilms = shuffledFilms.slice(0, 3);
+    console.log(randomFilms);
 
     return {
       props: {
-        featuredFilms: films.slice(0, 3), // Show first 3 films as featured
+        featuredFilms: randomFilms || [], // Return 3 random films
       },
       revalidate: 86400, // Revalidate once per day
     };
   } catch (error) {
-    console.error('Error fetching films:', error);
+    console.error('Error fetching films with GraphQL:', error);
     return {
       props: {
-        featuredFilms: [],
+        films: [],
       },
-      revalidate: 3600,
+      revalidate: 3600, // Try again in 1 hour if there was an error
     };
   }
 };

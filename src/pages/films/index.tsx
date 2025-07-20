@@ -17,7 +17,7 @@ interface FilmsPageProps {
 }
 
 // Convert GraphQL Film to SWAPI Film format
-function convertGraphQLFilmToSWAPI(
+export function convertGraphQLFilmToSWAPI(
   film: GraphQLFilm,
   index: number
 ): SWAPIFilm {
@@ -47,12 +47,6 @@ export default function FilmsPage({ films }: FilmsPageProps) {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
-
-  const images = [
-    { src: '/1.jpg', alt: 'Image 1' },
-    { src: '/1.jpg', alt: 'Image 2' },
-    { src: '/1.jpg', alt: 'Image 3' },
-  ];
 
   return (
     <PageLayout currentPage="films">
@@ -146,8 +140,6 @@ export const getStaticProps: GetStaticProps = async () => {
         openingCrawl: edge.node.openingCrawl,
       })
     );
-
-    console.log('Fetched GraphQL films:', graphqlFilms); // Debug log
 
     // Convert GraphQL films to SWAPI format
     const films = graphqlFilms.map(convertGraphQLFilmToSWAPI);

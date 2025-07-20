@@ -46,18 +46,7 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
             href={`/characters/${characterId}`}
             className="group block w-full max-w-[280px]"
           >
-            <div
-              className={cn(
-                'relative overflow-hidden rounded-2xl',
-                'bg-white/80 dark:bg-zinc-900/80',
-                'backdrop-blur-xl',
-                // 'border border-zinc-200/50 dark:border-zinc-800/50',
-                'shadow-xs',
-                'transition-all duration-300',
-                'hover:shadow-md',
-                'hover:border-zinc-300/50 dark:hover:border-zinc-700/50'
-              )}
-            >
+            <div className="relative rounded-2xl overflow-hidden">
               <div className="relative h-[320px] overflow-hidden">
                 <Image
                   src={characterImage}
@@ -68,12 +57,7 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
                 />
               </div>
 
-              <div
-                className={cn(
-                  'absolute inset-0',
-                  'bg-linear-to-t from-black/90 via-black/40 to-transparent'
-                )}
-              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
 
               <div className="top-3 right-3 absolute"></div>
 

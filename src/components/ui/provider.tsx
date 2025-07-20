@@ -16,7 +16,6 @@ export function Provider({ children }: ProviderProps) {
       themes={['light', 'dark']}
       enableSystem={false}
       disableTransitionOnChange={false}
-      storageKey="space-odyssey-theme"
     >
       {children}
     </NextThemesProvider>
