@@ -1,4 +1,4 @@
-export { CharacterCard } from '@/components/characters/character-card';
+export { CharacterCard } from '@/components/card/character-card';
 export { CharacterCardSkeleton } from '@/components/characters/character-card-skeleton';
 export { CharacterGrid } from '@/components/characters/character-grid';
 export { CharacterListHeader } from '@/components/characters/character-list-header';

@@ -49,7 +49,7 @@ export default function FilmsPage({ films }: FilmsPageProps) {
   }, []);
 
   return (
-    <PageLayout currentPage="films">
+    <PageLayout>
       {/* Page Header */}
       <Box className="mb-12 text-center">
         <Heading size="3xl" variant="gradient" className="mb-4">

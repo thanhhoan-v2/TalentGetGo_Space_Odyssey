@@ -1,4 +1,4 @@
-import { CharacterCard } from '@/components/characters/character-card';
+import { CharacterCard } from '@/components/card/character-card';
 import { CharacterCardSkeleton } from '@/components/characters/character-card-skeleton';
 import { Box, Text } from '@/components/ui';
 import { Person } from '@/schema/swapi';

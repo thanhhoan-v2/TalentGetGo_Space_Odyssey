@@ -1,8 +1,8 @@
 'use client';
 
-import { FilmCard } from '@/components/films';
+import { PlanetCard, StarshipCard } from '@/components/card/starship-card';
 import { PageLayout } from '@/components/common';
-import { PlanetCard, StarshipCard } from '@/components/films/resource-cards';
+import { FilmCard } from '@/components/films';
 import {
   Box,
   Card,
@@ -190,7 +190,7 @@ export default function CharacterDetailPage({
         />
       </Head>
 
-      <PageLayout currentPage="characters">
+      <PageLayout>
         {/* Main Content */}
         <Container size="7xl" className="py-12">
           {/* Character Header */}

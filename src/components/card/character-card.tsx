@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import { Person } from '@/schema/swapi';
 import { getCharacterImage } from '@/utils/assets';
 import { extractIdFromUrl } from '@/utils/swapi';
@@ -11,9 +10,14 @@ import { useEffect, useState } from 'react';
 interface CharacterCardProps {
   character: Person;
   index?: number;
+  key: string;
 }
 
-export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
+export function CharacterCard({
+  key,
+  character,
+  index = 0,
+}: CharacterCardProps) {
   const [characterImage, setCharacterImage] = useState<string | null>(null);
   const characterId = extractIdFromUrl(character.url);
 
@@ -36,6 +40,7 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
     <>
       {characterImage && (
         <motion.div
+          key={key}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -44,7 +49,7 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
         >
           <Link
             href={`/characters/${characterId}`}
-            className="group block w-full max-w-[280px]"
+            className="group block mx-auto w-full max-w-[280px]"
           >
             <div className="relative rounded-2xl overflow-hidden">
               <div className="relative h-[320px] overflow-hidden">
@@ -53,7 +58,7 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
                   alt={character.name}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
 
@@ -68,16 +73,8 @@ export function CharacterCard({ character, index = 0 }: CharacterCardProps) {
                       {character.name}
                     </h3>
                   </div>
-                  <div
-                    className={cn(
-                      'p-2 rounded-full',
-                      'bg-white/10 dark:bg-zinc-800/50',
-                      'backdrop-blur-md',
-                      'group-hover:bg-white/20 dark:group-hover:bg-zinc-700/50',
-                      'transition-colors duration-300 group'
-                    )}
-                  >
-                    <ArrowUpRight className="w-4 h-4 text-white group-hover:-rotate-12 transition-transform duration-300" />
+                  <div className="bg-black/50 p-2 rounded-full">
+                    <ArrowUpRight className="w-4 h-4 text-white group-hover:-rotate-340 group-hover:scale-120 transition-transform duration-600" />
                   </div>
                 </div>
               </div>

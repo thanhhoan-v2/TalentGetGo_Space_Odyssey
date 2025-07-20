@@ -12,11 +12,17 @@ const config: Config = {
     container: {
       center: true,
       padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
     },
     extend: {
+      screens: {
+        mobile_s: '320px',
+        mobile_m: '375px',
+        mobile_l: '425px',
+        tablet: '768px',
+        laptop: '1024px',
+        desktop: '1280px',
+        desktop_l: '1536px',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

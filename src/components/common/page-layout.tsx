@@ -4,15 +4,10 @@ import { PageHeader } from './page-header';
 
 interface PageLayoutProps {
   children: ReactNode;
-  currentPage: 'films' | 'characters' | 'home';
   className?: string;
 }
 
-export function PageLayout({
-  children,
-  currentPage,
-  className,
-}: PageLayoutProps) {
+export function PageLayout({ children, className }: PageLayoutProps) {
   return (
     <div
       className={cn(
@@ -20,7 +15,7 @@ export function PageLayout({
         className
       )}
     >
-      <PageHeader currentPage={currentPage} />
+      <PageHeader />
       <div className="mx-auto px-4 py-12 max-w-7xl">{children}</div>
     </div>
   );

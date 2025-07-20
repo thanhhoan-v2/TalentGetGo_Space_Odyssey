@@ -35,10 +35,8 @@ export function FilmCard({ film }: FilmCardProps) {
           <CardContent className="group flex flex-col p-8 h-full">
             {/* Episode Badge and Year */}
             <div className="flex justify-between items-center mb-4">
-              <Badge className="bg-[#FF2DD1] px-3 py-1 font-bold text-black text-sm group-hover:scale-110 transition-all duration-500">
-                Episode {film.episode_id}
-              </Badge>
-              <Badge className="bg-[#00FFDE] px-3 py-1 font-bold text-black text-sm group-hover:scale-110 transition-all duration-500">
+              <Badge variant="episode">Episode {film.episode_id}</Badge>
+              <Badge variant="releaseDate">
                 <Clock10Icon />
                 {new Date(film.release_date).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -52,13 +50,13 @@ export function FilmCard({ film }: FilmCardProps) {
               <h2 className="font-semibold text-2xl leading-snug">
                 {film.title}
               </h2>
-              <div className="group flex items-center gap-2 bg-[#4DFFBE] backdrop-blur-md p-2 rounded-full text-black transition-colors duration-900">
+              <div className="group flex items-center gap-2 bg-[#FDFFB8] backdrop-blur-md p-2 border-1 border-black rounded-full text-black group-hover:scale-120 transition-all duration-500">
                 <ArrowUpRight className="w-4 h-4 group-hover:-rotate-22 group-hover:scale-150 transition-transform duration-300" />
               </div>
             </div>
             {/* Film Details */}
             <div className="flex flex-1 gap-2">
-              <Badge className="flex items-center gap-2 bg-[#63C8FF] px-3 py-1 font-bold text-black text-sm group-hover:scale-110 transition-all duration-500">
+              <Badge variant="director">
                 <ClapperboardIcon />
                 {film.director}
               </Badge>

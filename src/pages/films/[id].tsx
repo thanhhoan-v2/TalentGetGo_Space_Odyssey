@@ -1,19 +1,11 @@
 'use client';
 
-import { CharacterCard } from '@/components/characters/character-card';
+import { TextReveal } from '@/components/animated/text-reveal';
+import { CharacterCard } from '@/components/card/character-card';
+import { PlanetCard } from '@/components/card/planet-card';
+import { StarshipCard } from '@/components/card/starship-card';
 import { PageLayout } from '@/components/common';
-import { PlanetCard, StarshipCard } from '@/components/films/resource-cards';
-import {
-  Badge,
-  Box,
-  Card,
-  CardContent,
-  Container,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-} from '@/components/ui';
+import { Badge, Box, Container, Heading } from '@/components/ui';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS, GET_FILM_BY_ID } from '@/lib/queries';
 import { Film as GraphQLFilm } from '@/schema/graphql';
@@ -26,7 +18,7 @@ import {
   Vehicle,
 } from '@/schema/swapi';
 import { motion } from 'framer-motion';
-import { Calendar, User, Users } from 'lucide-react';
+import { Calendar, ClapperboardIcon } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 
@@ -176,6 +168,7 @@ export default function FilmDetailPage({
   vehicles,
   species,
 }: FilmDetailPageProps) {
+  console.log(starships);
   return (
     <>
       <Head>
@@ -194,7 +187,7 @@ export default function FilmDetailPage({
         />
       </Head>
 
-      <PageLayout currentPage="films">
+      <PageLayout>
         {/* Main Content */}
         <Container size="7xl" className="py-12">
           {/* Film Header */}
@@ -203,93 +196,31 @@ export default function FilmDetailPage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <VStack gap="lg" className="mb-12 text-center">
-              <Badge
-                variant="secondary"
-                className="px-4 py-2 font-bold text-lg"
-              >
-                Episode {film.episode_id}
-              </Badge>
-
-              <Heading size="4xl" variant="gradient" className="leading-tight">
+            <div>
+              <h1 className="mx-auto mb-5 font-bold text-[3rem] md:text-[5rem] lg:text-[6rem] xl:text-[8rem] text-center">
                 {film.title}
-              </Heading>
+              </h1>
+            </div>
 
-              <Flex
-                className="md:flex-row flex-col"
-                gap="lg"
-                wrap="wrap"
-                justify="center"
-                align="center"
-              >
-                <div className="flex items-center gap-2">
-                  <User size={16} className="text-secondary" />
-                  <Text variant="muted">
-                    <Text as="span" variant="secondary" weight="semibold">
-                      Director:
-                    </Text>{' '}
-                    {film.director}
-                  </Text>
-                </div>
-                {film.producer && (
-                  <div className="flex items-center gap-2">
-                    <Users size={16} className="text-secondary" />
-                    <Text variant="muted">
-                      <Text as="span" variant="secondary" weight="semibold">
-                        Producer:
-                      </Text>{' '}
-                      {film.producer}
-                    </Text>
-                  </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <Calendar size={16} className="text-secondary" />
-                  <Text variant="muted">
-                    <Text as="span" variant="secondary" weight="semibold">
-                      Released:
-                    </Text>{' '}
-                    {new Date(film.release_date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </Text>
-                </div>
-              </Flex>
-            </VStack>
+            <div className="flex flex-wrap justify-center items-center gap-2">
+              <Badge variant="episode">Episode {film.episode_id}</Badge>
+              <Badge variant="director">
+                <ClapperboardIcon /> {film.director}
+              </Badge>
+              <Badge variant="releaseDate">
+                <Calendar />
+                {new Date(film.release_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </Badge>
+            </div>
+            {/* Opening Crawl */}
+            <TextReveal>{film.opening_crawl}</TextReveal>
           </motion.div>
 
-          {/* Opening Crawl */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <Box className="mb-16">
-              <Card className="bg-card mx-auto border-border max-w-4xl">
-                <CardContent className="p-8">
-                  <Heading
-                    size="xl"
-                    variant="primary"
-                    className="mb-6 text-center"
-                  >
-                    Opening Crawl
-                  </Heading>
-                  <Box className="bg-background/60 p-6 border border-border rounded-lg">
-                    <Text
-                      variant="muted"
-                      className="text-sm md:text-base text-center leading-relaxed whitespace-pre-wrap"
-                    >
-                      {film.opening_crawl}
-                    </Text>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
-          </motion.div>
-
-          {/* Content Sections */}
-          <VStack gap="xl">
+          <div className="flex flex-col items-center gap-12">
             {/* Characters */}
             {characters.length > 0 && (
               <motion.div
@@ -305,16 +236,12 @@ export default function FilmDetailPage({
                   >
                     Characters ({characters.length})
                   </Heading>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
                     {characters.map((character, index) => (
-                      <motion.div
+                      <CharacterCard
                         key={character.url}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <CharacterCard character={character} />
-                      </motion.div>
+                        character={character}
+                      />
                     ))}
                   </div>
                 </Box>
@@ -336,7 +263,7 @@ export default function FilmDetailPage({
                   >
                     Planets ({planets.length})
                   </Heading>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
                     {planets.map((planet, index) => (
                       <motion.div
                         key={planet.url}
@@ -344,7 +271,7 @@ export default function FilmDetailPage({
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
-                        <PlanetCard planet={planet} />
+                        <PlanetCard planetName={planet.name} />
                       </motion.div>
                     ))}
                   </div>
@@ -367,7 +294,7 @@ export default function FilmDetailPage({
                   >
                     Starships ({starships.length})
                   </Heading>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
                     {starships.map((starship, index) => (
                       <motion.div
                         key={starship.url}
@@ -375,14 +302,14 @@ export default function FilmDetailPage({
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
-                        <StarshipCard starship={starship} />
+                        <StarshipCard starshipName={starship.name} />
                       </motion.div>
                     ))}
                   </div>
                 </Box>
               </motion.div>
             )}
-          </VStack>
+          </div>
         </Container>
       </PageLayout>
     </>

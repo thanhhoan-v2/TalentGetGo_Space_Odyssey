@@ -16,6 +16,12 @@ const badgeVariants = cva(
           'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
           'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
+        episode:
+          'bg-[#4DFFBE] px-3 py-1 font-bold text-black text-sm group-hover:scale-110 transition-all duration-500',
+        releaseDate:
+          'bg-[#FF2DD1] px-3 py-1 font-bold text-black text-sm group-hover:scale-110 transition-all duration-500',
+        director:
+          'bg-[#63C8FF] px-3 py-1 font-bold text-black text-sm group-hover:scale-110 transition-all duration-500',
       },
     },
     defaultVariants: {
