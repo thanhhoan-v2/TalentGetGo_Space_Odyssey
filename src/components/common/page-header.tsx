@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/utils/routes';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -44,9 +44,7 @@ export function PageHeader() {
   return (
     <nav
       className={cn(
-        'sticky top-0 z-50 transition-all duration-300 theme-transition bg-white text-black',
-        theme === 'dark' &&
-          'bg-black border-transparent backdrop-blur-lg text-white',
+        'sticky top-0 z-50 transition-all duration-300 theme-transition bg-black text-white',
         isHomePage && 'bg-transparent border-transparent backdrop-blur-lg'
       )}
     >
@@ -64,13 +62,7 @@ export function PageHeader() {
                 isHomePage && 'text-white'
               )}
             >
-              <span>Space</span>
-              <Badge
-                variant="outline"
-                className="hover:bg-white font-bold hover:text-black text-lg"
-              >
-                Odyssey
-              </Badge>
+              Space Odyssey
             </Link>
           </motion.div>
 
@@ -82,7 +74,7 @@ export function PageHeader() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex items-center gap-2"
             >
-              <Button asChild className="focus:ring-0">
+              <Button asChild className="shadow-none focus:ring-0">
                 <Link
                   href={ROUTES.FILMS}
                   className={cn(
@@ -97,7 +89,7 @@ export function PageHeader() {
                 </Link>
               </Button>
 
-              <Button asChild>
+              <Button asChild className="shadow-none focus:ring-0">
                 <Link
                   href={ROUTES.CHARACTERS}
                   className={cn(
@@ -129,14 +121,14 @@ export function PageHeader() {
                 <Button
                   variant="ghost"
                   size="icon"
+                  aria-label="Toggle navigation"
                   onClick={toggleMobileMenu}
                   className={cn(
-                    'theme-transition hover:bg-black hover:text-white',
+                    'theme-transition hover:bg-black hover:text-white cursor-pointer',
                     theme === 'dark' && 'hover:bg-white hover:text-black',
                     isHomePage && 'text-white hover:bg-white hover:text-black',
                     isActive(ROUTES.FILMS) && isActiveClassName
                   )}
-                  aria-label="Toggle navigation"
                 >
                   <motion.div
                     animate={{ rotate: mobileMenuOpen ? 180 : 0 }}

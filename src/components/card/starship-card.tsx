@@ -21,7 +21,7 @@ export function StarshipCard({ starshipName }: StarshipCardProps) {
         target="_blank"
         className="group block mx-auto w-full max-w-[280px]"
       >
-        <div className="relative rounded-2xl overflow-hidden">
+        <div className="relative overflow-hidden">
           <div className="relative h-[320px] overflow-hidden">
             <Image
               src={starshipData[starshipName].image}

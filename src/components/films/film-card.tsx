@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight, ClapperboardIcon, Clock10Icon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
+import { useMediaQuery } from 'react-responsive';
 
 interface FilmCardProps {
   film: Film;
@@ -13,6 +14,8 @@ interface FilmCardProps {
 
 export function FilmCard({ film }: FilmCardProps) {
   const { theme } = useTheme();
+  const isMobileS = useMediaQuery({ query: '(max-width: 320px)' });
+
   return (
     <motion.div
       className={cn(
@@ -20,7 +23,7 @@ export function FilmCard({ film }: FilmCardProps) {
         theme == 'light' ? 'shadow-brutal' : 'shadow-brutal-inverse'
       )}
       whileHover={{
-        scale: 1.02,
+        scale: 1.01,
         transition: { duration: 0.2 },
       }}
       whileTap={{ scale: 0.98 }}
@@ -32,7 +35,12 @@ export function FilmCard({ film }: FilmCardProps) {
         <Link href={`/films/${extractIdFromUrl(film.url)}`}>
           <CardContent className="group flex flex-col p-8 h-full">
             {/* Episode Badge and Year */}
-            <div className="flex justify-between items-center mb-4">
+            <div
+              className={cn(
+                'flex justify-between items-center mb-4',
+                isMobileS && 'flex-col items-start gap-4'
+              )}
+            >
               <Badge variant="episode">Episode {film.episode_id}</Badge>
               <Badge variant="releaseDate">
                 <Clock10Icon />
@@ -43,6 +51,7 @@ export function FilmCard({ film }: FilmCardProps) {
                 })}
               </Badge>
             </div>
+
             {/* Film Title */}
             <div className="flex justify-between items-start mb-4 text-foreground leading-tight">
               <h2 className="font-semibold text-2xl leading-snug">
@@ -52,6 +61,7 @@ export function FilmCard({ film }: FilmCardProps) {
                 <ArrowUpRight className="w-4 h-4 group-hover:-rotate-22 group-hover:scale-150 transition-transform duration-300" />
               </div>
             </div>
+
             {/* Film Details */}
             <div className="flex flex-1 gap-2">
               <Badge variant="director">
@@ -59,10 +69,17 @@ export function FilmCard({ film }: FilmCardProps) {
                 {film.director}
               </Badge>
             </div>
-            {/* Opening Crawl Preview */}
-            <blockquote className="mt-6 pl-6 border-l-2 italic">
-              &quot;{film.opening_crawl}&quot;
-            </blockquote>
+
+            {/* Opening Crawl */}
+            {isMobileS ? (
+              <blockquote className="mt-6 pl-6 border-l-2 italic">
+                &quot;{film.opening_crawl.slice(0, 150)}...&quot;
+              </blockquote>
+            ) : (
+              <blockquote className={cn('mt-6 pl-6 border-l-2 italic')}>
+                &quot;{film.opening_crawl}&quot;
+              </blockquote>
+            )}
           </CardContent>
         </Link>
       </Card>

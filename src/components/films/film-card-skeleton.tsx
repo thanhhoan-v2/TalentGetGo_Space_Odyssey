@@ -1,47 +1,100 @@
-import { Box, Card, CardContent, Skeleton, VStack } from '@/components/ui';
+import { Card, CardContent } from '@/components/ui';
+import { useMounted } from '@/hooks/use-mounted';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import { useMediaQuery } from 'react-responsive';
 
-export function FilmCardSkeleton() {
+interface FilmCardSkeletonProps {
+  className?: string;
+}
+
+export function FilmCardSkeleton({ className }: FilmCardSkeletonProps) {
+  const { theme } = useTheme();
+  const mounted = useMounted();
+
+  const isMobileS = useMediaQuery({ query: '(max-width: 320px)' });
+  const bgClassName = theme == 'light' ? 'bg-black' : 'bg-white';
+
+  const skeletonClassName = (
+    w: string,
+    h: string,
+    rounded?: boolean,
+    mb?: string
+  ) =>
+    `rounded-${rounded ? 'full' : 'none'} ${w} ${h} animate-pulse ${bgClassName} ${mb}`;
+
+  if (!mounted) return null;
+
   return (
-    <div className="w-full max-w-[500px] h-[500px]">
-      <Card
-        className={cn(
-          'h-full border-border bg-card/50 backdrop-blur-sm theme-transition',
-          'card-glow' // Apply theme-specific effects
-        )}
-      >
+    <motion.div
+      className={cn(
+        'border-8 border-black',
+        theme == 'light' ? 'shadow-brutal' : 'shadow-brutal-inverse',
+        className
+      )}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card className="shadow-none border-none rounded-none h-full theme-transition transition-all duration-300">
         <CardContent className="flex flex-col p-8 h-full">
-          <div className="flex justify-between items-center mb-4">
-            <Skeleton className="rounded-full w-24 h-6" />
-            <Skeleton className="w-16 h-5" />
+          {/* Episode Badge and Year Skeleton */}
+          <div
+            className={cn(
+              'flex justify-between items-center mb-4',
+              isMobileS && 'flex-col items-start gap-4'
+            )}
+          >
+            <div className={skeletonClassName('w-20', 'h-6')} />
+            <div className={skeletonClassName('w-32', 'h-6')} />
           </div>
 
-          <Skeleton className="mb-4 w-full h-8" />
+          {/* Film Title and Arrow Skeleton */}
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex-1 mr-4">
+              <div className={skeletonClassName('w-3/4', 'h-8')} />
+            </div>
+            <div className={skeletonClassName('w-10', 'h-10', true)} />
+          </div>
 
-          <VStack gap="sm" className="flex-1 mb-6">
-            <Skeleton className="w-full h-4" />
-            <Skeleton className="w-3/4 h-4" />
-          </VStack>
+          {/* Director Badge Skeleton */}
+          <div className="flex flex-1 gap-2 mb-6">
+            <div className={skeletonClassName('w-28', 'h-6')} />
+          </div>
 
-          <Box className="mb-6">
-            <Skeleton className="mb-3 w-32 h-5" />
-            <Box
-              className={cn(
-                'bg-muted/20 p-4 rounded-lg border border-border/50',
-                'backdrop-blur-sm'
-              )}
-            >
-              <div className="space-y-2">
-                <Skeleton className="w-full h-3" />
-                <Skeleton className="w-5/6 h-3" />
-                <Skeleton className="w-4/5 h-3" />
-              </div>
-            </Box>
-          </Box>
-
-          <Skeleton className="mt-auto w-full h-12" />
+          {/* Opening Crawl Skeleton */}
+          <div className="pl-6 border-black border-l-2">
+            {isMobileS ? (
+              <>
+                <div
+                  className={skeletonClassName('w-full', 'h-4', false, 'mb-2')}
+                />
+                <div
+                  className={skeletonClassName('w-full', 'h-4', false, 'mb-2')}
+                />
+                <div className={skeletonClassName('w-3/4', 'h-4', false)} />
+              </>
+            ) : (
+              <>
+                <div
+                  className={skeletonClassName('w-full', 'h-4', false, 'mb-2')}
+                />
+                <div
+                  className={skeletonClassName('w-full', 'h-4', false, 'mb-2')}
+                />
+                <div
+                  className={skeletonClassName('w-full', 'h-4', false, 'mb-2')}
+                />
+                <div
+                  className={skeletonClassName('w-full', 'h-4', false, 'mb-2')}
+                />
+                <div className={skeletonClassName('w-4/5', 'h-4', false)} />
+              </>
+            )}
+          </div>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 }

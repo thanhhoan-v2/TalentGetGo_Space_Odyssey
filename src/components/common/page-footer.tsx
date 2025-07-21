@@ -32,7 +32,7 @@ export default function PageFooter() {
                     className="rounded-md"
                   />
                 </div>
-                <div className="border border-black rounded-md">
+                <div className="">
                   <Image
                     src="/starwars-logo.png"
                     alt="Talent Logo"

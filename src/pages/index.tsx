@@ -1,45 +1,66 @@
 'use client';
 
+import { BoxReveal } from '@/components/animated/box-reveal';
+import { InteractiveHoverButton } from '@/components/animated/interactive-hover-button';
 import { PageHeader } from '@/components/common';
+import PageFooter from '@/components/common/page-footer';
 import { FilmCard } from '@/components/films/film-card';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Heading,
-  Text,
-  VStack,
-} from '@/components/ui';
+import { CardCarousel } from '@/components/ui/card-carousel';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
 import { cn } from '@/lib/utils';
-import { Film } from '@/schema/swapi';
+import { Film, Person } from '@/schema/swapi';
+import { ROUTES } from '@/utils/routes';
+import { convertSwapiTechToPerson, fetchCharacters } from '@/utils/swapi-api';
 import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  Film as FilmIcon,
-  Globe,
-  Play,
-  Sparkles,
-  Users,
-} from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 import { convertGraphQLFilmToSWAPI } from './films';
 
 interface HomeProps {
   featuredFilms: Film[];
+  characters: Person[];
 }
 
-export default function Home({ featuredFilms }: HomeProps) {
+export default function Home({ featuredFilms, characters }: HomeProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [
+    isReachedFeaturedCharactersSection,
+    setIsReachedFeaturedCharactersSection,
+  ] = useState(false);
+  const featuredCharactersRef = useRef(null);
+
+  const featuredCharacters = [
+    { url: '/characters/1', name: 'Luke Skywalker' },
+    { url: '/characters/3', name: 'R2-D2' },
+    { url: '/characters/4', name: 'Darth Vader' },
+    { url: '/characters/5', name: 'Leia Organa' },
+    { url: '/characters/9', name: 'Biggs Darklighter' },
+    { url: '/characters/19', name: 'Yoda' },
+  ];
 
   useEffect(() => {
-    // Simulate loading state for better UX
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Update state when element enters/exits viewport
+        setIsReachedFeaturedCharactersSection(entry.isIntersecting);
+      },
+      {
+        threshold: 0, // Trigger when percentage of element is visible
+        rootMargin: '0px 0px 0px 0px', // Adjust trigger point
+      }
+    );
+
+    if (featuredCharactersRef.current)
+      observer.observe(featuredCharactersRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
@@ -59,15 +80,17 @@ export default function Home({ featuredFilms }: HomeProps) {
         />
       </Head>
 
-      <Box className="bg-background overflow-hidden text-foreground theme-transition">
-        {/* Hero Section with Full-Screen Video Background */}
-        <Box className="relative flex min-h-screen overflow-hidden">
-          {/* Transparent Navbar Overlay */}
-          <Box className="top-0 right-0 left-0 z-50 absolute">
-            <PageHeader transparent />
-          </Box>
+      <div className="bg-background overflow-hidden text-foreground theme-transition">
+        <div className="relative flex min-h-screen overflow-hidden">
+          <div
+            className={cn(
+              'top-0 right-0 left-0 z-50 fixed transition-all duration-900 ease-in-out',
+              isReachedFeaturedCharactersSection ? 'bg-black' : 'bg-transparent'
+            )}
+          >
+            <PageHeader />
+          </div>
 
-          {/* Full-Screen Video Background */}
           <video
             className="top-0 left-0 z-10 absolute w-screen h-screen object-cover"
             src="/landing-video.mp4"
@@ -77,25 +100,42 @@ export default function Home({ featuredFilms }: HomeProps) {
             playsInline
           />
 
-          {/* Dark Overlay for better readability */}
-          <Box className="z-20 absolute inset-0 bg-black/40" />
-
-          {/* Content Overlay */}
-          <Container
-            size="7xl"
-            className="z-30 relative flex flex-1 items-center py-20"
-          >
-            <VStack gap="xl" className="w-full text-center">
+          <div className="z-30 relative flex flex-1 items-center py-20">
+            <div className="flex flex-col justify-center items-center gap-10 w-full text-center">
               {/* Description */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 1.4 }}
+                className="flex justify-center items-center"
               >
-                <Heading size="4xl" className="drop-shadow-lg text-white">
-                  The Force Lives in All of Us
-                </Heading>
+                <div className="max-w-[350px] font-bold text-white text-7xl leading-snug">
+                  The <span className="bg-black px-2 text-white">Force</span>{' '}
+                  Lives in{' '}
+                  <span className="bg-black px-2 text-white">All of Us</span>
+                </div>
               </motion.div>
+
+              <BoxReveal
+                width="fit-content"
+                className="flex justify-center items-center gap-4"
+              >
+                <Image
+                  src="/talentgetgo.png"
+                  alt="TalentGetGo"
+                  width={70}
+                  height={70}
+                  className="rounded-md"
+                />
+                <XIcon size={20} color="white" />
+                <Image
+                  src="/starwars-logo.png"
+                  alt="TalentGetGo"
+                  width={60}
+                  height={60}
+                  className="rounded-md"
+                />
+              </BoxReveal>
 
               {/* CTA Buttons */}
               <motion.div
@@ -103,77 +143,79 @@ export default function Home({ featuredFilms }: HomeProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 1.8 }}
               >
-                <div className="flex flex-wrap justify-center gap-4">
-                  <Button
-                    asChild
-                    className={cn(
-                      'bg-white text-black hover:bg-white/90',
-                      'px-10 py-8 text-lg font-semibold',
-                      'hover:-translate-y-1 transition-all duration-300',
-                      'shadow-xl'
-                    )}
-                  >
-                    <Link href="/films">
-                      <div className="flex items-center gap-2">
-                        <Play size={24} />
-                        <span>Explore Films</span>
-                      </div>
-                    </Link>
-                  </Button>
-
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="px-10 py-8 border-2 border-primary font-semibold text-primary text-lg"
-                  >
-                    <Link href="/characters">
-                      <div className="flex items-center gap-2">
-                        <Users size={24} />
-                        <span>Meet Characters</span>
-                      </div>
-                    </Link>
-                  </Button>
+                <div className="flex flex-wrap justify-center gap-4 mx-2">
+                  <InteractiveHoverButton href={ROUTES.FILMS}>
+                    Films
+                  </InteractiveHoverButton>
+                  <InteractiveHoverButton href={ROUTES.CHARACTERS}>
+                    Characters
+                  </InteractiveHoverButton>
                 </div>
               </motion.div>
-            </VStack>
-          </Container>
-        </Box>
+            </div>
+          </div>
+        </div>
+
+        {/* Featured Characters Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="flex justify-center items-center w-screen min-h-screen"
+        >
+          <div
+            className="flex flex-col items-center gap-10"
+            ref={featuredCharactersRef}
+          >
+            <div className="flex flex-col items-center gap-2 px-10 w-screen text-center">
+              <div className="flex items-center gap-3 font-bold text-4xl md:text-7xl">
+                Legends of the Galaxy
+              </div>
+              <div className="max-w-2xl text-muted-foreground text-lg md:text-xl leading-relaxed">
+                Meet the{' '}
+                <span className="decoration-green-400 decoration-wavy underline underline-offset-4">
+                  iconic figures
+                </span>{' '}
+                who shaped the destiny of the galaxy.
+              </div>
+            </div>
+
+            <CardCarousel characters={featuredCharacters} />
+          </div>
+        </motion.div>
 
         {/* Featured Films Section */}
-        <Container size="7xl" className="py-20">
+        <div className="mb-10 px-5 md:px-[8rem] min-h-screen">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <VStack gap="xl">
-              <VStack gap="md" className="text-center">
-                <Heading
-                  size="3xl"
-                  variant="gradient"
-                  className="flex items-center gap-3"
-                >
-                  <Sparkles size={32} />
-                  Featured Films
-                  <Sparkles size={32} />
-                </Heading>
-                <Text variant="muted" size="lg" className="max-w-2xl">
-                  Discover the epic saga that changed cinema forever
-                </Text>
-              </VStack>
+            <div
+              className="flex flex-col items-center gap-10"
+              ref={featuredCharactersRef}
+            >
+              <div className="flex flex-col items-center gap-2 text-center">
+                <BoxReveal width="fit-content">
+                  <div className="flex items-center gap-3 font-bold text-5xl md:text-7xl">
+                    Chronicles of the Force
+                  </div>
+                </BoxReveal>
+                <div className="max-w-2xl text-muted-foreground text-xl leading-relaxed">
+                  Discover the{' '}
+                  <span className="decoration-green-400 decoration-wavy underline underline-offset-4">
+                    epic saga
+                  </span>{' '}
+                  that changed cinema forever.
+                </div>
+              </div>
 
-              <div
-                className={cn(
-                  'grid gap-8 w-full',
-                  'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                )}
-              >
+              <div className="flex flex-wrap justify-center gap-9">
                 {isLoading ? (
                   <div className="col-span-full py-12 text-center">
-                    <Text variant="muted" size="lg">
-                      Loading...
-                    </Text>
+                    <p className="text-muted-foreground text-lg">Loading...</p>
                   </div>
                 ) : featuredFilms ? (
                   featuredFilms.map((film, index) => (
@@ -181,123 +223,18 @@ export default function Home({ featuredFilms }: HomeProps) {
                   ))
                 ) : (
                   <div className="col-span-full py-12 text-center">
-                    <Text variant="muted" size="lg">
+                    <p className="text-muted-foreground text-lg">
                       No featured films available at the moment.
-                    </Text>
+                    </p>
                   </div>
                 )}
               </div>
-            </VStack>
+            </div>
           </motion.div>
-        </Container>
+        </div>
 
-        {/* Features Section */}
-        <Container size="7xl" className="py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <VStack gap="xl">
-              <VStack gap="md" className="text-center">
-                <Heading size="3xl" variant="gradient">
-                  Explore the Galaxy
-                </Heading>
-                <Text variant="muted" size="lg" className="max-w-3xl">
-                  Journey through the vast Star Wars universe with our
-                  comprehensive database
-                </Text>
-              </VStack>
-
-              <div
-                className={cn(
-                  'grid gap-8 w-full',
-                  'grid-cols-1 md:grid-cols-3'
-                )}
-              >
-                {[
-                  {
-                    icon: FilmIcon,
-                    title: 'Epic Films',
-                    description:
-                      'Explore the complete Star Wars saga from the original trilogy to the latest releases',
-                    href: '/films',
-                  },
-                  {
-                    icon: Users,
-                    title: 'Legendary Characters',
-                    description:
-                      'Meet heroes, villains, and everyone in between from across the galaxy',
-                    href: '/characters',
-                  },
-                  {
-                    icon: Globe,
-                    title: 'Diverse Worlds',
-                    description:
-                      'Discover planets, starships, and the rich lore of the Star Wars universe',
-                    href: '/films',
-                  },
-                ].map((feature, index) => (
-                  <motion.div
-                    key={feature.title}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    whileHover={{ y: -5 }}
-                  >
-                    <Link href={feature.href}>
-                      <Card
-                        className={cn(
-                          'h-full bg-card/30 backdrop-blur-sm border-border transition-all duration-300 cursor-pointer',
-                          'hover:border-primary hover:bg-card/50 theme-transition card-glow group'
-                        )}
-                      >
-                        <CardContent className="p-8 text-center">
-                          <VStack gap="lg">
-                            <div
-                              className={cn(
-                                'mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center',
-                                'group-hover:bg-primary/20 transition-colors'
-                              )}
-                            >
-                              <feature.icon className="w-8 h-8 text-primary" />
-                            </div>
-                            <VStack gap="sm">
-                              <Heading
-                                size="lg"
-                                className="group-hover:text-primary transition-colors"
-                              >
-                                {feature.title}
-                              </Heading>
-                              <Text variant="muted" className="leading-relaxed">
-                                {feature.description}
-                              </Text>
-                            </VStack>
-                            <Button
-                              variant="ghost"
-                              className="group-hover:bg-primary/10 group-hover:text-primary"
-                            >
-                              <div className="flex items-center gap-2">
-                                <span>Learn More</span>
-                                <ArrowRight
-                                  size={16}
-                                  className="transition-transform group-hover:translate-x-1"
-                                />
-                              </div>
-                            </Button>
-                          </VStack>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </VStack>
-          </motion.div>
-        </Container>
-      </Box>
+        <PageFooter />
+      </div>
     </>
   );
 }
@@ -308,6 +245,13 @@ export const getStaticProps: GetStaticProps = async () => {
     const { data } = await client.query({
       query: GET_ALL_FILMS,
     });
+
+    // Fetch characters from SWAPI.tech API
+    const charactersResult = await fetchCharacters(1);
+    const characters = charactersResult.characters.map(
+      convertSwapiTechToPerson
+    );
+
     // Define the type for GraphQL edge
     interface FilmEdge {
       node: {
@@ -339,6 +283,7 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       props: {
         featuredFilms: randomFilms || [], // Return 3 random films
+        characters: characters || [],
       },
       revalidate: 86400, // Revalidate once per day
     };

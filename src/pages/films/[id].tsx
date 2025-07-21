@@ -241,7 +241,8 @@ export default function FilmDetailPage({
                     {characters.map((character, index) => (
                       <CharacterCard
                         key={character.url}
-                        character={character}
+                        characterUrl={character.url}
+                        characterName={character.name}
                       />
                     ))}
                   </div>

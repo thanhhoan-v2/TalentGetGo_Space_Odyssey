@@ -1,4 +1,4 @@
-import { Person } from '@/schema/swapi';
+import { cn } from '@/lib/utils';
 import { getCharacterImage } from '@/utils/assets';
 import { extractIdFromUrl } from '@/utils/swapi';
 import { motion } from 'framer-motion';
@@ -8,18 +8,22 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface CharacterCardProps {
-  character: Person;
+  characterUrl: string;
+  characterName: string;
   index?: number;
-  key: string;
+  imageWidth?: string;
+  imageHeight?: string;
 }
 
 export function CharacterCard({
-  key,
-  character,
   index = 0,
+  characterName,
+  characterUrl,
+  imageWidth,
+  imageHeight,
 }: CharacterCardProps) {
   const [characterImage, setCharacterImage] = useState<string | null>(null);
-  const characterId = extractIdFromUrl(character.url);
+  const characterId = extractIdFromUrl(characterUrl);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -40,22 +44,27 @@ export function CharacterCard({
     <>
       {characterImage && (
         <motion.div
-          key={key}
+          key={characterName}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: index * 0.1 }}
+          transition={{ duration: 0.3, delay: (index ?? 0) * 0.1 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
           <Link
-            href={`/characters/${characterId}`}
-            className="group block mx-auto w-full max-w-[280px]"
+            href={characterUrl}
+            className={cn('group block mx-auto w-[280px]', imageWidth)}
           >
             <div className="relative overflow-hidden">
-              <div className="relative h-[320px] overflow-hidden">
+              <div
+                className={cn(
+                  'relative h-[320px] overflow-hidden',
+                  imageHeight
+                )}
+              >
                 <Image
                   src={characterImage}
-                  alt={character.name}
+                  alt={characterName}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -70,7 +79,7 @@ export function CharacterCard({
                 <div className="flex justify-between items-center gap-3">
                   <div className="space-y-1.5">
                     <h3 className="font-semibold text-white dark:text-zinc-100 text-lg leading-snug">
-                      {character.name}
+                      {characterName}
                     </h3>
                   </div>
                   <div className="bg-black/50 p-2">

@@ -44,7 +44,6 @@ export default function ThemeToggleButton({
 
   const toggleTheme = React.useCallback(() => {
     const animation = createAnimation(variant, start, url);
-
     updateStyles(animation.css, animation.name);
 
     if (typeof window === 'undefined') return;
@@ -64,7 +63,7 @@ export default function ThemeToggleButton({
   return (
     <Button
       onClick={toggleTheme}
-      className="group relative flex justify-center items-center m-0 p-0 hover:border-0 focus:border-0 focus-visible:border-none focus-visible:outline-none focus:outline-none hover:ring-0 focus-visible:ring-0 focus:ring-0 focus:ring-offset-0 w-9 h-9"
+      className="group relative flex justify-center items-center shadow-none m-0 p-0 hover:border-0 focus:border-0 focus-visible:border-none focus-visible:outline-none focus:outline-none hover:ring-0 focus-visible:ring-0 focus:ring-0 focus:ring-offset-0 w-9 h-9"
     >
       {theme === 'light' ? <SunIcon /> : <MoonIcon />}
     </Button>

@@ -46,7 +46,7 @@ export default function FilmsPage({ films }: FilmsPageProps) {
 
   useEffect(() => {
     // Simulate loading state for better UX
-    const timer = setTimeout(() => setIsLoading(false), 1000);
+    const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -70,13 +70,12 @@ export default function FilmsPage({ films }: FilmsPageProps) {
       </div>
 
       <div className="mb-10">
-        {/* <h1 className="mb-10 font-bold text-6xl text-center">Stats</h1> */}
         <FilmsStats films={films} />
       </div>
 
       {isLoading ? (
         <div className={cn('grid gap-8 mb-16', 'grid-cols-1 lg:grid-cols-2')}>
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: 6 }).map((_, index) => (
             <FilmCardSkeleton key={index} />
           ))}
         </div>
