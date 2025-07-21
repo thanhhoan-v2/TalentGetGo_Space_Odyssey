@@ -1,4 +1,3 @@
-import { Text } from '@/components/ui';
 import { motion } from 'framer-motion';
 
 interface CharacterListInfoProps {
@@ -20,18 +19,16 @@ export function CharacterListInfo({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.4 }}
     >
-      <Text className="mb-8 text-center" variant="muted">
+      <div className="mb-8 text-muted-foreground text-center">
         {isSearching ? (
           <>
             Showing results for &ldquo;{searchQuery}&rdquo; ({totalCount}{' '}
             characters found)
           </>
         ) : (
-          <>
-            Showing {charactersLength} of {totalCount} characters
-          </>
+          <>Showing {charactersLength} characters</>
         )}
-      </Text>
+      </div>
     </motion.div>
   );
 }

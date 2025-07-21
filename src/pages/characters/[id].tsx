@@ -1,5 +1,6 @@
 'use client';
 
+import { InteractiveHoverButton } from '@/components/animated/interactive-hover-button';
 import { PlanetCard } from '@/components/card/planet-card';
 import { StarshipCard } from '@/components/card/starship-card';
 import { CharacterAppearanceCard } from '@/components/characters/character-appearance-card';
@@ -188,7 +189,7 @@ export default function CharacterDetailPage({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="mb-2 text-center">
+          <div className="flex flex-col justify-center items-center mb-2 text-center">
             <div className="inline-block relative mb-6">
               <div className="absolute inset-0 bg-gray-500/20 blur-xl rounded-full scale-110"></div>
               <Image
@@ -204,11 +205,17 @@ export default function CharacterDetailPage({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.5, delay: 0.5 }}
               viewport={{ once: true }}
-              className="font-bold text-[3rem] md:text-[5rem]"
+              className="mb-10 font-bold text-[3rem] md:text-[5rem]"
             >
               {character.name}
             </motion.div>
+            <InteractiveHoverButton
+              characterName={character.name}
+              characterUrl={character.url}
+              variant="add-to-favorites"
+            />
           </div>
+
           <Card className="shadow-none mx-auto border-none">
             <CardContent className="p-8">
               <div className="gap-8 grid grid-cols-1 lg:grid-cols-2 mx-auto max-w-6xl">

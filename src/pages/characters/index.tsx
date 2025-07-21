@@ -70,6 +70,7 @@ export default function CharactersPage({
           <CharacterSearch
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
+            isLoading={loading && isSearching}
           />
         </motion.div>
 

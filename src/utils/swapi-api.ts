@@ -28,7 +28,9 @@ export interface CharacterFetchResult {
 // Cache for all characters to enable client-side search
 let allCharactersCache: SwapiTechCharacter[] = [];
 let cacheTimestamp = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes (increased from 5)
+let isFetchingAllCharacters = false; // Prevent duplicate fetches
+let fetchPromise: Promise<SwapiTechCharacter[]> | null = null;
 
 // Fetch all characters for search functionality
 export async function fetchAllCharacters(): Promise<SwapiTechCharacter[]> {
@@ -42,33 +44,59 @@ export async function fetchAllCharacters(): Promise<SwapiTechCharacter[]> {
       return allCharactersCache;
     }
 
-    const allCharacters: SwapiTechCharacter[] = [];
-    let page = 1;
-    let hasNext = true;
-
-    while (hasNext) {
-      const url = new URL('https://www.swapi.tech/api/people');
-      url.searchParams.set('page', page.toString());
-      url.searchParams.set('limit', '10');
-
-      const response = await fetch(url.toString());
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data: SwapiTechResponse = await response.json();
-      allCharacters.push(...(data.results || []));
-      hasNext = !!data.next;
-      page++;
+    // If already fetching, return the existing promise
+    if (isFetchingAllCharacters && fetchPromise) {
+      return fetchPromise;
     }
 
-    // Update cache
-    allCharactersCache = allCharacters;
-    cacheTimestamp = now;
+    // Create new fetch promise
+    isFetchingAllCharacters = true;
+    fetchPromise = (async () => {
+      const allCharacters: SwapiTechCharacter[] = [];
+      const page = 1;
+      const hasNext = true;
 
-    return allCharacters;
+      // Fetch all pages in parallel for faster loading
+      const firstPageResponse = await fetch(
+        'https://www.swapi.tech/api/people?page=1&limit=10'
+      );
+      const firstPageData: SwapiTechResponse = await firstPageResponse.json();
+      const totalPages = firstPageData.total_pages || 9;
+
+      // Add first page results
+      allCharacters.push(...(firstPageData.results || []));
+
+      // Fetch remaining pages in parallel
+      if (totalPages > 1) {
+        const pagePromises = [];
+        for (let p = 2; p <= totalPages; p++) {
+          pagePromises.push(
+            fetch(`https://www.swapi.tech/api/people?page=${p}&limit=10`)
+              .then((res) => res.json())
+              .then((data: SwapiTechResponse) => data.results || [])
+          );
+        }
+
+        const remainingPages = await Promise.all(pagePromises);
+        remainingPages.forEach((pageResults) => {
+          allCharacters.push(...pageResults);
+        });
+      }
+
+      // Update cache
+      allCharactersCache = allCharacters;
+      cacheTimestamp = now;
+      isFetchingAllCharacters = false;
+      fetchPromise = null;
+
+      return allCharacters;
+    })();
+
+    return fetchPromise;
   } catch (error) {
     console.error('Error fetching all characters:', error);
+    isFetchingAllCharacters = false;
+    fetchPromise = null;
     return [];
   }
 }

@@ -9,7 +9,7 @@ interface CharacterGridProps {
 }
 
 export function CharacterGrid({ characters, loading }: CharacterGridProps) {
-  if (loading) {
+  if (loading && characters.length === 0) {
     return (
       <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-8">
         {Array.from({ length: 8 }).map((_, index) => (

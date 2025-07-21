@@ -6,9 +6,10 @@ import { CharacterCard } from '@/components/card/character-card';
 import { PlanetCard } from '@/components/card/planet-card';
 import { StarshipCard } from '@/components/card/starship-card';
 import { PageLayout } from '@/components/common';
-import { Badge, Box, Container, Heading } from '@/components/ui';
+import { Badge, Container } from '@/components/ui';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS, GET_FILM_BY_ID } from '@/lib/queries';
+import { cn } from '@/lib/utils';
 import { Film as GraphQLFilm } from '@/schema/graphql';
 import {
   Film,
@@ -22,6 +23,7 @@ import { motion } from 'framer-motion';
 import { Calendar, ClapperboardIcon } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
+import { useMediaQuery } from 'react-responsive';
 
 // Define the types for GraphQL edges
 interface CharacterEdge {
@@ -169,7 +171,7 @@ export default function FilmDetailPage({
   vehicles,
   species,
 }: FilmDetailPageProps) {
-  console.log(starships);
+  const isMobileS = useMediaQuery({ query: '(max-width: 320px)' });
   return (
     <>
       <Head>
@@ -228,16 +230,17 @@ export default function FilmDetailPage({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                style={{ width: '100%' }}
               >
-                <Box>
-                  <Heading
-                    size="xl"
-                    className="mb-8 text-foreground text-center"
-                  >
+                <div>
+                  <div className="mb-8 font-bold text-foreground text-4xl text-center">
                     Characters ({characters.length})
-                  </Heading>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
+                  </div>
+                  <div
+                    className={cn(
+                      'gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full',
+                      isMobileS && 'w-screen'
+                    )}
+                  >
                     {characters.map((character, index) => (
                       <CharacterCard
                         key={character.url}
@@ -246,7 +249,7 @@ export default function FilmDetailPage({
                       />
                     ))}
                   </div>
-                </Box>
+                </div>
               </motion.div>
             )}
 
@@ -258,13 +261,10 @@ export default function FilmDetailPage({
                 transition={{ duration: 0.6, delay: 0.6 }}
                 style={{ width: '100%' }}
               >
-                <Box>
-                  <Heading
-                    size="xl"
-                    className="mb-8 text-foreground text-center"
-                  >
+                <div>
+                  <div className="mb-8 font-bold text-foreground text-4xl text-center">
                     Planets ({planets.length})
-                  </Heading>
+                  </div>
                   <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
                     {planets.map((planet, index) => (
                       <motion.div
@@ -277,7 +277,7 @@ export default function FilmDetailPage({
                       </motion.div>
                     ))}
                   </div>
-                </Box>
+                </div>
               </motion.div>
             )}
 
@@ -289,13 +289,10 @@ export default function FilmDetailPage({
                 transition={{ duration: 0.6, delay: 0.8 }}
                 style={{ width: '100%' }}
               >
-                <Box>
-                  <Heading
-                    size="xl"
-                    className="mb-8 text-foreground text-center"
-                  >
+                <div>
+                  <div className="mb-8 font-bold text-foreground text-4xl text-center">
                     Starships ({starships.length})
-                  </Heading>
+                  </div>
                   <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
                     {starships.map((starship, index) => (
                       <motion.div
@@ -308,7 +305,7 @@ export default function FilmDetailPage({
                       </motion.div>
                     ))}
                   </div>
-                </Box>
+                </div>
               </motion.div>
             )}
           </div>

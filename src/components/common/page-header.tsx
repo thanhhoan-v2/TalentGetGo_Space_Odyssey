@@ -78,8 +78,7 @@ export function PageHeader() {
                 <Link
                   href={ROUTES.FILMS}
                   className={cn(
-                    'theme-transition hover:bg-black hover:text-white',
-                    theme === 'dark' && 'hover:bg-white hover:text-black',
+                    'theme-transition hover:bg-white hover:text-black',
                     isHomePage && 'text-white hover:bg-white hover:text-black',
                     isActive(ROUTES.FILMS) && isActiveClassName
                   )}
@@ -93,8 +92,7 @@ export function PageHeader() {
                 <Link
                   href={ROUTES.CHARACTERS}
                   className={cn(
-                    'transition-all duration-200 theme-transition hover:bg-black hover:text-white',
-                    theme === 'dark' && 'hover:bg-white hover:text-black',
+                    'transition-all duration-200 theme-transition hover:bg-white hover:text-black',
                     isHomePage && 'text-white hover:bg-white hover:text-black',
                     isActive(ROUTES.CHARACTERS) && isActiveClassName
                   )}
@@ -124,10 +122,8 @@ export function PageHeader() {
                   aria-label="Toggle navigation"
                   onClick={toggleMobileMenu}
                   className={cn(
-                    'theme-transition hover:bg-black hover:text-white cursor-pointer',
-                    theme === 'dark' && 'hover:bg-white hover:text-black',
-                    isHomePage && 'text-white hover:bg-white hover:text-black',
-                    isActive(ROUTES.FILMS) && isActiveClassName
+                    'theme-transition hover:bg-white hover:text-black cursor-pointer',
+                    isHomePage && 'text-white hover:bg-white hover:text-black'
                   )}
                 >
                   <motion.div
@@ -159,8 +155,7 @@ export function PageHeader() {
                       href={ROUTES.FILMS}
                       onClick={closeMobileMenu}
                       className={cn(
-                        'w-full justify-start transition-all duration-200 theme-transition hover:bg-black hover:text-white',
-                        theme === 'dark' && 'hover:bg-white hover:text-black',
+                        'w-full justify-start transition-all duration-200 theme-transition hover:bg-white hover:text-black',
                         isHomePage &&
                           'text-white hover:bg-white hover:text-black',
                         isActive(ROUTES.FILMS) && isActiveClassName
@@ -176,8 +171,7 @@ export function PageHeader() {
                       href={ROUTES.CHARACTERS}
                       onClick={closeMobileMenu}
                       className={cn(
-                        'transition-all duration-200 theme-transition hover:bg-black hover:text-white',
-                        theme === 'dark' && 'hover:bg-white hover:text-black',
+                        'transition-all duration-200 theme-transition hover:bg-white hover:text-black',
                         isHomePage &&
                           'text-white hover:bg-white hover:text-black',
                         isActive(ROUTES.CHARACTERS) && isActiveClassName

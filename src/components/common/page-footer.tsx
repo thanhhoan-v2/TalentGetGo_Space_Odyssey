@@ -13,7 +13,7 @@ export default function PageFooter() {
 
   return (
     <footer className="p-4">
-      <Card className="border border-black rounded-none rounded-t-[25px] md:rounded-t-[45px] overflow-hidden">
+      <Card className="border-8 border-black rounded-none rounded-t-[25px] md:rounded-t-[45px] overflow-hidden">
         <CardContent className="space-y-8">
           <div className="flex lg:flex-row flex-col gap-8 md:gap-12">
             <div
@@ -73,7 +73,7 @@ export default function PageFooter() {
               </div>
             </div>
           </div>
-          <div className="flex justify-between items-center gap-4 pt-6 md:pt-8 border-zinc-800 border-t">
+          <div className="flex justify-between items-center gap-4 pt-6 md:pt-8 border-zinc-800 border-t-5">
             <div className="flex items-center gap-2">
               <Link
                 href="https://github.com/thanhhoan-v2/TalentGetGo_Space_Odyssey"

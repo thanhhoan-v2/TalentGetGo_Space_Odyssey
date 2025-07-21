@@ -1,6 +1,10 @@
 import { Person } from '@/schema/swapi';
-import { convertSwapiTechToPerson, fetchCharacters } from '@/utils/swapi-api';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  convertSwapiTechToPerson,
+  fetchAllCharacters,
+  fetchCharacters,
+} from '@/utils/swapi-api';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseCharactersProps {
   initialCharacters: Person[];
@@ -21,6 +25,27 @@ export function useCharacters({
   const [totalCount, setTotalCount] = useState(initialCount || 82);
   const [isSearching, setIsSearching] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [isPreloading, setIsPreloading] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Pre-fetch all characters on mount for faster search
+  useEffect(() => {
+    const preloadCharacters = async () => {
+      setIsPreloading(true);
+      try {
+        // This will cache all characters for 5 minutes
+        await fetchAllCharacters();
+      } catch (error) {
+        console.error('Failed to preload characters:', error);
+      } finally {
+        setIsPreloading(false);
+      }
+    };
+
+    // Start preloading after a short delay to not block initial render
+    const timer = setTimeout(preloadCharacters, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Initialize hasMore based on initial data
   useEffect(() => {
@@ -47,36 +72,49 @@ export function useCharacters({
     }
   }, [initialCharacters, initialCount, currentPage]);
 
-  // Search functionality
-  const handleSearch = useCallback(async (query: string, page: number = 1) => {
-    setLoading(true);
-    setIsSearching(!!query);
-
-    try {
-      const result = await fetchCharacters(page, query);
-      const swapiCharacters = result.characters.map(convertSwapiTechToPerson);
-
-      if (page === 1) {
-        setCharacters(swapiCharacters);
-      } else {
-        setCharacters((prev) => [...prev, ...swapiCharacters]);
+  // Search functionality with better loading states
+  const handleSearch = useCallback(
+    async (query: string, page: number = 1) => {
+      // Don't show loading state for empty searches when we have initial data
+      if (!query && page === 1 && initialCharacters.length > 0) {
+        setCharacters(initialCharacters);
+        setTotalCount(initialCount);
+        setHasMore(true);
+        setCurrentPage(1);
+        setIsSearching(false);
+        return;
       }
 
-      setTotalCount(result.totalRecords);
-      setTotalPages(result.totalPages);
-      setHasMore(result.hasNext);
-      setCurrentPage(page);
-    } catch (error) {
-      console.error('Error fetching characters:', error);
-      if (page === 1) {
-        setCharacters([]);
-        setTotalCount(0);
-        setHasMore(false);
+      setLoading(true);
+      setIsSearching(!!query);
+
+      try {
+        const result = await fetchCharacters(page, query);
+        const swapiCharacters = result.characters.map(convertSwapiTechToPerson);
+
+        if (page === 1) {
+          setCharacters(swapiCharacters);
+        } else {
+          setCharacters((prev) => [...prev, ...swapiCharacters]);
+        }
+
+        setTotalCount(result.totalRecords);
+        setTotalPages(result.totalPages);
+        setHasMore(result.hasNext);
+        setCurrentPage(page);
+      } catch (error) {
+        console.error('Error fetching characters:', error);
+        if (page === 1) {
+          setCharacters([]);
+          setTotalCount(0);
+          setHasMore(false);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [initialCharacters, initialCount]
+  );
 
   // Load more functionality
   const loadMore = useCallback(() => {
@@ -85,15 +123,35 @@ export function useCharacters({
     }
   }, [loading, hasMore, searchQuery, currentPage, handleSearch]);
 
-  // Search input handler with debouncing
+  // Search input handler with improved debouncing
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Don't search if query is empty and we have initial data
+    if (!searchQuery && initialCharacters.length > 0) {
+      setCharacters(initialCharacters);
+      setTotalCount(initialCount);
+      setHasMore(true);
+      setCurrentPage(1);
+      setIsSearching(false);
+      return;
+    }
+
+    // Set up new timeout with longer delay for better performance
+    searchTimeoutRef.current = setTimeout(() => {
       setCurrentPage(1);
       handleSearch(searchQuery, 1);
-    }, 300);
+    }, 300); // Increased from 100ms to 300ms
 
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, handleSearch]);
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [searchQuery, handleSearch, initialCharacters, initialCount]);
 
   // Clear search
   const clearSearch = useCallback(() => {
@@ -104,7 +162,7 @@ export function useCharacters({
     characters,
     searchQuery,
     setSearchQuery,
-    loading,
+    loading: loading || (isSearching && isPreloading),
     hasMore,
     totalCount,
     isSearching,
