@@ -58,8 +58,7 @@ export default function CharactersPage({
         />
       </Head>
 
-      <PageLayout currentPage="characters">
-        {/* Page Header */}
+      <PageLayout>
         <CharacterListHeader />
 
         {/* Search Bar */}
@@ -74,7 +73,6 @@ export default function CharactersPage({
           />
         </motion.div>
 
-        {/* Results Info */}
         <CharacterListInfo
           isSearching={isSearching}
           searchQuery={searchQuery}
@@ -82,7 +80,6 @@ export default function CharactersPage({
           charactersLength={characters.length}
         />
 
-        {/* Characters Grid */}
         <CharacterGrid characters={characters} loading={loading} />
 
         {/* Loading States and Actions */}

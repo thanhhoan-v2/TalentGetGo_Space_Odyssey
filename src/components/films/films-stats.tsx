@@ -1,13 +1,16 @@
-import { Box, Card, CardContent, Heading, Text } from '@/components/ui';
+import { Card, CardContent } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { Film } from '@/schema/swapi';
 import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
+import { NumberTicker } from '../animated/number-ticker';
 
 interface FilmsStatsProps {
   films: Film[];
 }
 
 export function FilmsStats({ films }: FilmsStatsProps) {
+  const { theme } = useTheme();
   if (!films || films.length === 0) return null;
 
   return (
@@ -15,53 +18,46 @@ export function FilmsStats({ films }: FilmsStatsProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
+      className={cn(
+        'border-8 border-black mb-12',
+        theme == 'light' ? 'shadow-brutal' : 'shadow-brutal-inverse'
+      )}
     >
-      <Card
-        className={cn(
-          'border-border bg-card/50 backdrop-blur-sm theme-transition',
-          'card-glow' // Apply theme-specific effects
-        )}
-      >
-        <CardContent className="p-8 text-center">
-          <Heading size="xl" className="mb-4 text-foreground">
-            Film Collection Stats
-          </Heading>
-          <div className="gap-6 grid grid-cols-1 md:grid-cols-3">
-            <Box>
-              <Text
-                size="xl"
-                variant="primary"
-                weight="bold"
-                className="text-3xl"
+      <Card className="shadow-none border-none rounded-none theme-transition">
+        <CardContent className="p-2 text-center">
+          <div className="gap-6 grid grid-cols-2">
+            <div className="flex flex-col items-center">
+              <div
+                className={cn(
+                  'px-2 w-fit text-xl md:text-2xl',
+                  theme === 'light'
+                    ? 'text-white bg-black'
+                    : 'text-black bg-white'
+                )}
               >
-                {films.length}
-              </Text>
-              <Text variant="muted">Total Films</Text>
-            </Box>
-            <Box>
-              <Text
-                size="xl"
-                variant="secondary"
-                weight="bold"
-                className="text-3xl"
+                Episodes
+              </div>
+              <NumberTicker
+                className="text-6xl md:text-8xl"
+                value={films.length}
+              />
+            </div>
+            <div className="flex flex-col items-center">
+              <div
+                className={cn(
+                  'px-2 w-fit text-xl md:text-2xl',
+                  theme === 'light'
+                    ? 'text-white bg-black'
+                    : 'text-black bg-white'
+                )}
               >
-                {new Set(films.map((f) => f.director)).size}
-              </Text>
-              <Text variant="muted">Directors</Text>
-            </Box>
-            <Box>
-              <Text
-                size="xl"
-                variant="accent"
-                weight="bold"
-                className="text-3xl"
-              >
-                {Math.max(...films.map((f) => f.episode_id)) -
-                  Math.min(...films.map((f) => f.episode_id)) +
-                  1}
-              </Text>
-              <Text variant="muted">Episode Range</Text>
-            </Box>
+                Directors
+              </div>
+              <NumberTicker
+                className="text-6xl md:text-8xl"
+                value={new Set(films.map((f) => f.director)).size}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>

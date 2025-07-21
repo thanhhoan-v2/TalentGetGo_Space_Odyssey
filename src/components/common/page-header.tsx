@@ -17,11 +17,7 @@ const ThemeSwitch = dynamic(
   { ssr: false }
 );
 
-interface PageHeaderProps {
-  transparent?: boolean;
-}
-
-export function PageHeader({ transparent = false }: PageHeaderProps) {
+export function PageHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
@@ -48,10 +44,10 @@ export function PageHeader({ transparent = false }: PageHeaderProps) {
   return (
     <nav
       className={cn(
-        'sticky top-0 z-50 transition-all duration-300 theme-transition',
-        transparent || isHomePage
-          ? 'bg-transparent border-transparent backdrop-blur-lg'
-          : 'bg-background/95 border-border backdrop-blur-sm '
+        'sticky top-0 z-50 transition-all duration-300 theme-transition bg-white text-black',
+        theme === 'dark' &&
+          'bg-black border-transparent backdrop-blur-lg text-white',
+        isHomePage && 'bg-transparent border-transparent backdrop-blur-lg'
       )}
     >
       <div className="mx-auto px-4 py-4 max-w-7xl">

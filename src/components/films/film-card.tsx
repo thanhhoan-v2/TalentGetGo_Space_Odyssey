@@ -15,7 +15,10 @@ export function FilmCard({ film }: FilmCardProps) {
   const { theme } = useTheme();
   return (
     <motion.div
-      className="w-full max-w-[400px] h-[550px]"
+      className={cn(
+        'border-8 border-black',
+        theme == 'light' ? 'shadow-brutal' : 'shadow-brutal-inverse'
+      )}
       whileHover={{
         scale: 1.02,
         transition: { duration: 0.2 },
@@ -25,12 +28,7 @@ export function FilmCard({ film }: FilmCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card
-        className={cn(
-          'bg-black py-0 mb-0 backdrop-blur-sm border-border h-full theme-transition transition-all duration-300 cursor-pointer',
-          theme == 'light' ? 'bg-black text-white' : 'bg-white text-black'
-        )}
-      >
+      <Card className="shadow-none border-none rounded-none h-full theme-transition transition-all duration-300 cursor-pointer">
         <Link href={`/films/${extractIdFromUrl(film.url)}`}>
           <CardContent className="group flex flex-col p-8 h-full">
             {/* Episode Badge and Year */}

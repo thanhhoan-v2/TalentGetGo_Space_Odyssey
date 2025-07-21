@@ -1,4 +1,3 @@
-import { Heading, Text, VStack } from '@/components/ui';
 import { motion } from 'framer-motion';
 
 export function CharacterListHeader() {
@@ -8,15 +7,20 @@ export function CharacterListHeader() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <VStack gap="lg" className="mb-12 text-center">
-        <Heading size="4xl" variant="gradient" className="leading-tight">
-          Star Wars Characters
-        </Heading>
-        <Text size="xl" variant="muted" className="mx-auto max-w-3xl">
-          Discover heroes, villains, and everyone in between from across the
-          galaxy.
-        </Text>
-      </VStack>
+      <div className="flex flex-wrap gap-1 mx-auto mb-12 w-[300px] md:w-[600px] text-[2rem] md:text-[3rem] leading-tight">
+        <span className="inline">Discover</span>&nbsp;
+        <span>your</span>&nbsp;
+        <span>favorite</span>&nbsp;
+        <span className="inline bg-yellow-500 px-1 max-h-[4rem]">heroes</span>
+        ,&nbsp;
+        <span className="inline bg-red-500 px-1 max-h-[4rem]">villains</span>
+        ,&nbsp;
+        <span className="inline bg-green-500 px-1 max-h-[4rem]">species</span>
+        &nbsp;
+        <span className="inline">across</span>&nbsp;
+        <span className="inline">the</span>&nbsp;
+        <span className="inline">galaxy.</span>
+      </div>
     </motion.div>
   );
 }

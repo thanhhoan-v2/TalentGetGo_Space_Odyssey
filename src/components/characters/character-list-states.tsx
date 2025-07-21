@@ -1,5 +1,6 @@
-import { Box, Button, Heading, Text, VStack } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
 interface CharacterListStatesProps {
   loading: boolean;
@@ -24,34 +25,20 @@ export function CharacterListStates({
     <>
       {/* Loading State */}
       {loading && charactersLength > 0 && (
-        <VStack gap="md" className="py-8">
-          <Box className="border-2 border-muted border-t-secondary rounded-full w-8 h-8 animate-spin" />
-          <Text variant="muted">Loading more characters...</Text>
-        </VStack>
-      )}
-
-      {/* Load More Button */}
-      {!loading && hasMore && charactersLength > 0 && (
-        <Box className="text-center">
-          <Button
-            onClick={onLoadMore}
-            size="lg"
-            className="bg-gradient-to-r from-secondary hover:from-secondary/80 to-secondary/80 hover:to-secondary/60 text-white transition-all hover:-translate-y-0.5 duration-200"
-          >
-            Load More Characters
-          </Button>
-        </Box>
+        <div className="flex flex-col items-center gap-2 mx-auto mt-[100px] py-8">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </div>
       )}
 
       {/* No More Results */}
       {!loading && !hasMore && charactersLength > 0 && (
-        <Box className="py-8 text-center">
-          <Text variant="muted">
+        <div className="py-8 text-center">
+          <div className="text-muted">
             {isSearching
               ? 'No more search results'
               : "You've seen all characters in the galaxy!"}
-          </Text>
-        </Box>
+          </div>
+        </div>
       )}
 
       {/* No Results */}
@@ -61,15 +48,13 @@ export function CharacterListStates({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <VStack gap="md" className="py-16 text-center">
-            <Text className="mb-4 text-6xl">🔍</Text>
-            <Heading size="xl" className="mb-2 text-foreground">
-              No Characters Found
-            </Heading>
-            <Text variant="muted" className="mb-6">
+          <div className="py-16 text-center">
+            <div className="mb-4 text-6xl">🔍</div>
+            <div className="mb-2 text-foreground">No Characters Found</div>
+            <div className="mb-6">
               No characters match your search for &ldquo;{searchQuery}
               &rdquo;
-            </Text>
+            </div>
             <Button
               onClick={onClearSearch}
               variant="default"
@@ -78,7 +63,7 @@ export function CharacterListStates({
             >
               Clear Search
             </Button>
-          </VStack>
+          </div>
         </motion.div>
       )}
     </>

@@ -2,7 +2,8 @@
 
 import { PageLayout } from '@/components/common';
 import { FilmCard, FilmCardSkeleton, FilmsStats } from '@/components/films';
-import { Box, Heading, Text } from '@/components/ui';
+import { Box, Text } from '@/components/ui';
+import { useMounted } from '@/hooks/use-mounted';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
 import { cn } from '@/lib/utils';
@@ -10,6 +11,7 @@ import { Film as GraphQLFilm } from '@/schema/graphql';
 import { Film as SWAPIFilm } from '@/schema/swapi';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 interface FilmsPageProps {
@@ -48,20 +50,30 @@ export default function FilmsPage({ films }: FilmsPageProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  const { theme } = useTheme();
+  const mounted = useMounted();
+  if (!mounted) return null;
+
+  const headerClassName =
+    'font-bold ' +
+    (theme === 'light' ? 'bg-black text-white' : 'bg-white text-black');
+
   return (
     <PageLayout>
-      {/* Page Header */}
-      <Box className="mb-12 text-center">
-        <Heading size="3xl" variant="gradient" className="mb-4">
-          Star Wars Films
-        </Heading>
-        <Text size="xl" variant="muted" className="mx-auto max-w-3xl">
-          Explore the complete Star Wars saga. From the original trilogy to the
-          prequels and beyond.
-        </Text>
-      </Box>
+      <div className="mb-12 text-center">
+        <div className="mx-auto max-w-3xl text-[2rem] md:text-[3rem]">
+          Explore the complete{' '}
+          <span className={headerClassName}>Star Wars</span> saga. From the{' '}
+          <span className={headerClassName}>original trilogy</span> to the{' '}
+          <span className={headerClassName}>prequels</span> and beyond.
+        </div>
+      </div>
 
-      {/* Films Grid */}
+      <div className="mb-10">
+        {/* <h1 className="mb-10 font-bold text-6xl text-center">Stats</h1> */}
+        <FilmsStats films={films} />
+      </div>
+
       {isLoading ? (
         <div className={cn('grid gap-8 mb-16', 'grid-cols-1 lg:grid-cols-2')}>
           {Array.from({ length: 4 }).map((_, index) => (
@@ -74,15 +86,7 @@ export default function FilmsPage({ films }: FilmsPageProps) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          {/* <div className="pt-40">
-            <CardCarousel
-              images={images}
-              films={films}
-              autoplayDelay={2000}
-              showPagination={true}
-              showNavigation={true}
-            />
-          </div> */}
+          <h1 className="mb-10 font-bold text-6xl text-center">Episodes</h1>
           <div className={cn('grid gap-8 mb-16', 'grid-cols-1 lg:grid-cols-2')}>
             {films
               .sort((a, b) => a.episode_id - b.episode_id)
@@ -105,9 +109,6 @@ export default function FilmsPage({ films }: FilmsPageProps) {
           </Text>
         </Box>
       )}
-
-      {/* Stats Section */}
-      <FilmsStats films={films} />
     </PageLayout>
   );
 }
