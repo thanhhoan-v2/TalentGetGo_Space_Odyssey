@@ -43,7 +43,7 @@ export function StarshipCard({ starshipName }: StarshipCardProps) {
                   {starshipName}
                 </h3>
               </div>
-              <div className="bg-black/50 p-2 rounded-full">
+              <div className="bg-black/50 p-2">
                 <SearchIcon className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-600" />
               </div>
             </div>

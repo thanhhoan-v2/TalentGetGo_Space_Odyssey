@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import React from 'react';
@@ -7,8 +9,7 @@ import {
   AnimationVariant,
   createAnimation,
 } from '@/components/ui/theme-toggle/theme-animations';
-import DarkModeIcon from './dark-mode-icon';
-import LightModeIcon from './ligth-mode-icon';
+import { MoonIcon, SunIcon } from 'lucide-react';
 
 interface ThemeToggleAnimationProps {
   variant?: AnimationVariant;
@@ -62,11 +63,10 @@ export default function ThemeToggleButton({
 
   return (
     <Button
-      asChild
       onClick={toggleTheme}
-      className="group relative p-0 hover:border-0 focus:border-0 focus:outline-none hover:ring-0 focus:ring-0 focus:ring-offset-0 w-9 h-9"
+      className="group relative flex justify-center items-center m-0 p-0 hover:border-0 focus:border-0 focus-visible:border-none focus-visible:outline-none focus:outline-none hover:ring-0 focus-visible:ring-0 focus:ring-0 focus:ring-offset-0 w-9 h-9"
     >
-      {theme === 'light' ? <LightModeIcon /> : <DarkModeIcon />}
+      {theme === 'light' ? <SunIcon /> : <MoonIcon />}
     </Button>
   );
 }

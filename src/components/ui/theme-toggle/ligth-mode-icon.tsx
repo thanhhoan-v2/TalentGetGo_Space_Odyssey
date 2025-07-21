@@ -20,7 +20,7 @@ const LightModeIcon = (props: React.SVGProps<SVGSVGElement>) => (
       fill="#f9b84f"
       d="M69.5,90.5v-6h-3v-8l3-5v5h6v-14l2-6l3-2l1-14l-4-3c0-18-16-24-20-25S50,7.495,50,7.495 S46.5,11.5,42.5,12.5s-20,7-20,25l-4,3l1,14l3,2l2,6v14h6v-5l3,5v8h-3v6H69.5z"
     />
-    <rect width={45} height={10} x={27} y={63} fill="#d47f56" />
+    <rect width={45} height={10} x={27} y={63} />
     <path
       fill="none"
       stroke="#40396e"

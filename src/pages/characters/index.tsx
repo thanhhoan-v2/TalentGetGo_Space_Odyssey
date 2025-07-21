@@ -6,13 +6,12 @@ import {
   CharacterListInfo,
   CharacterListStates,
   CharacterSearch,
-  CharacterStats,
 } from '@/components/characters';
 import { PageLayout } from '@/components/common';
 import { useCharacters } from '@/hooks/useCharacters';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { Person } from '@/schema/swapi';
-import { fetchCharacters, convertSwapiTechToPerson } from '@/utils/swapi-api';
+import { convertSwapiTechToPerson, fetchCharacters } from '@/utils/swapi-api';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
@@ -95,13 +94,6 @@ export default function CharactersPage({
           searchQuery={searchQuery}
           onLoadMore={loadMore}
           onClearSearch={clearSearch}
-        />
-
-        {/* Stats Section */}
-        <CharacterStats
-          characters={characters}
-          totalCount={totalCount}
-          isSearching={isSearching}
         />
       </PageLayout>
     </>

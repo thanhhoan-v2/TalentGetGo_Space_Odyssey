@@ -1,5 +1,6 @@
 'use client';
 
+import { BoxReveal } from '@/components/animated/box-reveal';
 import { TextReveal } from '@/components/animated/text-reveal';
 import { CharacterCard } from '@/components/card/character-card';
 import { PlanetCard } from '@/components/card/planet-card';
@@ -197,9 +198,9 @@ export default function FilmDetailPage({
             transition={{ duration: 0.6 }}
           >
             <div>
-              <h1 className="mx-auto mb-5 font-bold text-[3rem] md:text-[5rem] lg:text-[6rem] xl:text-[8rem] text-center">
+              <BoxReveal className="mx-auto mb-5 w-full font-bold text-[3rem] md:text-[5rem] lg:text-[6rem] xl:text-[8rem] text-center">
                 {film.title}
-              </h1>
+              </BoxReveal>
             </div>
 
             <div className="flex flex-wrap justify-center items-center gap-2">

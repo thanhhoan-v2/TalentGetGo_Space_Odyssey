@@ -51,7 +51,7 @@ export function CharacterCard({
             href={`/characters/${characterId}`}
             className="group block mx-auto w-full max-w-[280px]"
           >
-            <div className="relative rounded-2xl overflow-hidden">
+            <div className="relative overflow-hidden">
               <div className="relative h-[320px] overflow-hidden">
                 <Image
                   src={characterImage}
@@ -73,7 +73,7 @@ export function CharacterCard({
                       {character.name}
                     </h3>
                   </div>
-                  <div className="bg-black/50 p-2 rounded-full">
+                  <div className="bg-black/50 p-2">
                     <ArrowUpRight className="w-4 h-4 text-white group-hover:-rotate-340 group-hover:scale-120 transition-transform duration-600" />
                   </div>
                 </div>

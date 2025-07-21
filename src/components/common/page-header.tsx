@@ -1,15 +1,21 @@
 'use client';
 
 import { Badge, Button } from '@/components/ui';
-import ThemeToggleButton from '@/components/ui/theme-toggle/theme-toggle-button';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/utils/routes';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Film, Menu, Users, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+
+// Dynamic import for theme toggle button to avoid hydration errors
+const ThemeSwitch = dynamic(
+  () => import('@/components/ui/theme-toggle/theme-toggle-button'),
+  { ssr: false }
+);
 
 interface PageHeaderProps {
   transparent?: boolean;
@@ -111,16 +117,14 @@ export function PageHeader({ transparent = false }: PageHeaderProps) {
               </Button>
 
               {/* Theme Toggle */}
-              <div className="ml-4">
-                <ThemeToggleButton variant="circle" start="center" />
-              </div>
+              <ThemeSwitch variant="circle" start="center" />
             </motion.div>
           )}
 
           {/* Mobile Menu Button & Theme Toggle */}
           {isMobile && (
             <div className="flex items-center gap-2">
-              <ThemeToggleButton variant="circle" start="center" />
+              <ThemeSwitch variant="circle" start="center" />
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}

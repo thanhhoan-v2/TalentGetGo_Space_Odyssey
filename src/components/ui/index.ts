@@ -27,7 +27,6 @@ export {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-export { Provider } from '@/components/ui/provider';
 export {
   Select,
   SelectContent,

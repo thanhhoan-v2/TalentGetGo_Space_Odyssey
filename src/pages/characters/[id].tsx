@@ -1,18 +1,11 @@
 'use client';
 
-import { PlanetCard, StarshipCard } from '@/components/card/starship-card';
+import { PlanetCard } from '@/components/card/planet-card';
+import { StarshipCard } from '@/components/card/starship-card';
+import { CharacterAppearanceCard } from '@/components/characters/character-appearance-card';
+import { CharacterBioCard } from '@/components/characters/character-bio-card';
 import { PageLayout } from '@/components/common';
-import { FilmCard } from '@/components/films';
-import {
-  Box,
-  Card,
-  CardContent,
-  Container,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-} from '@/components/ui';
+import { Box, Card, CardContent, Heading } from '@/components/ui';
 import {
   Film,
   Person,
@@ -24,7 +17,6 @@ import {
 import { getCharacterImage } from '@/utils/assets';
 import { extractIdFromUrl } from '@/utils/swapi';
 import { motion } from 'framer-motion';
-import { Calendar, Eye, Globe, Ruler, User, Weight } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -191,285 +183,101 @@ export default function CharacterDetailPage({
       </Head>
 
       <PageLayout>
-        {/* Main Content */}
-        <Container size="7xl" className="py-12">
-          {/* Character Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <VStack gap="lg" className="mb-12 text-center">
-              {characterImage && (
-                <div className="relative rounded-full w-24 h-24 overflow-hidden">
-                  <Image
-                    src={characterImage}
-                    alt={character.name}
-                    width={100}
-                    height={100}
-                    className="object-cover"
-                  />
-                </div>
-              )}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <div className="mb-2 text-center">
+            <div className="inline-block relative mb-6">
+              <div className="absolute inset-0 bg-gray-500/20 blur-xl rounded-full scale-110"></div>
+              <Image
+                src={characterImage || ''}
+                alt={character.name}
+                width={300}
+                height={300}
+                className="relative shadow-2xl mx-auto border-4 border-gray-400/50 rounded-full w-64 h-64 object-cover profile-image"
+              />
+            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.5, delay: 0.5 }}
+              viewport={{ once: true }}
+              className="font-bold text-[3rem] md:text-[5rem]"
+            >
+              {character.name}
+            </motion.div>
+          </div>
+          <Card className="shadow-none mx-auto border-none">
+            <CardContent className="p-8">
+              <div className="gap-8 grid grid-cols-1 lg:grid-cols-2 mx-auto max-w-6xl">
+                <CharacterBioCard
+                  title="BIO"
+                  gender={character.gender}
+                  birthYear={character.birth_year}
+                  homeworld={homeworld?.name || 'unknown'}
+                />
 
-              <Heading size="4xl" variant="gradient" className="leading-tight">
-                {character.name}
+                <CharacterAppearanceCard
+                  title="APPEARANCE"
+                  height={character.height}
+                  mass={character.mass}
+                  hairColor={character.hair_color}
+                  skinColor={character.skin_color}
+                  eyeColor={character.eye_color}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Homeworld */}
+        {homeworld && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            style={{ width: '100%' }}
+          >
+            <Box>
+              <Heading size="xl" className="mb-8 text-foreground text-center">
+                Homeworld
               </Heading>
-
-              <Flex
-                className="md:flex-row flex-col"
-                gap="lg"
-                wrap="wrap"
-                justify="center"
-                align="center"
-              >
-                <div className="flex items-center gap-2">
-                  <User size={16} className="text-secondary" />
-                  <Text variant="muted">
-                    <Text as="span" variant="secondary" weight="semibold">
-                      Gender:
-                    </Text>{' '}
-                    {character.gender}
-                  </Text>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar size={16} className="text-secondary" />
-                  <Text variant="muted">
-                    <Text as="span" variant="secondary" weight="semibold">
-                      Birth Year:
-                    </Text>{' '}
-                    {character.birth_year}
-                  </Text>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Globe size={16} className="text-secondary" />
-                  <Text variant="muted">
-                    <Text as="span" variant="secondary" weight="semibold">
-                      Homeworld:
-                    </Text>{' '}
-                    {homeworld?.name || 'Unknown'}
-                  </Text>
-                </div>
-              </Flex>
-            </VStack>
-          </motion.div>
-
-          {/* Character Profile Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <Box className="mb-16">
-              <Card className="bg-card mx-auto border-border max-w-4xl">
-                <CardContent className="p-8">
-                  <Heading
-                    size="xl"
-                    variant="primary"
-                    className="mb-6 text-center"
-                  >
-                    Character Details
-                  </Heading>
-
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {/* Physical Attributes */}
-                    <Box className="bg-background/60 p-6 border border-border rounded-lg">
-                      <div className="flex items-center gap-2 mb-4">
-                        <User size={20} className="text-secondary" />
-                        <Heading size="md" className="text-foreground">
-                          Physical
-                        </Heading>
-                      </div>
-                      <VStack align="start" gap="sm">
-                        <div className="flex items-center gap-2">
-                          <Ruler size={16} className="text-secondary" />
-                          <Text variant="muted" size="sm">
-                            <Text
-                              as="span"
-                              variant="secondary"
-                              weight="semibold"
-                            >
-                              Height:
-                            </Text>{' '}
-                            {character.height}cm
-                          </Text>
-                        </div>
-                        {character.mass !== 'unknown' && (
-                          <div className="flex items-center gap-2">
-                            <Weight size={16} className="text-secondary" />
-                            <Text variant="muted" size="sm">
-                              <Text
-                                as="span"
-                                variant="secondary"
-                                weight="semibold"
-                              >
-                                Mass:
-                              </Text>{' '}
-                              {character.mass}kg
-                            </Text>
-                          </div>
-                        )}
-                      </VStack>
-                    </Box>
-
-                    {/* Appearance */}
-                    <Box className="bg-background/60 p-6 border border-border rounded-lg">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Eye size={20} className="text-secondary" />
-                        <Heading size="md" className="text-foreground">
-                          Appearance
-                        </Heading>
-                      </div>
-                      <VStack align="start" gap="sm">
-                        <Text variant="muted" size="sm">
-                          <Text as="span" variant="secondary" weight="semibold">
-                            Hair Color:
-                          </Text>{' '}
-                          {character.hair_color}
-                        </Text>
-                        <Text variant="muted" size="sm">
-                          <Text as="span" variant="secondary" weight="semibold">
-                            Eye Color:
-                          </Text>{' '}
-                          {character.eye_color}
-                        </Text>
-                        <Text variant="muted" size="sm">
-                          <Text as="span" variant="secondary" weight="semibold">
-                            Skin Color:
-                          </Text>{' '}
-                          {character.skin_color}
-                        </Text>
-                      </VStack>
-                    </Box>
-
-                    {/* Origin */}
-                    <Box className="bg-background/60 p-6 border border-border rounded-lg">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Globe size={20} className="text-secondary" />
-                        <Heading size="md" className="text-foreground">
-                          Origin
-                        </Heading>
-                      </div>
-                      <VStack align="start" gap="sm">
-                        <Text variant="muted" size="sm">
-                          <Text as="span" variant="secondary" weight="semibold">
-                            Birth Year:
-                          </Text>{' '}
-                          {character.birth_year}
-                        </Text>
-                        <Text variant="muted" size="sm">
-                          <Text as="span" variant="secondary" weight="semibold">
-                            Homeworld:
-                          </Text>{' '}
-                          {homeworld?.name || 'Unknown'}
-                        </Text>
-                        {species.length > 0 && (
-                          <Text variant="muted" size="sm">
-                            <Text
-                              as="span"
-                              variant="secondary"
-                              weight="semibold"
-                            >
-                              Species:
-                            </Text>{' '}
-                            {species[0].name}
-                          </Text>
-                        )}
-                      </VStack>
-                    </Box>
-                  </div>
-                </CardContent>
-              </Card>
+              <Box className="mx-auto max-w-md">
+                <PlanetCard planetName={homeworld.name} />
+              </Box>
             </Box>
           </motion.div>
+        )}
 
-          {/* Content Sections */}
-          <VStack gap="xl">
-            {/* Films */}
-            {films.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                style={{ width: '100%' }}
-              >
-                <Box>
-                  <Heading
-                    size="xl"
-                    className="mb-8 text-foreground text-center"
+        {/* Starships */}
+        {starships.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            style={{ width: '100%' }}
+          >
+            <Box>
+              <Heading size="xl" className="mb-8 text-foreground text-center">
+                Starships ({starships.length})
+              </Heading>
+              <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {starships.map((starship, index) => (
+                  <motion.div
+                    key={starship.url}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
                   >
-                    Films ({films.length})
-                  </Heading>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {films.map((film, index) => (
-                      <motion.div
-                        key={film.url}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <FilmCard film={film} />
-                      </motion.div>
-                    ))}
-                  </div>
-                </Box>
-              </motion.div>
-            )}
-
-            {/* Homeworld */}
-            {homeworld && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                style={{ width: '100%' }}
-              >
-                <Box>
-                  <Heading
-                    size="xl"
-                    className="mb-8 text-foreground text-center"
-                  >
-                    Homeworld
-                  </Heading>
-                  <Box className="mx-auto max-w-md">
-                    <PlanetCard planet={homeworld} />
-                  </Box>
-                </Box>
-              </motion.div>
-            )}
-
-            {/* Starships */}
-            {starships.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                style={{ width: '100%' }}
-              >
-                <Box>
-                  <Heading
-                    size="xl"
-                    className="mb-8 text-foreground text-center"
-                  >
-                    Starships ({starships.length})
-                  </Heading>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {starships.map((starship, index) => (
-                      <motion.div
-                        key={starship.url}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                      >
-                        <StarshipCard starship={starship} />
-                      </motion.div>
-                    ))}
-                  </div>
-                </Box>
-              </motion.div>
-            )}
-          </VStack>
-        </Container>
+                    <StarshipCard starshipName={starship.name} />
+                  </motion.div>
+                ))}
+              </div>
+            </Box>
+          </motion.div>
+        )}
       </PageLayout>
     </>
   );

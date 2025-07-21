@@ -1,6 +1,7 @@
+import PageFooter from '@/components/common/page-footer';
+import { PageHeader } from '@/components/common/page-header';
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
-import { PageHeader } from './page-header';
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -17,6 +18,7 @@ export function PageLayout({ children, className }: PageLayoutProps) {
     >
       <PageHeader />
       <div className="mx-auto px-4 py-12 max-w-7xl">{children}</div>
+      <PageFooter />
     </div>
   );
 }

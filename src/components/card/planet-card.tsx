@@ -10,6 +10,13 @@ interface PlanetCardProps {
 }
 
 export function PlanetCard({ planetName, imageUrl }: PlanetCardProps) {
+  const unknownPlanet = (planetName: string) => {
+    return {
+      image: 'https://lumiere-a.akamaihd.net/v1/images/image_51705c58.jpeg',
+      searchUrl: `https://www.starwars.com/databank/${planetName}`,
+    };
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -19,14 +26,19 @@ export function PlanetCard({ planetName, imageUrl }: PlanetCardProps) {
       whileTap={{ scale: 0.98 }}
     >
       <Link
-        href={planetData[planetName].searchUrl}
+        href={
+          planetData[planetName]?.searchUrl ||
+          unknownPlanet(planetName).searchUrl
+        }
         target="_blank"
         className="group block mx-auto w-full max-w-[280px]"
       >
-        <div className="relative rounded-2xl overflow-hidden">
+        <div className="relative overflow-hidden">
           <div className="relative h-[320px] overflow-hidden">
             <Image
-              src={planetData[planetName].image}
+              src={
+                planetData[planetName]?.image || unknownPlanet(planetName).image
+              }
               alt={planetName}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -45,7 +57,7 @@ export function PlanetCard({ planetName, imageUrl }: PlanetCardProps) {
                   {planetName}
                 </h3>
               </div>
-              <div className="bg-black/50 p-2 rounded-full">
+              <div className="bg-black/50 p-2">
                 <SearchIcon className="w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-600" />
               </div>
             </div>
@@ -156,5 +168,15 @@ const planetData: Record<string, { image: string; searchUrl: string }> = {
     image:
       'https://lumiere-a.akamaihd.net/v1/images/databank_geonosis_01_169_1d04e086.jpeg?region=0%2C0%2C1560%2C878',
     searchUrl: 'https://www.starwars.com/databank/geonosis',
+  },
+  Rodia: {
+    image:
+      'https://lumiere-a.akamaihd.net/v1/images/databank_rodia_01_169_6f76b79d.jpeg?region=0%2C0%2C1560%2C878',
+    searchUrl: 'https://www.starwars.com/databank/rodia',
+  },
+  'Nal Hutta': {
+    image:
+      'https://lumiere-a.akamaihd.net/v1/images/databank_nalhutta_01_169_2070e38e.jpeg?region=0%2C0%2C1560%2C878',
+    searchUrl: 'https://www.starwars.com/databank/nal-hutta',
   },
 };

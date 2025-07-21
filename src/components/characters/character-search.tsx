@@ -1,4 +1,4 @@
-import { Box, Input } from '@/components/ui';
+import { Input } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { Search } from 'lucide-react';
 
@@ -12,10 +12,10 @@ export function CharacterSearch({
   onSearchChange,
 }: CharacterSearchProps) {
   return (
-    <Box className="relative mx-auto mb-8 max-w-2xl">
-      <Box className="top-1/2 left-3 z-10 absolute -translate-y-1/2 pointer-events-none">
+    <div className="relative mx-auto mb-8 max-w-2xl">
+      <div className="top-1/2 left-3 z-10 absolute -translate-y-1/2 pointer-events-none">
         <Search size={20} className="text-muted-foreground" />
-      </Box>
+      </div>
       <Input
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
@@ -26,6 +26,6 @@ export function CharacterSearch({
           'hover:border-border/80'
         )}
       />
-    </Box>
+    </div>
   );
 }
