@@ -1,4 +1,4 @@
-import { IPerson } from '@/schema/swapi';
+import { Person } from '@/utils/swapi';
 import {
   convertSwapiTechToPerson,
   fetchAllCharacters,
@@ -7,7 +7,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseCharactersProps {
-  initialCharacters: IPerson[];
+  initialCharacters: Person[];
   initialCount: number;
 }
 
@@ -15,7 +15,7 @@ export function useCharacters({
   initialCharacters,
   initialCount,
 }: UseCharactersProps) {
-  const [characters, setCharacters] = useState<IPerson[]>(
+  const [characters, setCharacters] = useState<Person[]>(
     initialCharacters || []
   );
   const [searchQuery, setSearchQuery] = useState('');

@@ -1,12 +1,17 @@
 import { NumberTicker } from '@/components/animated';
 import { Card, CardContent } from '@/components/ui';
 import { cn } from '@/lib/utils';
-import { IFilm } from '@/schema/swapi';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 
 interface FilmGridStatsProps {
-  films: IFilm[];
+  films: {
+    id: string;
+    director: string;
+    openingCrawl: string;
+    releaseDate: string;
+    title: string;
+  }[];
 }
 
 export default function FilmGridStats({ films }: FilmGridStatsProps) {

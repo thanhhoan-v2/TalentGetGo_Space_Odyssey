@@ -1,9 +1,9 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { IPerson } from '@/schema/swapi';
+import { Person } from '@/utils/swapi';
 import { motion } from 'framer-motion';
 
 interface CharacterGridStatsProps {
-  characters: IPerson[];
+  characters: Person[];
   totalCount: number;
   isSearching: boolean;
 }
