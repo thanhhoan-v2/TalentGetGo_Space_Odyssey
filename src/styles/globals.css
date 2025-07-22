@@ -87,31 +87,6 @@ body {
     color 0.3s ease;
 }
 
-/* Empire theme glow effects for cards */
-.empire .card-glow {
-  box-shadow: 0 0 20px hsla(var(--border), 0.3);
-  border: 1px solid hsla(var(--border), 0.4);
-}
-
-.empire .card-glow:hover {
-  box-shadow: 0 0 30px hsla(var(--accent), 0.4);
-  border-color: hsla(var(--accent), 0.6);
-}
-
-/* Rebel Base theme shadows for cards */
-.rebel-base .card-shadow {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid hsl(var(--border));
-}
-
-.rebel-base .card-shadow:hover {
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
 /* Star Wars gradient backgrounds */
 .star-wars-gradient {
   background: linear-gradient(
@@ -127,42 +102,6 @@ body {
 /* Smooth transitions for theme switching */
 .theme-transition {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Custom scrollbar for Empire theme */
-.empire ::-webkit-scrollbar {
-  width: 8px;
-}
-
-.empire ::-webkit-scrollbar-track {
-  background: hsl(var(--background));
-}
-
-.empire ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 4px;
-}
-
-.empire ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--accent));
-}
-
-/* Hide scrollbar for Rebel Base theme (cleaner look) */
-.rebel-base ::-webkit-scrollbar {
-  width: 6px;
-}
-
-.rebel-base ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.rebel-base ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 3px;
-}
-
-.rebel-base ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--secondary));
 }
 
 /* Basic utility classes to replace common TailwindCSS classes */

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // Static character names array for search functionality
-const CHARACTER_NAMES = [
+export const CHARACTER_NAMES = [
   { id: '1', name: 'Luke Skywalker' },
   { id: '2', name: 'C-3PO' },
   { id: '3', name: 'R2-D2' },
@@ -85,6 +85,16 @@ const CHARACTER_NAMES = [
   { id: '82', name: 'Sly Moore' },
   { id: '83', name: 'Tion Medon' },
 ];
+
+// Create a lookup map for O(1) performance
+const nameToIdMap = new Map();
+CHARACTER_NAMES.forEach((character) => {
+  nameToIdMap.set(character.name, character.id);
+});
+
+export function getCharacterIdByName(characterName: string) {
+  return nameToIdMap.get(characterName) || null;
+}
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,31 +1,33 @@
 'use client';
 
-import { BoxReveal } from '@/components/animated/box-reveal';
-import { InteractiveHoverButton } from '@/components/animated/interactive-hover-button';
-import { PageHeader } from '@/components/common';
-import PageFooter from '@/components/common/page-footer';
-import { FilmCard } from '@/components/films/film-card';
+import { BoxReveal, InteractiveHoverButton } from '@/components/animated';
+import { PageFooter, PageHeader } from '@/components/common';
+import { FilmGridCard } from '@/components/films';
 import { CardCarousel } from '@/components/ui/card-carousel';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
 import { cn } from '@/lib/utils';
-import { Film, Person } from '@/schema/swapi';
 import { ROUTES } from '@/utils/routes';
-import { convertSwapiTechToPerson, fetchCharacters } from '@/utils/swapi-api';
+import { convertSwapiTechToPerson, fetchCharacters } from '@/utils/swapi-tech';
 import { motion } from 'framer-motion';
 import { XIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
+import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { convertGraphQLFilmToSWAPI } from './films';
 
 interface HomeProps {
-  featuredFilms: Film[];
-  characters: Person[];
+  featuredFilms: {
+    id: string;
+    title: string;
+    director: string;
+    releaseDate: string;
+    openingCrawl: string;
+  }[];
 }
 
-export default function Home({ featuredFilms, characters }: HomeProps) {
+export default function Home({ featuredFilms }: HomeProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [
     isReachedFeaturedCharactersSection,
@@ -67,17 +69,46 @@ export default function Home({ featuredFilms, characters }: HomeProps) {
 
   return (
     <>
+      <NextSeo
+        title="Space Odyssey - Home"
+        description="Explore the vast Star Wars universe. Discover films, characters, planets, and starships from a galaxy far, far away."
+        canonical="https://space-odyssey.vercel.app/"
+        openGraph={{
+          url: 'https://space-odyssey.vercel.app/',
+          title: 'Space Odyssey - Home',
+          description:
+            'Explore the vast Star Wars universe. Discover films, characters, planets, and starships from a galaxy far, far away.',
+          images: [
+            {
+              url: 'https://space-odyssey.vercel.app/home-og-image.png',
+              width: 1200,
+              height: 630,
+              alt: 'Homepage Image',
+            },
+          ],
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+        }}
+      />
+
       <Head>
-        <title>Star Wars Explorer - Journey Through the Galaxy</title>
+        <title>Space Odyssey - Home</title>
         <meta
           name="description"
           content="Explore the vast Star Wars universe. Discover films, characters, planets, and starships from a galaxy far, far away."
         />
-        <meta property="og:title" content="Star Wars Explorer" />
+        <meta property="og:title" content="Space Odyssey - Home" />
         <meta
           property="og:description"
-          content="Journey through the Star Wars galaxy"
+          content="Explore the vast Star Wars universe. Discover films, characters, planets, and starships from a galaxy far, far away."
         />
+        <meta name="keywords" content="star wars, space odyssey, swapi" />
+        <meta name="robots" content="index, follow" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="author" content="Space Odyssey" />
+        <meta httpEquiv="x-ua-compatible" content="IE=edge" />
       </Head>
 
       <div className="bg-background overflow-hidden text-foreground theme-transition">
@@ -121,7 +152,7 @@ export default function Home({ featuredFilms, characters }: HomeProps) {
                 className="flex justify-center items-center gap-4"
               >
                 <Image
-                  src="/talentgetgo.png"
+                  src="/talentgetgo-logo.png"
                   alt="TalentGetGo"
                   width={70}
                   height={70}
@@ -219,7 +250,7 @@ export default function Home({ featuredFilms, characters }: HomeProps) {
                   </div>
                 ) : featuredFilms ? (
                   featuredFilms.map((film, index) => (
-                    <FilmCard key={index} film={film} />
+                    <FilmGridCard key={index} film={film} />
                   ))
                 ) : (
                   <div className="col-span-full py-12 text-center">
@@ -272,17 +303,14 @@ export const getStaticProps: GetStaticProps = async () => {
         openingCrawl: edge.node.openingCrawl,
       })
     );
-    // Convert GraphQL films to SWAPI format
-    const allFilms = graphqlFilms.map(convertGraphQLFilmToSWAPI);
 
     // Shuffle array and select 3 random films
-    const shuffledFilms = [...allFilms].sort(() => 0.5 - Math.random());
-    const randomFilms = shuffledFilms.slice(0, 3);
-    console.log(randomFilms);
+    const shuffledFilms = [...graphqlFilms].sort(() => 0.5 - Math.random());
+    const featuredFilms = shuffledFilms.slice(0, 3);
 
     return {
       props: {
-        featuredFilms: randomFilms || [], // Return 3 random films
+        featuredFilms: featuredFilms || [],
         characters: characters || [],
       },
       revalidate: 86400, // Revalidate once per day

@@ -1,59 +1,4 @@
-import type { Character, Film, Planet, Starship } from '@/schema';
-
-// Re-export GraphQL-based functions for backward compatibility
-export {
-  batchFetchResources,
-  convertCharacterToLegacyFormat,
-  convertFilmToLegacyFormat,
-  extractIdFromURL,
-  getAllFilms,
-  getAllPeople,
-  getFilmById,
-  getPersonById,
-  useGetAllFilms,
-  useGetAllPeople,
-  useGetFilmById,
-  useGetPersonById,
-  useLazyGetAllFilms,
-  useLazyGetAllPeople,
-  useLazyGetFilmById,
-  useLazyGetPersonById,
-  useSearchPeople,
-} from '@/utils/swapi-graphql';
-
-// Helper function that handles both URL extraction and direct IDs
-export function extractIdFromUrl(urlOrId: string): string {
-  // If it's already just an ID (from GraphQL), return it directly
-  if (!urlOrId.includes('/')) {
-    return urlOrId;
-  }
-
-  // Otherwise extract ID from URL (legacy SWAPI format)
-  const parts = urlOrId.split('/').filter(Boolean);
-  return parts[parts.length - 1] || '';
-}
-
-// Legacy type exports for backward compatibility
-export type {
-  Film,
-  GetAllFilmsResponse,
-  GetAllPeopleResponse,
-  GetAllPeopleVariables,
-  GetFilmByIdResponse,
-  GetFilmByIdVariables,
-  GetPersonByIdResponse,
-  GetPersonByIdVariables,
-  PageInfo,
-  Character as Person,
-  Planet,
-  Starship,
-} from '@/schema';
-
-// Legacy types for backward compatibility
-export type Vehicle = Record<string, unknown>;
-export type Species = Record<string, unknown>;
-
-// Legacy SWAPI response type for backward compatibility
+// SWAPI Response interfaces
 export interface SWAPIResponse<T> {
   count: number;
   next: string | null;
@@ -61,109 +6,71 @@ export interface SWAPIResponse<T> {
   results: T[];
 }
 
-// Helper type for extracting ID from URL
-export type ResourceId = string;
-
-// Generic SWAPI resource type
-export type SWAPIResource =
-  | Film
-  | Character
-  | Planet
-  | Starship
-  | Vehicle
-  | Species;
-
-// Legacy functions that maintain the old API but use GraphQL under the hood
-export async function searchPeople(
-  _query: string,
-  _page = 1
-): Promise<SWAPIResponse<Character>> {
-  // For now, return empty results since GraphQL doesn't have built-in search
-  // This could be enhanced with client-side filtering or a different search implementation
-  return {
-    count: 0,
-    next: null,
-    previous: null,
-    results: [],
-  };
-}
-// Legacy planets functions (not implemented in GraphQL yet)
-export async function getAllPlanets(_page = 1): Promise<SWAPIResponse<Planet>> {
-  // Placeholder for future implementation
-  return {
-    count: 0,
-    next: null,
-    previous: null,
-    results: [],
-  };
+export interface Film {
+  title: string;
+  episode_id: number;
+  opening_crawl: string;
+  director: string;
+  release_date: string;
+  characters: string[];
+  planets: string[];
+  starships: string[];
+  url: string;
 }
 
-export async function getPlanetById(_id: string): Promise<Planet | null> {
-  // Placeholder for future implementation
-  return null;
+export interface Person {
+  name: string;
+  height: string;
+  mass: string;
+  hair_color: string;
+  skin_color: string;
+  eye_color: string;
+  birth_year: string;
+  gender: string;
+  homeworld: string;
+  films: string[];
+  species: string[];
+  vehicles: string[];
+  starships: string[];
+  created: string;
+  edited: string;
+  url: string;
 }
 
-// Legacy starships functions (not implemented in GraphQL yet)
-export async function getAllStarships(
-  _page = 1
-): Promise<SWAPIResponse<Starship>> {
-  // Placeholder for future implementation
-  return {
-    count: 0,
-    next: null,
-    previous: null,
-    results: [],
-  };
+export interface Planet {
+  name: string;
+  rotation_period: string;
+  orbital_period: string;
+  diameter: string;
+  climate: string;
+  gravity: string;
+  terrain: string;
+  surface_water: string;
+  population: string;
+  residents: string[];
+  films: string[];
+  created: string;
+  edited: string;
+  url: string;
 }
 
-export async function getStarshipById(_id: string): Promise<Starship | null> {
-  // Placeholder for future implementation
-  return null;
-}
-
-// Legacy vehicles functions (not implemented in GraphQL yet)
-export async function getAllVehicles(
-  _page = 1
-): Promise<SWAPIResponse<Vehicle>> {
-  // Placeholder for future implementation
-  return {
-    count: 0,
-    next: null,
-    previous: null,
-    results: [],
-  };
-}
-
-export async function getVehicleById(_id: string): Promise<Vehicle | null> {
-  // Placeholder for future implementation
-  return null;
-}
-
-// Legacy species functions (not implemented in GraphQL yet)
-export async function getAllSpecies(
-  _page = 1
-): Promise<SWAPIResponse<Species>> {
-  // Placeholder for future implementation
-  return {
-    count: 0,
-    next: null,
-    previous: null,
-    results: [],
-  };
-}
-
-export async function getSpeciesById(_id: string): Promise<Species | null> {
-  // Placeholder for future implementation
-  return null;
-}
-
-// Legacy helper function to fetch resource by URL
-export async function fetchResourceByUrl<T>(url: string): Promise<T | null> {
-  // Extract ID from URL and try to determine resource type
-  const id = url.split('/').pop() || '';
-  if (!id) return null;
-
-  // This is a simplified implementation - in practice, you'd need to determine the resource type
-  // For now, we'll just return null
-  return null;
+export interface Starship {
+  name: string;
+  model: string;
+  manufacturer: string;
+  cost_in_credits: string;
+  length: string;
+  max_atmosphering_speed: string;
+  crew: string;
+  passengers: string;
+  cargo_capacity: string;
+  consumables: string;
+  hyperdrive_rating: string;
+  MGLT: string;
+  starship_class: string;
+  pilots: string[];
+  films: string[];
+  created: string;
+  edited: string;
+  url: string;
 }

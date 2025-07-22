@@ -1,27 +1,24 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { useTheme } from 'next-themes';
-import React from 'react';
-
+import { Button } from '@/components/ui';
 import {
   AnimationStart,
   AnimationVariant,
   createAnimation,
 } from '@/components/ui/theme-toggle/theme-animations';
 import { MoonIcon, SunIcon } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import React from 'react';
 
 interface ThemeToggleAnimationProps {
   variant?: AnimationVariant;
   start?: AnimationStart;
-  showLabel?: boolean;
   url?: string;
 }
 
 export default function ThemeToggleButton({
   variant = 'circle-blur',
   start = 'top-left',
-  showLabel = false,
   url = '',
 }: ThemeToggleAnimationProps) {
   const { theme, setTheme } = useTheme();

@@ -1,4 +1,4 @@
-import { CharacterCard } from '@/components/card/character-card';
+import { CharacterGridCard } from '@/components/characters';
 import React from 'react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -89,7 +89,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
               >
                 {characters.map((character, index) => (
                   <SwiperSlide key={index}>
-                    <CharacterCard
+                    <CharacterGridCard
                       imageHeight="h-[500px]"
                       imageWidth="w-[300px]"
                       characterUrl={character.url}
@@ -99,7 +99,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
                 ))}
                 {characters.map((character, index) => (
                   <SwiperSlide key={index}>
-                    <CharacterCard
+                    <CharacterGridCard
                       imageHeight="h-[500px]"
                       imageWidth="w-[300px]"
                       characterUrl={character.url}

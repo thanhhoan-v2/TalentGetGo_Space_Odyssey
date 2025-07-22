@@ -1,30 +1,25 @@
 'use client';
 
-import { InteractiveHoverButton } from '@/components/animated/interactive-hover-button';
-import { PlanetCard } from '@/components/card/planet-card';
-import { StarshipCard } from '@/components/card/starship-card';
-import { CharacterAppearanceCard } from '@/components/characters/character-appearance-card';
-import { CharacterBioCard } from '@/components/characters/character-bio-card';
-import { PageLayout } from '@/components/common';
-import { Box, Card, CardContent, Heading } from '@/components/ui';
+import { InteractiveHoverButton } from '@/components/animated';
 import {
-  Film,
-  Person,
-  Planet,
-  Species,
-  Starship,
-  Vehicle,
-} from '@/schema/swapi';
-import { getCharacterImage } from '@/utils/assets';
-import { extractIdFromUrl } from '@/utils/swapi';
+  CharacterDetailAppearanceCard,
+  CharacterDetailBioCard,
+} from '@/components/characters';
+import { PageLayout } from '@/components/common';
+import { PlanetCard } from '@/components/resource-cards';
+import { Card, CardContent } from '@/components/ui/card';
+import { getCharacterImageById } from '@/utils/assets';
+import { extractNumber } from '@/utils/swapi-graphql';
+import { IPerson, IPlanet, IStarship } from '@/utils/swapi-tech';
 import { motion } from 'framer-motion';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 // SWAPI.tech API Response Interfaces
-interface SwapiCharacterResponse {
+interface SwapiTechCharacterResponse {
   message: string;
   result: {
     properties: {
@@ -66,36 +61,18 @@ interface SwapiPlanetResponse {
   };
 }
 
-interface SwapiFilmResponse {
-  message: string;
-  result: {
-    properties: {
-      title: string;
-      episode_id: number;
-      opening_crawl: string;
-      director: string;
-      producer: string;
-      release_date: string;
-      url: string;
-    };
-  };
-}
-
 interface CharacterDetailPageProps {
   paramsId: string;
-  character: Person;
-  homeworld: Planet | null;
-  films: Film[];
-  species: Species[];
-  starships: Starship[];
-  vehicles: Vehicle[];
+  character: IPerson;
+  homeworld: IPlanet | null;
+  starships: IStarship[];
 }
 
 // Convert SWAPI.tech Character to SWAPI Person format
-function convertSwapiCharacterToSWAPI(
-  char: SwapiCharacterResponse['result']['properties'],
+function convertSwapiTechCharacterToSWAPI(
+  char: SwapiTechCharacterResponse['result']['properties'],
   id: string
-): Person {
+): IPerson {
   return {
     name: char.name,
     height: char.height || 'unknown',
@@ -119,7 +96,7 @@ function convertSwapiCharacterToSWAPI(
 // Convert SWAPI.tech Planet to SWAPI Planet format
 function convertSwapiPlanetToSWAPI(
   planet: SwapiPlanetResponse['result']['properties']
-): Planet {
+): IPlanet {
   return {
     name: planet.name,
     rotation_period: planet.rotation_period || 'unknown',
@@ -139,21 +116,17 @@ function convertSwapiPlanetToSWAPI(
 }
 
 export default function CharacterDetailPage({
-  paramsId,
   character,
   homeworld,
-  films,
-  species,
   starships,
-  vehicles,
 }: CharacterDetailPageProps) {
   const [characterImage, setCharacterImage] = useState<string | null>(null);
-  const characterId = extractIdFromUrl(character.url);
+  const characterId = extractNumber(character.url);
 
   useEffect(() => {
     const loadImage = async () => {
       try {
-        const image = await getCharacterImage(characterId);
+        const image = await getCharacterImageById(characterId || 1);
         if (image) setCharacterImage(image.src);
       } catch (error) {
         console.warn(
@@ -167,19 +140,53 @@ export default function CharacterDetailPage({
 
   return (
     <>
+      <NextSeo
+        title={character.name}
+        description={`Learn about ${character.name}, a character from the Star Wars universe. Height: ${character.height}cm, Gender: ${character.gender}, Birth Year: ${character.birth_year}.`}
+        canonical={`https://space-odyssey.vercel.app/characters/${characterId}`}
+        openGraph={{
+          type: 'profile',
+          url: `https://space-odyssey.vercel.app/characters/${characterId}`,
+          title: character.name,
+          description: `Learn about ${character.name}, a character from the Star Wars universe. Height: ${character.height}cm, Gender: ${character.gender}, Birth Year: ${character.birth_year}.`,
+          images: [
+            {
+              url:
+                characterImage ||
+                'https://space-odyssey.vercel.app/characters-og-image.png',
+              width: 1200,
+              height: 630,
+              alt: character.name,
+            },
+          ],
+          profile: {
+            firstName: character.name,
+          },
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+        }}
+        additionalMetaTags={[
+          {
+            name: 'keywords',
+            content: character.name,
+          },
+        ]}
+      />
+
       <Head>
-        <title>{character.name} - Star Wars Explorer</title>
+        <title>Space Odyssey - {character.name}</title>
         <meta
           name="description"
           content={`Learn about ${character.name}, a character from the Star Wars universe. Height: ${character.height}cm, Gender: ${character.gender}, Birth Year: ${character.birth_year}.`}
         />
         <meta
           property="og:title"
-          content={`${character.name} - Star Wars Explorer`}
+          content={`Space Odyssey - ${character.name}`}
         />
         <meta
           property="og:description"
-          content={`Star Wars character: ${character.name}`}
+          content={`Learn about ${character.name}, a character from the Star Wars universe. Height: ${character.height}cm, Gender: ${character.gender}, Birth Year: ${character.birth_year}.`}
         />
       </Head>
 
@@ -212,21 +219,20 @@ export default function CharacterDetailPage({
             <InteractiveHoverButton
               characterName={character.name}
               characterUrl={character.url}
-              variant="add-to-favorites"
             />
           </div>
 
           <Card className="shadow-none mx-auto border-none">
             <CardContent className="p-8">
               <div className="gap-8 grid grid-cols-1 lg:grid-cols-2 mx-auto max-w-6xl">
-                <CharacterBioCard
+                <CharacterDetailBioCard
                   title="BIO"
                   gender={character.gender}
                   birthYear={character.birth_year}
                   homeworld={homeworld?.name || 'unknown'}
                 />
 
-                <CharacterAppearanceCard
+                <CharacterDetailAppearanceCard
                   title="APPEARANCE"
                   height={character.height}
                   mass={character.mass}
@@ -247,42 +253,12 @@ export default function CharacterDetailPage({
             transition={{ duration: 0.6, delay: 0.6 }}
             style={{ width: '100%' }}
           >
-            <Box>
-              <Heading size="xl" className="mb-8 text-foreground text-center">
-                Homeworld
-              </Heading>
-              <Box className="mx-auto max-w-md">
+            <div>
+              <h1 className="mb-8 text-foreground text-center">Homeworld</h1>
+              <div className="mx-auto max-w-md">
                 <PlanetCard planetName={homeworld.name} />
-              </Box>
-            </Box>
-          </motion.div>
-        )}
-
-        {/* Starships */}
-        {starships.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            style={{ width: '100%' }}
-          >
-            <Box>
-              <Heading size="xl" className="mb-8 text-foreground text-center">
-                Starships ({starships.length})
-              </Heading>
-              <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {starships.map((starship, index) => (
-                  <motion.div
-                    key={starship.url}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
-                    <StarshipCard starshipName={starship.name} />
-                  </motion.div>
-                ))}
               </div>
-            </Box>
+            </div>
           </motion.div>
         )}
       </PageLayout>
@@ -335,7 +311,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       return { notFound: true };
     }
 
-    const characterData: SwapiCharacterResponse =
+    const characterData: SwapiTechCharacterResponse =
       await characterResponse.json();
 
     if (characterData.message !== 'ok') {
@@ -343,13 +319,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
 
     // Convert SWAPI.tech character to SWAPI format
-    const character = convertSwapiCharacterToSWAPI(
+    const character = convertSwapiTechCharacterToSWAPI(
       characterData.result.properties,
       id
     );
 
     // Fetch homeworld if available
-    let homeworld: Planet | null = null;
+    let homeworld: IPlanet | null = null;
     if (characterData.result.properties.homeworld) {
       try {
         const homeworldResponse = await fetch(
@@ -369,22 +345,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       }
     }
 
-    // For now, return empty arrays for films, species, starships, and vehicles
-    // These could be fetched from additional API calls if needed
-    const films: Film[] = [];
-    const species: Species[] = [];
-    const starships: Starship[] = [];
-    const vehicles: Vehicle[] = [];
+    const starships: IStarship[] = [];
 
     return {
       props: {
         paramsId: id,
         character,
         homeworld,
-        films,
-        species,
         starships,
-        vehicles,
       },
       revalidate: 86400, // Revalidate once per day
     };

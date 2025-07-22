@@ -1,6 +1,10 @@
-// Export all shadcn/ui components
-export { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-export { Badge } from '@/components/ui/badge';
+// Shadcn/ui components
+export {
+  default as Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar';
+export { default as Badge, badgeVariants } from '@/components/ui/badge';
 export { Button, buttonVariants } from '@/components/ui/button';
 export {
   Card,
@@ -10,7 +14,6 @@ export {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-export { StarWarsThemeToggle, ThemeToggle } from '@/components/ui/color-mode';
 export {
   Dialog,
   DialogContent,
@@ -22,6 +25,7 @@ export {
 } from '@/components/ui/dialog';
 export { Input } from '@/components/ui/input';
 export { Label } from '@/components/ui/label';
+export { default as MaskedDiv } from '@/components/ui/masked-div';
 export {
   Popover,
   PopoverContent,
@@ -34,7 +38,7 @@ export {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-export { Separator } from '@/components/ui/separator';
+export { default as Separator } from '@/components/ui/separator';
 export {
   Sheet,
   SheetContent,
@@ -44,8 +48,8 @@ export {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-export { Skeleton } from '@/components/ui/skeleton';
-export { Textarea } from '@/components/ui/textarea';
+export { default as Skeleton } from '@/components/ui/skeleton';
+export { default as Textarea } from '@/components/ui/textarea';
 export {
   Tooltip,
   TooltipContent,
@@ -53,21 +57,5 @@ export {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-// Typography and Layout Components
-export {
-  Box,
-  Container,
-  Flex,
-  Heading,
-  StarWarsHeading,
-  Text,
-  VStack,
-  type ContainerProps,
-  type FlexProps,
-  type HeadingProps,
-  type StarWarsHeadingProps,
-  type TextProps,
-} from '@/components/ui/typography';
-
 // Custom components
-export { default as MaskedDiv } from '@/components/ui/masked-div';
+export { default as ThemeToggleButton } from '@/components/ui/theme-toggle/theme-toggle-button';

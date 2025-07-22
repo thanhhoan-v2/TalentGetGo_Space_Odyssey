@@ -3,7 +3,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
-const badgeVariants = cva(
+export const badgeVariants = cva(
   'inline-flex justify-center items-center gap-1 px-2 py-0.5 border aria-invalid:border-destructive focus-visible:border-ring rounded-md aria-invalid:ring-destructive/20 focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:aria-invalid:ring-destructive/40 w-fit [&>svg]:size-3 overflow-hidden font-medium text-xs whitespace-nowrap transition-[color,box-shadow] [&>svg]:pointer-events-none shrink-0',
   {
     variants: {
@@ -30,7 +30,7 @@ const badgeVariants = cva(
   }
 );
 
-function Badge({
+export default function Badge({
   className,
   variant,
   asChild = false,
@@ -47,5 +47,3 @@ function Badge({
     />
   );
 }
-
-export { Badge, badgeVariants };

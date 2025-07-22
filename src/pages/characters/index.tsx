@@ -2,22 +2,26 @@
 
 import {
   CharacterGrid,
-  CharacterListHeader,
-  CharacterListInfo,
-  CharacterListStates,
-  CharacterSearch,
+  CharacterGridHeader,
+  CharacterSearchBar,
+  CharacterSearchInfo,
+  CharacterSearchStates,
 } from '@/components/characters';
 import { PageLayout } from '@/components/common';
-import { useCharacters } from '@/hooks/useCharacters';
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { Person } from '@/schema/swapi';
-import { convertSwapiTechToPerson, fetchCharacters } from '@/utils/swapi-api';
+import { useCharacters } from '@/hooks/use-characters';
+import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
+import {
+  convertSwapiTechToPerson,
+  fetchCharacters,
+  IPerson,
+} from '@/utils/swapi-tech';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
+import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 
 interface CharactersPageProps {
-  initialCharacters: Person[];
+  initialCharacters: IPerson[];
   initialCount: number;
 }
 
@@ -42,24 +46,50 @@ export default function CharactersPage({
 
   return (
     <>
+      <NextSeo
+        title="Space Odyssey - Characters"
+        description="Explore the complete collection of Star Wars characters"
+        canonical="https://space-odyssey.vercel.app/characters"
+        openGraph={{
+          url: 'https://space-odyssey.vercel.app/characters',
+          title: 'Space Odyssey - Characters',
+          description:
+            'Explore the complete collection of Star Wars characters',
+          images: [
+            {
+              url: 'https://space-odyssey.vercel.app/characters-og-image.png',
+              width: 1200,
+              height: 630,
+              alt: 'Characters Image',
+            },
+          ],
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+        }}
+      />
+
       <Head>
-        <title>Star Wars Characters - Star Wars Explorer</title>
+        <title>Space Odyssey - Characters</title>
         <meta
           name="description"
-          content="Discover heroes, villains, and everyone in between from across the Star Wars galaxy. Browse and search through all Star Wars characters."
+          content="Explore the complete collection of Star Wars characters"
         />
-        <meta
-          property="og:title"
-          content="Star Wars Characters - Star Wars Explorer"
-        />
+        <meta property="og:title" content="Space Odyssey - Characters" />
         <meta
           property="og:description"
           content="Explore the complete collection of Star Wars characters"
         />
+        <meta name="keywords" content="star wars, space odyssey, swapi" />
+        <meta name="robots" content="index, follow" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="author" content="Space Odyssey" />
+        <meta httpEquiv="x-ua-compatible" content="IE=edge" />
       </Head>
 
       <PageLayout>
-        <CharacterListHeader />
+        <CharacterGridHeader />
 
         {/* Search Bar */}
         <motion.div
@@ -67,14 +97,14 @@ export default function CharactersPage({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <CharacterSearch
+          <CharacterSearchBar
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             isLoading={loading && isSearching}
           />
         </motion.div>
 
-        <CharacterListInfo
+        <CharacterSearchInfo
           isSearching={isSearching}
           searchQuery={searchQuery}
           totalCount={totalCount}
@@ -84,7 +114,7 @@ export default function CharactersPage({
         <CharacterGrid characters={characters} loading={loading} />
 
         {/* Loading States and Actions */}
-        <CharacterListStates
+        <CharacterSearchStates
           loading={loading}
           hasMore={hasMore}
           charactersLength={characters.length}

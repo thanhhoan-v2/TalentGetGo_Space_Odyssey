@@ -1,23 +1,33 @@
-import { extractNumber } from '@/utils/swapi-graphql';
 import { StaticImageData } from 'next/image';
 
 // Utility function to get character image
 export const getCharacterImage = async (
-  id: string
+  characterName: string
 ): Promise<StaticImageData | null> => {
   try {
-    // If id contains slashes, extract the number, otherwise use it directly
-    const characterId = id.includes('/') ? extractNumber(id) : id;
-    // Dynamic import for the character image
-    const image = await import(`@/assets/characters/${characterId}.jpg`);
+    const image = await import(`@/assets/characters/${characterName}.jpg`);
     return image.default;
   } catch (error) {
-    // Fallback to a default character image if specific one doesn't exist
     try {
-      const fallbackImage = await import('@/assets/characters/1.jpg');
+      const fallbackImage = await import('@/assets/characters/Yoda.jpg');
       return fallbackImage.default;
     } catch {
-      // Return null if no fallback available
+      return null;
+    }
+  }
+};
+
+export const getCharacterImageById = async (
+  characterId: number
+): Promise<StaticImageData | null> => {
+  try {
+    const image = await import(`@/assets/characters-id/${characterId}.jpg`);
+    return image.default;
+  } catch (error) {
+    try {
+      const fallbackImage = await import('@/assets/characters-id/1.jpg');
+      return fallbackImage.default;
+    } catch {
       return null;
     }
   }

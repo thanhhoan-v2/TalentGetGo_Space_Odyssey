@@ -1,29 +1,22 @@
 'use client';
 
-import { BoxReveal } from '@/components/animated/box-reveal';
-import { TextReveal } from '@/components/animated/text-reveal';
-import { CharacterCard } from '@/components/card/character-card';
-import { PlanetCard } from '@/components/card/planet-card';
-import { StarshipCard } from '@/components/card/starship-card';
+import { BoxReveal, TextReveal } from '@/components/animated';
+import { CharacterGridCard } from '@/components/characters';
 import { PageLayout } from '@/components/common';
-import { Badge, Container } from '@/components/ui';
+import { PlanetCard, StarshipCard } from '@/components/resource-cards';
+import { Badge } from '@/components/ui';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS, GET_FILM_BY_ID } from '@/lib/queries';
 import { cn } from '@/lib/utils';
-import { Film as GraphQLFilm } from '@/schema/graphql';
-import {
-  Film,
-  Person,
-  Planet,
-  Species,
-  Starship,
-  Vehicle,
-} from '@/schema/swapi';
+import { GraphQLFilm } from '@/utils/graphql-schema';
+import { Person } from '@/utils/swapi';
 import { motion } from 'framer-motion';
 import { Calendar, ClapperboardIcon } from 'lucide-react';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 import { useMediaQuery } from 'react-responsive';
+import { getCharacterIdByName } from '../api/people/search';
 
 // Define the types for GraphQL edges
 interface CharacterEdge {
@@ -58,16 +51,23 @@ interface StarshipEdge {
 }
 
 interface FilmDetailPageProps {
-  film: Film;
+  film: {
+    title: string;
+    episode_id: number;
+    opening_crawl: string;
+    director: string;
+    release_date: string;
+    characters: Person[];
+    planets: PlanetEdge[];
+    starships: StarshipEdge[];
+  };
   characters: Person[];
-  planets: Planet[];
-  starships: Starship[];
-  vehicles: Vehicle[];
-  species: Species[];
+  planets: PlanetEdge[];
+  starships: StarshipEdge[];
 }
 
 // Convert GraphQL Film to SWAPI Film format
-function convertGraphQLFilmToSWAPI(film: GraphQLFilm, index: number): Film {
+function convertGraphQLFilmToSWAPI(film: GraphQLFilm, index: number) {
   return {
     title: film.title,
     episode_id: parseInt(film.id) || index + 1,
@@ -80,7 +80,7 @@ function convertGraphQLFilmToSWAPI(film: GraphQLFilm, index: number): Film {
     starships: [], // Would need to fetch separately
     vehicles: [], // Not available in GraphQL
     species: [], // Not available in GraphQL
-    created: '', // Not available in GraphQL
+    created: '', // Not available index + 1,
     edited: '', // Not available in GraphQL
     url: `/films/${film.id}`,
   };
@@ -90,7 +90,7 @@ function convertGraphQLFilmToSWAPI(film: GraphQLFilm, index: number): Film {
 function convertGraphQLCharacterToSWAPI(
   char: CharacterEdge['node'],
   index: number
-): Person {
+) {
   return {
     name: char.name,
     height: char.height?.toString() || 'unknown',
@@ -101,65 +101,7 @@ function convertGraphQLCharacterToSWAPI(
     birth_year: char.birthYear || 'unknown',
     gender: char.gender || 'unknown',
     homeworld: '', // Not available in this context
-    films: [], // Would need to fetch separately
-    species: [], // Not available in GraphQL
-    vehicles: [], // Not available in GraphQL
-    starships: [], // Not available in GraphQL
-    created: '', // Not available in GraphQL
-    edited: '', // Not available in GraphQL
     url: `/characters/${index + 1}`,
-  };
-}
-
-// Convert GraphQL Planet to SWAPI Planet format
-function convertGraphQLPlanetToSWAPI(
-  planet: PlanetEdge['node'],
-  index: number
-): Planet {
-  return {
-    name: planet.name,
-    rotation_period: 'unknown',
-    orbital_period: 'unknown',
-    diameter: 'unknown',
-    climate: planet.climates ? planet.climates.join(', ') : 'unknown',
-    gravity: 'unknown',
-    terrain: planet.terrains ? planet.terrains.join(', ') : 'unknown',
-    surface_water: 'unknown',
-    population: planet.population?.toString() || 'unknown',
-    residents: [],
-    films: [],
-    created: '',
-    edited: '',
-    url: `/planets/${index + 1}`,
-  };
-}
-
-// Convert GraphQL Starship to SWAPI Starship format
-function convertGraphQLStarshipToSWAPI(
-  starship: StarshipEdge['node'],
-  index: number
-): Starship {
-  return {
-    name: starship.name,
-    model: starship.model || 'unknown',
-    manufacturer: starship.manufacturers
-      ? starship.manufacturers.join(', ')
-      : 'unknown',
-    cost_in_credits: 'unknown',
-    length: 'unknown',
-    max_atmosphering_speed: 'unknown',
-    crew: 'unknown',
-    passengers: 'unknown',
-    cargo_capacity: 'unknown',
-    consumables: 'unknown',
-    hyperdrive_rating: 'unknown',
-    MGLT: 'unknown',
-    starship_class: starship.starshipClass || 'unknown',
-    pilots: [],
-    films: [],
-    created: '',
-    edited: '',
-    url: `/starships/${index + 1}`,
   };
 }
 
@@ -168,31 +110,59 @@ export default function FilmDetailPage({
   characters,
   planets,
   starships,
-  vehicles,
-  species,
 }: FilmDetailPageProps) {
   const isMobileS = useMediaQuery({ query: '(max-width: 320px)' });
+
   return (
     <>
+      <NextSeo
+        title={film.title}
+        description={`Explore ${film.title} (Episode ${film.episode_id}) from the Star Wars saga. Directed by ${film.director} and released in ${new Date(film.release_date).getFullYear()}.`}
+        canonical={`https://space-odyssey.vercel.app/films/${film.episode_id}`}
+        openGraph={{
+          type: 'film',
+          url: `https://space-odyssey.vercel.app/films/${film.episode_id}`,
+          title: film.title,
+          description: `Explore ${film.title} (Episode ${film.episode_id}) from the Star Wars saga. Directed by ${film.director} and released in ${new Date(film.release_date).getFullYear()}.`,
+          images: [
+            {
+              url: 'https://space-odyssey.vercel.app/films-og-image.png',
+              width: 1200,
+              height: 630,
+              alt: film.title,
+            },
+          ],
+          profile: {
+            firstName: film.title,
+          },
+        }}
+        twitter={{
+          cardType: 'summary_large_image',
+        }}
+        additionalMetaTags={[
+          {
+            name: 'keywords',
+            content: film.title,
+          },
+        ]}
+      />
+
       <Head>
-        <title>{film.title} - Star Wars Explorer</title>
+        <title>Space Odyssey - {film.title}</title>
         <meta
           name="description"
           content={`Explore ${film.title} (Episode ${film.episode_id}) from the Star Wars saga. Directed by ${film.director} and released in ${new Date(film.release_date).getFullYear()}.`}
         />
-        <meta
-          property="og:title"
-          content={`${film.title} - Star Wars Explorer`}
-        />
+        <meta property="og:title" content={`Space Odyssey - ${film.title}`} />
         <meta
           property="og:description"
-          content={film.opening_crawl.substring(0, 200) + '...'}
+          content={`Explore ${film.title} (Episode ${film.episode_id}) from the Star Wars saga. Directed by ${film.director} and released in ${new Date(film.release_date).getFullYear()}.`}
         />
       </Head>
 
       <PageLayout>
         {/* Main Content */}
-        <Container size="7xl" className="py-12">
+        <div className="py-12">
           {/* Film Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -242,10 +212,10 @@ export default function FilmDetailPage({
                     )}
                   >
                     {characters.map((character, index) => (
-                      <CharacterCard
-                        key={character.url}
-                        characterUrl={character.url}
+                      <CharacterGridCard
+                        key={index}
                         characterName={character.name}
+                        characterUrl={`/characters/${getCharacterIdByName(character.name)}`}
                       />
                     ))}
                   </div>
@@ -259,21 +229,26 @@ export default function FilmDetailPage({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                style={{ width: '100%' }}
+                style={{ width: 'fit-content' }}
               >
                 <div>
                   <div className="mb-8 font-bold text-foreground text-4xl text-center">
                     Planets ({planets.length})
                   </div>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
+                  <div
+                    className={cn(
+                      'gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full',
+                      isMobileS && 'w-screen'
+                    )}
+                  >
                     {planets.map((planet, index) => (
                       <motion.div
-                        key={planet.url}
+                        key={index}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
-                        <PlanetCard planetName={planet.name} />
+                        <PlanetCard planetName={planet.node.name} />
                       </motion.div>
                     ))}
                   </div>
@@ -287,21 +262,25 @@ export default function FilmDetailPage({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
-                style={{ width: '100%' }}
               >
                 <div>
                   <div className="mb-8 font-bold text-foreground text-4xl text-center">
                     Starships ({starships.length})
                   </div>
-                  <div className="gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-2 h-full">
+                  <div
+                    className={cn(
+                      'gap-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full',
+                      isMobileS && 'w-screen'
+                    )}
+                  >
                     {starships.map((starship, index) => (
                       <motion.div
-                        key={starship.url}
+                        key={index}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
-                        <StarshipCard starshipName={starship.name} />
+                        <StarshipCard starshipName={starship.node.name} />
                       </motion.div>
                     ))}
                   </div>
@@ -309,7 +288,7 @@ export default function FilmDetailPage({
               </motion.div>
             )}
           </div>
-        </Container>
+        </div>
       </PageLayout>
     </>
   );
@@ -388,28 +367,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       convertGraphQLCharacterToSWAPI(edge.node, index)
     );
 
-    const planets: Planet[] = (graphqlFilm.planetConnection?.edges || []).map(
-      (edge: PlanetEdge, index: number) =>
-        convertGraphQLPlanetToSWAPI(edge.node, index)
-    );
-
-    const starships: Starship[] = (
-      graphqlFilm.starshipConnection?.edges || []
-    ).map((edge: StarshipEdge, index: number) =>
-      convertGraphQLStarshipToSWAPI(edge.node, index)
-    );
-
-    const vehicles: Vehicle[] = [];
-    const species: Species[] = [];
-
     return {
       props: {
         film,
         characters,
-        planets,
-        starships,
-        vehicles,
-        species,
+        planets: graphqlFilm.planetConnection?.edges || [],
+        starships: graphqlFilm.starshipConnection?.edges || [],
       },
       revalidate: 86400, // Revalidate once per day
     };

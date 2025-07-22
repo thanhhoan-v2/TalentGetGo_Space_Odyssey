@@ -4,6 +4,7 @@ import { useMediaQuery } from 'react-responsive';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/utils/routes';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
@@ -25,7 +26,7 @@ export default function PageFooter() {
               <div className="flex items-center gap-4">
                 <div className="border border-black rounded-md">
                   <Image
-                    src="/talentgetgo.png"
+                    src="/talentgetgo-logo.png"
                     alt="Talent Logo"
                     width={100}
                     height={100}
@@ -44,7 +45,7 @@ export default function PageFooter() {
               </div>
               <div className="flex flex-wrap gap-4 md:gap-8">
                 <Link
-                  href="/"
+                  href={ROUTES.HOME}
                   className={cn(
                     'hover:bg-black p-2 hover:text-white transition-colors rounded-md',
                     theme === 'dark' && 'hover:bg-white hover:text-black'
@@ -53,7 +54,7 @@ export default function PageFooter() {
                   Home
                 </Link>
                 <Link
-                  href="/films"
+                  href={ROUTES.FILMS}
                   className={cn(
                     'hover:bg-black p-2 hover:text-white transition-colors rounded-md',
                     theme === 'dark' && 'hover:bg-white hover:text-black'
@@ -62,7 +63,7 @@ export default function PageFooter() {
                   Films
                 </Link>
                 <Link
-                  href="/characters"
+                  href={ROUTES.CHARACTERS}
                   className={cn(
                     'hover:bg-black p-2 hover:text-white transition-colors rounded-md',
                     theme === 'dark' && 'hover:bg-white hover:text-black'
@@ -75,16 +76,10 @@ export default function PageFooter() {
           </div>
           <div className="flex justify-between items-center gap-4 pt-6 md:pt-8 border-zinc-800 border-t-5">
             <div className="flex items-center gap-2">
-              <Link
-                href="https://github.com/thanhhoan-v2/TalentGetGo_Space_Odyssey"
-                target="_blank"
-              >
+              <Link href={ROUTES.EXTERNAL.GITHUB_URL} target="_blank">
                 <GithubIcon className="w-4 h-4 hover:text-lime-400 transition-colors" />
               </Link>
-              <Link
-                href="https://www.linkedin.com/in/phan-dinh-thanh-hoan/"
-                target="_blank"
-              >
+              <Link href={ROUTES.EXTERNAL.LINKEDIN_URL} target="_blank">
                 <LinkedinIcon className="w-4 h-4 hover:text-lime-400 transition-colors" />
               </Link>
             </div>

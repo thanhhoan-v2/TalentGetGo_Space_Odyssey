@@ -1,5 +1,4 @@
-import PageFooter from '@/components/common/page-footer';
-import { PageHeader } from '@/components/common/page-header';
+import { PageFooter, PageHeader } from '@/components/common';
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 
@@ -8,7 +7,7 @@ interface PageLayoutProps {
   className?: string;
 }
 
-export function PageLayout({ children, className }: PageLayoutProps) {
+export default function PageLayout({ children, className }: PageLayoutProps) {
   return (
     <div
       className={cn(

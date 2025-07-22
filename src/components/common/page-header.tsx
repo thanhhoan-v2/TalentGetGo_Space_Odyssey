@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import { ROUTES } from '@/utils/routes';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Film, Menu, Users, X } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -17,11 +16,10 @@ const ThemeSwitch = dynamic(
   { ssr: false }
 );
 
-export function PageHeader() {
+export default function PageHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
-  const { theme } = useTheme();
 
   // Handle responsive breakpoint
   useEffect(() => {

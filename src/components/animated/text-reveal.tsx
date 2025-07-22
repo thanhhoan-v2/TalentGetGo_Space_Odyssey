@@ -9,7 +9,7 @@ export interface TextRevealProps extends ComponentPropsWithoutRef<'div'> {
   children: string;
 }
 
-export const TextReveal: FC<TextRevealProps> = ({ children, className }) => {
+export default function TextReveal({ children, className }: TextRevealProps) {
   const targetRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -55,7 +55,7 @@ export const TextReveal: FC<TextRevealProps> = ({ children, className }) => {
       </div>
     </div>
   );
-};
+}
 
 interface WordProps {
   children: ReactNode;

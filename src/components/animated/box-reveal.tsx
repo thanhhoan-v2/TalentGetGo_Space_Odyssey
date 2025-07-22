@@ -11,13 +11,13 @@ interface BoxRevealProps {
   className?: string;
 }
 
-export const BoxReveal = ({
+export default function BoxReveal({
   children,
   width = 'full',
   boxColor = 'white',
   duration,
   className,
-}: BoxRevealProps) => {
+}: BoxRevealProps) {
   const mainControls = useAnimation();
   const slideControls = useAnimation();
 
@@ -68,4 +68,4 @@ export const BoxReveal = ({
       />
     </div>
   );
-};
+}
