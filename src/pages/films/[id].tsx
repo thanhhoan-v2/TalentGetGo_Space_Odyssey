@@ -9,6 +9,7 @@ import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS, GET_FILM_BY_ID } from '@/lib/queries';
 import { cn } from '@/lib/utils';
 import { GraphQLFilm } from '@/utils/graphql-schema';
+import { ROUTES } from '@/utils/routes';
 import { Person } from '@/utils/swapi';
 import { motion } from 'framer-motion';
 import { Calendar, ClapperboardIcon } from 'lucide-react';
@@ -118,15 +119,15 @@ export default function FilmDetailPage({
       <NextSeo
         title={film.title}
         description={`Explore ${film.title} (Episode ${film.episode_id}) from the Star Wars saga. Directed by ${film.director} and released in ${new Date(film.release_date).getFullYear()}.`}
-        canonical={`https://space-odyssey.vercel.app/films/${film.episode_id}`}
+        canonical={`${ROUTES.EXTERNAL.VERCEL_DOMAIN}/films/${film.episode_id}`}
         openGraph={{
           type: 'film',
-          url: `https://space-odyssey.vercel.app/films/${film.episode_id}`,
+          url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/films/${film.episode_id}`,
           title: film.title,
           description: `Explore ${film.title} (Episode ${film.episode_id}) from the Star Wars saga. Directed by ${film.director} and released in ${new Date(film.release_date).getFullYear()}.`,
           images: [
             {
-              url: 'https://space-odyssey.vercel.app/films-og-image.png',
+              url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/films-og-image.png`,
               width: 1200,
               height: 630,
               alt: film.title,

@@ -1,5 +1,6 @@
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
+import { ROUTES } from '@/utils/routes';
 import { extractNumber, FilmEdge } from '@/utils/swapi-graphql';
 import { convertSwapiTechToPerson, fetchCharacters } from '@/utils/swapi-tech';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -31,7 +32,7 @@ export default async function handler(
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       <url>
-        <loc>https://space-odyssey.vercel.app</loc>
+        <loc>${ROUTES.EXTERNAL.VERCEL_DOMAIN}</loc>
         <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
@@ -40,7 +41,7 @@ export default async function handler(
         .map(
           (film) => `
         <url>
-          <loc>https://space-odyssey.vercel.app/films/${film.id}</loc>
+          <loc>${ROUTES.EXTERNAL.VERCEL_DOMAIN}/films/${film.id}</loc>
           <lastmod>${film.releaseDate}</lastmod>
           <changefreq>weekly</changefreq>
           <priority>0.8</priority>
@@ -48,11 +49,12 @@ export default async function handler(
       `
         )
         .join('')}
+
       ${initialCharacters
         .map(
           (character) => `
         <url>
-          <loc>https://space-odyssey.vercel.app/characters/${extractNumber(character.url)}</loc>
+          <loc>${ROUTES.EXTERNAL.VERCEL_DOMAIN}/characters/${extractNumber(character.url)}</loc>
           <changefreq>weekly</changefreq>
           <priority>0.7</priority>
         </url>

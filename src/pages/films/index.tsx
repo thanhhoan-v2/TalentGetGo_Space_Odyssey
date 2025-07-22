@@ -10,6 +10,7 @@ import { useMounted } from '@/hooks/use-mounted';
 import client from '@/lib/apollo-client';
 import { GET_ALL_FILMS } from '@/lib/queries';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/utils/routes';
 import { FilmEdge } from '@/utils/swapi-graphql';
 import { motion } from 'framer-motion';
 import { GetStaticProps } from 'next';
@@ -50,15 +51,15 @@ export default function FilmsPage({ films }: FilmsPageProps) {
       <NextSeo
         title="Space Odyssey - Films"
         description="Explore the complete Star Wars saga. From the original trilogy to the prequels and beyond."
-        canonical="https://space-odyssey.vercel.app/films"
+        canonical={`${ROUTES.EXTERNAL.VERCEL_DOMAIN}/films`}
         openGraph={{
-          url: 'https://space-odyssey.vercel.app/films',
+          url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/films`,
           title: 'Space Odyssey - Films',
           description:
             'Explore the complete Star Wars saga. From the original trilogy to the prequels and beyond.',
           images: [
             {
-              url: 'https://space-odyssey.vercel.app/films-og-image.png',
+              url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/films-og-image.png`,
               width: 1200,
               height: 630,
               alt: 'Films Image',

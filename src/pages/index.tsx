@@ -72,15 +72,15 @@ export default function Home({ featuredFilms }: HomeProps) {
       <NextSeo
         title="Space Odyssey - Home"
         description="Explore the vast Star Wars universe. Discover films, characters, planets, and starships from a galaxy far, far away."
-        canonical="https://space-odyssey.vercel.app/"
+        canonical={ROUTES.EXTERNAL.VERCEL_DOMAIN}
         openGraph={{
-          url: 'https://space-odyssey.vercel.app/',
+          url: ROUTES.EXTERNAL.VERCEL_DOMAIN,
           title: 'Space Odyssey - Home',
           description:
             'Explore the vast Star Wars universe. Discover films, characters, planets, and starships from a galaxy far, far away.',
           images: [
             {
-              url: 'https://space-odyssey.vercel.app/home-og-image.png',
+              url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/home-og-image.png`,
               width: 1200,
               height: 630,
               alt: 'Homepage Image',

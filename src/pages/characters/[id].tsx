@@ -9,6 +9,7 @@ import { PageLayout } from '@/components/common';
 import { PlanetCard } from '@/components/resource-cards';
 import { Card, CardContent } from '@/components/ui/card';
 import { getCharacterImageById } from '@/utils/assets';
+import { ROUTES } from '@/utils/routes';
 import { extractNumber } from '@/utils/swapi-graphql';
 import { IPerson, IPlanet, IStarship } from '@/utils/swapi-tech';
 import { motion } from 'framer-motion';
@@ -143,17 +144,17 @@ export default function CharacterDetailPage({
       <NextSeo
         title={character.name}
         description={`Learn about ${character.name}, a character from the Star Wars universe. Height: ${character.height}cm, Gender: ${character.gender}, Birth Year: ${character.birth_year}.`}
-        canonical={`https://space-odyssey.vercel.app/characters/${characterId}`}
+        canonical={`${ROUTES.EXTERNAL.VERCEL_DOMAIN}/characters/${characterId}`}
         openGraph={{
           type: 'profile',
-          url: `https://space-odyssey.vercel.app/characters/${characterId}`,
+          url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/characters/${characterId}`,
           title: character.name,
           description: `Learn about ${character.name}, a character from the Star Wars universe. Height: ${character.height}cm, Gender: ${character.gender}, Birth Year: ${character.birth_year}.`,
           images: [
             {
               url:
                 characterImage ||
-                'https://space-odyssey.vercel.app/characters-og-image.png',
+                `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/characters-og-image.png`,
               width: 1200,
               height: 630,
               alt: character.name,

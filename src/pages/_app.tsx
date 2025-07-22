@@ -1,5 +1,6 @@
 import client from '@/lib/apollo-client';
 import '@/styles/globals.css';
+import { ROUTES } from '@/utils/routes';
 import { ApolloProvider } from '@apollo/client';
 import { DefaultSeo } from 'next-seo';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
@@ -12,15 +13,15 @@ export default function App({ Component, pageProps }: AppProps) {
         titleTemplate="%s | Space Odyssey"
         defaultTitle="Space Odyssey"
         description="Space Odyssey is a website that provides information about the Star Wars universe."
-        canonical="https://space-odyssey.vercel.app"
+        canonical={ROUTES.EXTERNAL.VERCEL_DOMAIN}
         openGraph={{
           type: 'website',
           locale: 'en_US',
-          url: 'https://space-odyssey.vercel.app',
+          url: ROUTES.EXTERNAL.VERCEL_DOMAIN,
           siteName: 'Space Odyssey',
           images: [
             {
-              url: 'https://space-odyssey.vercel.app/og-image.png',
+              url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/og-image.png`,
               width: 1200,
               height: 630,
               alt: 'Space Odyssey',

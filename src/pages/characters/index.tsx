@@ -10,6 +10,7 @@ import {
 import { PageLayout } from '@/components/common';
 import { useCharacters } from '@/hooks/use-characters';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
+import { ROUTES } from '@/utils/routes';
 import {
   convertSwapiTechToPerson,
   fetchCharacters,
@@ -49,15 +50,15 @@ export default function CharactersPage({
       <NextSeo
         title="Space Odyssey - Characters"
         description="Explore the complete collection of Star Wars characters"
-        canonical="https://space-odyssey.vercel.app/characters"
+        canonical={`${ROUTES.EXTERNAL.VERCEL_DOMAIN}/characters`}
         openGraph={{
-          url: 'https://space-odyssey.vercel.app/characters',
+          url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/characters`,
           title: 'Space Odyssey - Characters',
           description:
             'Explore the complete collection of Star Wars characters',
           images: [
             {
-              url: 'https://space-odyssey.vercel.app/characters-og-image.png',
+              url: `${ROUTES.EXTERNAL.VERCEL_DOMAIN}/characters-og-image.png`,
               width: 1200,
               height: 630,
               alt: 'Characters Image',
